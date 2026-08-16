@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# 수업용 자료 페이지입니다. 검색엔진 수집을 원하지 않습니다.
+# This is a classroom material site. Please do not index.

@@ -1,0 +1,781 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-2 온라인 공동교육과정 · 인공지능 융합프로젝트 수업 운영실</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{--ink:#0c0d12;--ink2:#14151d;--ink3:#191a23;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--tx:#f3f1ea;--mut:#9a9caa;--dim:#6d6f7d;--gold:#d8b45a;--accent:#e7c37a;--green:#8bc0a4;--rose:#d98a7a;--blue:#7fa8d4;
+--serif:"Nanum Myeongjo","Apple SD Gothic Neo",Georgia,serif;--sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--mono:"SFMono-Regular",Consolas,"D2Coding",monospace;}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--tx);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+
+/* HERO */
+.hero{position:relative;padding:clamp(48px,7vw,92px) 0 clamp(26px,4vw,40px);background:radial-gradient(900px 480px at 78% -8%,rgba(216,180,90,.14),transparent 60%),radial-gradient(700px 500px at 8% 12%,rgba(139,192,164,.08),transparent 55%),linear-gradient(180deg,#0c0d12,#0a0b10);border-bottom:1px solid var(--line);overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:26px 26px;opacity:.5;-webkit-mask:linear-gradient(180deg,#000,transparent 75%);mask:linear-gradient(180deg,#000,transparent 75%)}
+.eyebrow{position:relative;font-size:11.5px;letter-spacing:.42em;color:var(--accent);font-weight:700;text-transform:uppercase}
+.hero h1{position:relative;font-family:var(--serif);font-weight:800;font-size:clamp(26px,4.6vw,52px);line-height:1.16;margin:16px 0 0}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero .lead{position:relative;max-width:720px;color:var(--mut);font-size:clamp(13.5px,1.4vw,16px);line-height:1.85;margin:18px 0 0}
+.hstats{position:relative;display:flex;gap:clamp(16px,3.4vw,44px);margin-top:32px;flex-wrap:wrap}
+.hstats div{display:flex;flex-direction:column}
+.hstats b{font-family:var(--serif);font-size:clamp(22px,3vw,34px);font-weight:800}
+.hstats span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+
+/* BAR */
+.bar{position:sticky;top:0;z-index:40;background:rgba(10,11,16,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar .in{display:flex;align-items:center;gap:12px;padding:10px 0;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{cursor:pointer;font-size:13px;font-weight:600;color:var(--mut);padding:8px 13px;border-radius:2px;border:1px solid transparent;transition:.16s;background:none;font-family:var(--sans)}
+.tab:hover{color:var(--tx)}.tab.active{color:var(--ink);background:var(--accent);font-weight:700}
+.sp{flex:1}
+.tbtn{font-size:12px;font-weight:700;color:#e6c98a;border:1px solid rgba(216,180,90,.35);background:rgba(216,180,90,.06);padding:8px 13px;border-radius:2px;cursor:pointer;white-space:nowrap;font-family:var(--sans)}
+.tbtn:hover{background:rgba(216,180,90,.14)}
+.tbtn.on{background:var(--accent);color:#0c0d12;border-color:transparent}
+
+/* SECTION */
+section{display:none;padding:clamp(30px,4vw,52px) 0 80px}
+section.on{display:block}
+h2.sh{font-family:var(--serif);font-size:clamp(21px,2.7vw,30px);font-weight:800;margin:0 0 6px;letter-spacing:-.01em}
+h2.sh em{font-style:italic;color:var(--accent)}
+.sdesc{color:var(--mut);font-size:13.5px;margin:0 0 26px;line-height:1.8}
+h3.bh{font-family:var(--serif);font-size:19px;font-weight:800;margin:44px 0 4px;padding-top:22px;border-top:1px solid var(--line)}
+h3.bh:first-of-type{border-top:0;padding-top:0;margin-top:26px}
+.bsub{color:var(--dim);font-size:12.5px;margin:0 0 16px}
+
+/* CARDS */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.card{border:1px solid var(--line);background:var(--ink2);border-radius:4px;padding:18px 18px 16px}
+.card h4{margin:0 0 8px;font-size:14px;font-weight:700;color:var(--accent);font-family:var(--sans);letter-spacing:.01em}
+.card p{margin:0;font-size:13px;color:var(--mut);line-height:1.75}
+.card .big{font-family:var(--serif);font-size:28px;font-weight:800;color:var(--tx);line-height:1.1;margin:2px 0 6px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.kv:last-child{border-bottom:0}
+.kv b{color:var(--mut);font-weight:600;flex-shrink:0}
+.kv span{text-align:right;color:var(--tx)}
+
+/* RHYTHM */
+.rhythm{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin:18px 0 6px;flex-wrap:wrap}
+.rblk{padding:16px 14px;border-right:1px solid var(--line);flex:1 1 0;min-width:110px}
+.rblk:last-child{border-right:0}
+.rblk .t{font-size:10.5px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.rblk .m{font-family:var(--serif);font-size:24px;font-weight:800;margin:4px 0 2px}
+.rblk .n{font-size:12px;color:var(--mut);line-height:1.55}
+.rblk.core{background:linear-gradient(180deg,rgba(216,180,90,.14),rgba(216,180,90,.04))}
+.rblk.core .m{color:var(--accent)}
+.rblk.task{background:linear-gradient(180deg,rgba(127,168,212,.12),rgba(127,168,212,.03))}
+.rblk.task .m{color:var(--blue)}
+.rblk.talk{background:linear-gradient(180deg,rgba(139,192,164,.12),rgba(139,192,164,.03))}
+.rblk.talk .m{color:var(--green)}
+
+/* TABLE */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:14px 0}
+table{width:100%;border-collapse:collapse;min-width:640px;font-size:12.5px}
+th{background:#101119;color:var(--accent);text-align:left;padding:11px 12px;font-weight:700;font-size:11.5px;letter-spacing:.06em;border-bottom:1px solid var(--line2);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--mut);vertical-align:top;line-height:1.65}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:rgba(255,255,255,.022)}
+td b,td strong{color:var(--tx);font-weight:700}
+.ctr{text-align:center}
+.pt{font-family:var(--serif);font-weight:800;color:var(--accent);font-size:14px}
+
+/* SESSION LIST */
+.slist{display:grid;gap:10px;margin-top:20px}
+.srow{border:1px solid var(--line);background:var(--ink2);border-radius:4px;transition:.18s}
+.srow:hover{border-color:var(--line2)}
+.srow.open{border-color:rgba(216,180,90,.4);background:var(--ink3)}
+.shead{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;flex-wrap:wrap}
+.snum{font-family:var(--serif);font-size:22px;font-weight:800;color:var(--accent);min-width:38px;line-height:1}
+.stt{flex:1;min-width:200px}
+.stt .d{font-size:11px;color:var(--dim);letter-spacing:.05em}
+.stt .n{font-size:14.5px;font-weight:700;margin-top:3px;line-height:1.4}
+.chip{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:2px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
+.chip.on{color:var(--green);border-color:rgba(139,192,164,.4);background:rgba(139,192,164,.07)}
+.chip.off{color:var(--rose);border-color:rgba(217,138,122,.4);background:rgba(217,138,122,.07)}
+.chip.ev{color:var(--accent);border-color:rgba(216,180,90,.4);background:rgba(216,180,90,.07)}
+.chip.done{color:var(--dim)}
+.arw{color:var(--dim);font-size:16px;transition:.2s}
+.srow.open .arw{transform:rotate(90deg);color:var(--accent)}
+.sbody{display:none;padding:4px 18px 22px;border-top:1px solid var(--line)}
+.srow.open .sbody{display:block}
+.sgoal{background:rgba(216,180,90,.06);border-left:2px solid var(--accent);padding:12px 16px;margin:18px 0 20px;font-size:13px;line-height:1.8}
+.sgoal b{color:var(--accent);display:block;font-size:11px;letter-spacing:.12em;margin-bottom:6px;text-transform:uppercase}
+.sgoal ul{margin:0;padding-left:18px}
+.sgoal li{margin:3px 0}
+
+/* TIMELINE */
+.tl{display:grid;gap:6px;margin:6px 0 22px}
+.tli{display:grid;grid-template-columns:112px 62px 1fr;gap:12px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.015);font-size:12.5px}
+.tli .tm{font-family:var(--mono);font-size:11.5px;color:var(--dim);padding-top:1px}
+.tli .du{font-size:11px;font-weight:700;color:var(--mut)}
+.tli .cn{color:var(--tx);line-height:1.6}
+.tli .cn small{display:block;color:var(--mut);font-size:11.5px;margin-top:3px;line-height:1.6}
+.tli.c1{border-left:2px solid var(--accent)}
+.tli.c2{border-left:2px solid var(--blue)}
+.tli.c3{border-left:2px solid var(--green)}
+.tli.c0{border-left:2px solid var(--dim);opacity:.82}
+
+.lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:22px 0 8px;display:flex;align-items:center;gap:8px}
+.lbl:after{content:"";flex:1;height:1px;background:var(--line)}
+.box{border:1px solid var(--line);border-radius:3px;padding:14px 16px;font-size:13px;line-height:1.8;color:var(--mut);background:rgba(255,255,255,.014)}
+.box ol,.box ul{margin:6px 0;padding-left:19px}
+.box li{margin:5px 0}
+.box strong{color:var(--tx)}
+.box.task{border-left:2px solid var(--blue)}
+.box.talk{border-left:2px solid var(--green)}
+.box.ev{border-left:2px solid var(--accent)}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:var(--ink);background:var(--accent);padding:2px 8px;border-radius:2px;margin-right:6px}
+.tag.b{background:var(--blue)}.tag.g{background:var(--green)}
+.mini{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mini span{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:2px;padding:3px 9px}
+.cpy{font-size:11px;font-weight:700;color:#e6c98a;border:1px solid rgba(216,180,90,.32);background:transparent;padding:5px 11px;border-radius:2px;cursor:pointer;margin-top:12px;font-family:var(--sans)}
+.cpy:hover{background:rgba(216,180,90,.12)}
+.openbtn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink);background:var(--accent);border:0;border-radius:2px;padding:7px 13px;cursor:pointer;font-family:var(--sans);white-space:nowrap;text-decoration:none}
+.openbtn:hover{background:#f0d091}
+.openbtn.soon{background:transparent;color:var(--dim);border:1px solid var(--line);cursor:default}
+.leadcard{border:1px solid rgba(216,180,90,.35);background:linear-gradient(135deg,rgba(216,180,90,.11),rgba(216,180,90,.03));border-radius:5px;padding:22px 24px;margin:22px 0 8px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.leadcard .lc-l{flex:1;min-width:250px}
+.leadcard .lc-e{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.leadcard .lc-t{font-family:var(--serif);font-size:21px;font-weight:800;margin:6px 0 4px}
+.leadcard .lc-d{font-size:12.5px;color:var(--mut);line-height:1.75}
+
+/* TIMER */
+#timer{position:fixed;right:18px;bottom:18px;z-index:90;background:rgba(16,17,25,.96);border:1px solid var(--line2);border-radius:5px;padding:14px 16px;width:212px;backdrop-filter:blur(10px);box-shadow:0 20px 50px -20px rgba(0,0,0,.9);display:none}
+#timer.show{display:block}
+#timer .hd{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;font-weight:700}
+#timer .hd button{background:none;border:0;color:var(--dim);cursor:pointer;font-size:15px;line-height:1;padding:0}
+#tdisp{font-family:var(--serif);font-size:40px;font-weight:800;text-align:center;margin:8px 0 4px;letter-spacing:-.02em}
+#tdisp.warn{color:var(--rose)}
+#tlabel{text-align:center;font-size:11.5px;color:var(--mut);margin-bottom:10px;min-height:16px}
+.trow{display:flex;gap:5px;margin-bottom:6px}
+.trow button{flex:1;font-size:11px;font-weight:700;padding:6px 0;border-radius:2px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:var(--mut);cursor:pointer;font-family:var(--sans)}
+.trow button:hover{color:var(--tx);border-color:var(--accent)}
+.trow button.pri{background:var(--accent);color:var(--ink);border-color:transparent}
+
+/* SHEET */
+.sheet{overflow-x:auto;border:1px solid var(--line);border-radius:4px;margin:16px 0}
+.sheet table{min-width:1080px;font-size:12px}
+.sheet th{position:sticky;top:0;z-index:2}
+.sheet td{padding:5px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.sheet td:first-child,.sheet th:first-child{text-align:left;position:sticky;left:0;background:var(--ink2);z-index:1}
+.sheet th:first-child{z-index:3;background:#101119}
+.sheet input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:2px;color:var(--tx);padding:6px 4px;font-size:12px;text-align:center;font-family:var(--sans)}
+.sheet input.nm{text-align:left;min-width:92px}
+.sheet input:focus{outline:0;border-color:var(--accent);background:rgba(216,180,90,.07)}
+.sheet input.bad{border-color:var(--rose)}
+.sub{font-family:var(--serif);font-weight:800;color:var(--mut);font-size:13px}
+.tot{font-family:var(--serif);font-weight:800;color:var(--accent);font-size:15px}
+.gr{font-weight:800;font-size:13px}
+.gA{color:#8bc0a4}.gB{color:#7fa8d4}.gC{color:#d8b45a}.gD{color:#d9a87a}.gE{color:#d98a7a}
+.gh{background:#0e0f16!important;color:var(--dim)!important;font-size:10.5px!important;letter-spacing:.1em}
+.toolrow{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.note{font-size:12px;color:var(--dim);line-height:1.8;margin-top:10px}
+.warnbox{border:1px solid rgba(217,138,122,.35);background:rgba(217,138,122,.06);border-radius:3px;padding:14px 16px;font-size:13px;line-height:1.8;color:var(--mut);margin:16px 0}
+.warnbox b{color:var(--rose);display:block;margin-bottom:5px;font-size:12px;letter-spacing:.06em}
+footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--dim);font-size:12px;line-height:1.9}
+@media(max-width:640px){.tli{grid-template-columns:1fr;gap:4px}.tli .tm{font-size:11px}.hstats{gap:18px}}
+@media print{body{background:#fff;color:#000}.bar,#timer,.cpy,.toolrow{display:none!important}section{display:block!important}.card,.box,.tw{border-color:#ccc}}
+</style></head><body>
+
+<div class="hero"><div class="wrap">
+  <div class="eyebrow">2026학년도 2학기 · 온라인 공동교육과정</div>
+  <h1>인공지능 <em>융합프로젝트</em><br>수업 운영실</h1>
+  <p class="lead">거점학교 대전대신고등학교 · 수업교사 하진수 · 대상 2학년 15명 · 3학점(45시수) · 월요일 17:00~21:00 원격 수업.<br>
+  4시간 블록을 <b style="color:var(--accent)">강의 90분 · 과제 60분 · 토의 30분</b>의 리듬으로 설계하고, 12회차 48차시 전체를 수행평가 3영역과 연결했습니다.</p>
+  <div class="hstats">
+    <div><b>12</b><span>회차</span></div>
+    <div><b>48</b><span>차시</span></div>
+    <div><b>15</b><span>모집 인원</span></div>
+    <div><b>100%</b><span>수행평가</span></div>
+    <div><b>92%</b><span>원격 비율</span></div>
+  </div>
+</div></div>
+
+<div class="bar"><div class="wrap"><div class="in">
+  <div class="tabs">
+    <button class="tab active" data-t="s-ov">개요</button>
+    <button class="tab" data-t="s-ses">회차 운영</button>
+    <button class="tab" data-t="s-ev">수행평가</button>
+    <button class="tab" data-t="s-sheet">채점 시트</button>
+    <button class="tab" data-t="s-run">원격 운영</button>
+  </div>
+  <div class="sp"></div>
+  <button class="tbtn" id="btnTimer">⏱ 수업 타이머</button>
+  <button class="tbtn" onclick="window.print()">인쇄</button>
+</div></div></div>
+
+<!-- ============ 개요 ============ -->
+<section id="s-ov" class="on"><div class="wrap">
+  <h2 class="sh">강좌 <em>개요</em></h2>
+  <p class="sdesc">운영계획서(2026-2 공동교육과정 강좌 운영계획서_인공지능융합프로젝트_최종)와 교과서 3개 단원, PPT 6종을 근거로 재구성했습니다.</p>
+
+  <div class="leadcard" id="leadcard"></div>
+
+  <h3 class="bh">기본 정보</h3>
+  <p class="bsub">운영계획서 확정 사항</p>
+  <div class="grid g2">
+    <div class="card">
+      <div class="kv"><b>거점학교</b><span>대전대신고등학교</span></div>
+      <div class="kv"><b>수업교사</b><span>하진수</span></div>
+      <div class="kv"><b>대상학년</b><span>2학년</span></div>
+      <div class="kv"><b>학점(시수)</b><span>3학점 (45시수)</span></div>
+      <div class="kv"><b>과목 편성</b><span>융합 선택 · 성취도 5단계</span></div>
+      <div class="kv"><b>모집인원</b><span>15명</span></div>
+    </div>
+    <div class="card">
+      <div class="kv"><b>수업장소</b><span>2층 융합과학실 · 줌</span></div>
+      <div class="kv"><b>주당 수업</b><span>1일 (월요일)</span></div>
+      <div class="kv"><b>운영 시간</b><span>정규 일과시간 외 17:00~21:00</span></div>
+      <div class="kv"><b>수업방법</b><span>원격 92% · 대면 8%</span></div>
+      <div class="kv"><b>실습</b><span>실습 및 실기</span></div>
+      <div class="kv"><b>성취도 평정</b><span>고정 분할점수 활용</span></div>
+    </div>
+  </div>
+
+  <h3 class="bh">4시간 블록의 운영 리듬</h3>
+  <p class="bsub">17:00~21:00 240분 — 강의 90 · 과제 60 · 토의 30 + 여닫이와 휴식 60분</p>
+  <div class="rhythm">
+    <div class="rblk"><div class="t">Open</div><div class="m">10′</div><div class="n">접속 확인 · 출결<br>지난 과제 피드백</div></div>
+    <div class="rblk core"><div class="t">Lecture</div><div class="m">90′</div><div class="n">30분 × 3블록<br>교과서 연계 강의</div></div>
+    <div class="rblk"><div class="t">Break</div><div class="m">10′</div><div class="n">화면 끄기<br>실습 환경 준비</div></div>
+    <div class="rblk task"><div class="t">Task</div><div class="m">60′</div><div class="n">개별·모둠 실습<br>소회의실 순회 지원</div></div>
+    <div class="rblk"><div class="t">Break</div><div class="m">10′</div><div class="n">제출물 업로드</div></div>
+    <div class="rblk talk"><div class="t">Talk</div><div class="m">30′</div><div class="n">소회의실 15′<br>전체 공유 15′</div></div>
+    <div class="rblk"><div class="t">Close</div><div class="m">30′</div><div class="n">상호 피드백<br>정리 · 다음 차시 예고</div></div>
+  </div>
+  <p class="note">1회차(8/11)·12회차(11/17)는 화요일 <b>18:00~22:00 대면</b>이므로 같은 리듬을 1시간 뒤로 밉니다. 회차별 상세 시간표는 <b>회차 운영</b> 탭에서 확인하세요.</p>
+
+  <h3 class="bh">평가 구조</h3>
+  <p class="bsub">지필평가 미실시 · 수행평가 3영역 100%</p>
+  <div class="grid g3">
+    <div class="card"><h4>영역 1 · 융합프로젝트를 위한 기술</h4><div class="big">30점</div><p>평가시기 8~9월 · 회차 2~5 (5~20차시)<br>데이터 분석·시각화, 센서 로깅, 웹 서비스·API</p></div>
+    <div class="card"><h4>영역 2 · 융합 프로젝트 구현</h4><div class="big">40점</div><p>평가시기 9~10월 · 회차 6~9 (21~36차시)<br>문제 정의, 모델 학습·평가, 최적 조건 도출</p></div>
+    <div class="card"><h4>영역 3 · 융합프로젝트 구현실습</h4><div class="big">30점</div><p>평가시기 9~10월 · 회차 10~12 (37~48차시)<br>프로토타입, 보고서·GitHub, 발표·성찰</p></div>
+  </div>
+  <h3 class="bh">산출물 로드맵</h3>
+  <p class="bsub">회차마다 남는 증거물 — 그대로 누적하면 최종 보고서가 완성됩니다</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:70px">회차</th><th style="width:110px">산출물</th><th>내용</th><th style="width:130px">누적 위치</th></tr></thead>
+    <tbody id="roadmap"></tbody>
+  </table></div>
+</div></section>
+
+<!-- ============ 회차 운영 ============ -->
+<section id="s-ses"><div class="wrap">
+  <h2 class="sh">회차별 <em>수업 운영</em></h2>
+  <p class="sdesc"><b style="color:var(--accent)">수업 열기</b>를 누르면 그 회차의 수업 페이지가 열립니다. 강의 자료 · 활동지 · 확인 문제 · 토의 진행까지 모두 그 안에서 이루어집니다.<br>
+  회차 제목을 클릭하면 240분 시간표 · 강의 3블록 · 과제 · 토의 논제 · 평가 연계 요약이 펼쳐집니다.</p>
+  <div class="toolrow">
+    <button class="tbtn" onclick="allSess(true)">전체 펼치기</button>
+    <button class="tbtn" onclick="allSess(false)">전체 접기</button>
+    <button class="tbtn" id="btnNext">다음 수업으로 이동</button>
+  </div>
+  <div class="slist" id="slist"></div>
+</div></section>
+
+<!-- ============ 수행평가 ============ -->
+<section id="s-ev"><div class="wrap">
+  <h2 class="sh">학생 <em>수행평가</em> 요소</h2>
+  <p class="sdesc">3개 영역 11개 평가요소 · 총 100점. 각 요소는 특정 회차의 과제 산출물을 채점 근거로 삼습니다.</p>
+
+  <h3 class="bh">성취도 평정</h3>
+  <p class="bsub">고정 분할점수 · 5단계</p>
+  <div class="grid g4">
+    <div class="card"><h4>A</h4><p>90점 이상</p></div>
+    <div class="card"><h4>B</h4><p>80점 이상 ~ 90점 미만</p></div>
+    <div class="card"><h4>C</h4><p>70점 이상 ~ 80점 미만</p></div>
+    <div class="card"><h4>D</h4><p>60점 이상 ~ 70점 미만</p></div>
+    <div class="card"><h4>E</h4><p>60점 미만</p></div>
+  </div>
+
+  <div id="rubrics"></div>
+
+  <h3 class="bh">최소 성취수준 보장 지도</h3>
+  <p class="bsub">3학점 기준 9시수 운영 · 이수 인정 6시수 이상</p>
+  <div class="tw"><table>
+    <thead><tr><th>구분</th><th class="ctr">온라인 콘텐츠</th><th class="ctr">보충과제 부여</th><th class="ctr">대면지도(실시간 쌍방향 포함)</th><th class="ctr">합계</th><th class="ctr">이수 인정 기준</th></tr></thead>
+    <tbody><tr><td><b>운영 시수</b></td><td class="ctr pt">6</td><td class="ctr pt">1</td><td class="ctr pt">2</td><td class="ctr pt">9</td><td class="ctr"><b>6시수 이상</b></td></tr></tbody>
+  </table></div>
+  <div class="box" style="margin-top:12px">
+    <strong>대상 판별</strong> — 영역 1(30점) 종료 시점(회차 5, 9/28)에 <b>영역 1 득점 18점 미만</b>이거나 과제 미제출 2회 이상인 학생을 우선 지정합니다.<br>
+    <strong>온라인 콘텐츠 6시수</strong> — 데이터 전처리 기초, 시각화 도구 사용법, HTML/CSS/JS 기초, API 호출, 마이크로비트 로깅, Teachable Machine 실습 영상 각 1시수.<br>
+    <strong>보충과제 1시수</strong> — 미제출 산출물 재작성(양식 단순화 버전 제공).<br>
+    <strong>대면지도 2시수</strong> — 줌 실시간 1:1 또는 소그룹 코칭(회차 8·11 종료 후 주중 편성).
+  </div>
+
+  <h3 class="bh">평가 운영 원칙</h3>
+  <div class="grid g2">
+    <div class="card"><h4>생성형 AI 사용 규정</h4><p>본 강좌는 생성형 AI를 <b>협업 도구로 명시적으로 활용</b>합니다. 다만 모든 과제에 <b>프롬프트 로그</b>(입력 프롬프트 · 받은 결과 · 내가 수정한 부분)를 함께 제출해야 하며, 로그 없이 제출된 코드는 채점 대상에서 제외합니다. 코드 설명 요구 시 답변하지 못하면 감점합니다.</p></div>
+    <div class="card"><h4>원격 수행평가 신뢰성</h4><p>산출물은 <b>과정 증거</b>(중간 캡처 · 커밋 이력 · 실행 화면 녹화)와 함께 제출합니다. 토의 시간의 발화와 소회의실 활동을 관찰 기록으로 남겨 산출물 점수와 교차 확인합니다.</p></div>
+    <div class="card"><h4>재제출 정책</h4><p>마감 후 1주 이내 재제출은 해당 요소 배점의 <b>80%</b>까지 인정합니다. 최소 성취수준 보장 대상자는 감점 없이 재제출할 수 있습니다.</p></div>
+    <div class="card"><h4>세부능력 및 특기사항 연계</h4><p>회차별 <b>토의 발화 · 문제 정의의 독창성 · 모델 개선 시도 횟수 · 동료 피드백 수용</b>을 관찰 기록표에 누적하여 기재합니다. 12회차 성과공유회의 시연과 질의응답이 핵심 근거입니다.</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 채점 시트 ============ -->
+<section id="s-sheet"><div class="wrap">
+  <h2 class="sh">채점 <em>시트</em></h2>
+  <p class="sdesc">요소별 점수를 입력하면 영역 소계 · 총점 · 성취도가 자동 계산됩니다. 입력값은 이 브라우저에 저장되며(localStorage), CSV로 내보낼 수 있습니다.</p>
+  <div class="toolrow">
+    <button class="tbtn" id="btnAdd">학생 행 추가</button>
+    <button class="tbtn" id="btnCsv">CSV 내보내기</button>
+    <button class="tbtn" id="btnClear">전체 초기화</button>
+    <span class="tbtn" style="cursor:default;border-color:var(--line2);color:var(--mut)" id="stat">—</span>
+  </div>
+  <div class="sheet"><table>
+    <thead>
+      <tr class="gh"><th rowspan="2">학생</th><th colspan="5" class="ctr">영역 1 · 융합프로젝트를 위한 기술 (30)</th><th colspan="5" class="ctr">영역 2 · 융합 프로젝트 구현 (40)</th><th colspan="4" class="ctr">영역 3 · 융합프로젝트 구현실습 (30)</th><th rowspan="2" class="ctr">총점</th><th rowspan="2" class="ctr">성취도</th></tr>
+      <tr id="sheadRow"></tr>
+    </thead>
+    <tbody id="sbody"></tbody>
+  </table></div>
+  <p class="note">요소 약칭 — <b>1-1</b> 데이터 분석·시각화(8) / <b>1-2</b> 센서 데이터 수집·기록(8) / <b>1-3</b> 웹 서비스·API 구현(10) / <b>1-4</b> 개념 이해 점검(4) · <b>2-1</b> AI 모델 이해(8) / <b>2-2</b> 문제 정의·탐구 계획(12) / <b>2-3</b> 모델 학습·성능 평가(12) / <b>2-4</b> 결과 해석·최적 조건(8) · <b>3-1</b> 프로토타입 동작·UI 연동(12) / <b>3-2</b> 보고서·산출물 관리(10) / <b>3-3</b> 발표·협업·성찰(8)</p>
+</div></section>
+
+<!-- ============ 원격 운영 ============ -->
+<section id="s-run"><div class="wrap">
+  <h2 class="sh">원격 수업 <em>운영 가이드</em></h2>
+  <p class="sdesc">원격 92% · 대면 8%. 서로 다른 학교 학생 15명이 저녁 4시간을 함께 버티는 구조이므로, 운영 규칙을 첫 회차에 못 박아 두는 것이 관건입니다.</p>
+
+  <h3 class="bh">회차 진행 순서</h3>
+  <div class="grid g3">
+    <div class="card"><h4>수업 전 (D-1)</h4><p>· 줌 링크·자료 사전 안내<br>· 실습 환경 점검 공지(코랩/마이크로비트/에디터)<br>· 지난 과제 채점 완료 및 코멘트 준비<br>· 소회의실 조 편성 확정</p></div>
+    <div class="card"><h4>수업 중</h4><p>· 시작 10분 출결 + 카메라 확인<br>· 강의 30분마다 짧은 확인 질문<br>· 과제 60분: 소회의실 순회, 5분 단위 진척 확인<br>· 토의 30분: 발화 기록표 작성</p></div>
+    <div class="card"><h4>수업 후</h4><p>· 산출물 제출 확인 및 미제출자 개별 연락<br>· 관찰 기록 정리(세특 근거)<br>· 최소 성취수준 대상자 진척 점검<br>· 다음 회차 준비물 공지</p></div>
+  </div>
+
+  <h3 class="bh">출결 처리</h3>
+  <div class="box">
+    <strong>원격 수업</strong> — 줌 참가 로그(입·퇴장 시각)를 1차 근거로 하고, 블록 전환 시점(강의 종료·과제 종료·토의 종료) 3회 호명 확인을 2차 근거로 병행합니다. 4시간 중 <b>3시간 이상 참여</b>를 출석으로 인정하고, 지연 접속은 사유 확인 후 지각 처리합니다.<br>
+    <strong>대면 수업</strong> — 1회차(8/11)·12회차(11/17) 화요일 18:00~22:00, 융합과학실. 소속 학교 하교 후 이동 시간을 고려해 18:00~18:20 도착을 인정합니다.<br>
+    <strong>과제 미제출</strong> — 결석이 아닌 <b>수행평가 미이행</b>으로 처리하고, 2회 누적 시 최소 성취수준 보장 지도 대상으로 지정합니다.
+  </div>
+
+  <h3 class="bh">실습 환경 표준</h3>
+  <div class="tw"><table>
+    <thead><tr><th style="width:150px">영역</th><th style="width:190px">도구</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td><b>데이터 분석</b></td><td>Google Colab</td><td>설치 불필요 · 구글 계정만 있으면 공유 가능. 노트북 링크 제출로 채점.</td></tr>
+      <tr><td><b>시각화</b></td><td>Matplotlib · Seaborn · Plotly</td><td>인터랙티브 요구 과제는 Plotly 또는 구글 스프레드시트 차트 허용.</td></tr>
+      <tr><td><b>센서</b></td><td>micro:bit v2 · MicroPython 편집기</td><td>미보유 학생은 MakeCode 시뮬레이터 또는 교사 제공 CSV로 대체(감점 없음).</td></tr>
+      <tr><td><b>웹</b></td><td>메모장/VS Code · 브라우저</td><td>HTML·CSS·JS 단일 파일 구조로 통일. 배포는 GitHub Pages.</td></tr>
+      <tr><td><b>API</b></td><td>교육정보 개방 포털(open.neis.go.kr)</td><td>인증키는 <b>개인 발급 · 제출물에는 마스킹</b>. 키 노출은 감점 사유.</td></tr>
+      <tr><td><b>AI 모델</b></td><td>Teachable Machine · scikit-learn</td><td>노코드 체험 후 코드 구현으로 확장.</td></tr>
+      <tr><td><b>프로토타입</b></td><td>Gradio 또는 Streamlit</td><td>코랩에서 공유 링크 생성 가능. 데모 실패 대비 녹화본 필수.</td></tr>
+      <tr><td><b>게임</b></td><td>Anaconda 가상환경 · Spyder · pygame</td><td>설치 실패가 잦으므로 회차 8 이전 사전 설치 안내 필요.</td></tr>
+      <tr><td><b>협업</b></td><td>GitHub · 구글 드라이브</td><td>제출 폴더 구조: <span style="font-family:var(--mono);font-size:11.5px">이름_회차_산출물명</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="bh">저녁 4시간을 버티게 하는 장치</h3>
+  <div class="grid g2">
+    <div class="card"><h4>30분 단위 전환</h4><p>강의를 30분 × 3블록으로 끊고 블록마다 채팅창 한 줄 답변을 요구합니다. 저녁 시간대 집중력은 30분이 한계입니다.</p></div>
+    <div class="card"><h4>과제는 수업 안에서 끝낸다</h4><p>60분 과제 블록에서 완결되도록 과제 범위를 잡습니다. 집에 가져가는 과제는 미제출로 직결됩니다.</p></div>
+    <div class="card"><h4>토의는 소회의실 먼저</h4><p>전체 토의는 침묵으로 흐릅니다. 3인 소회의실 15분에서 결론을 만든 뒤, 전체에서는 팀 대표가 30초씩 발표합니다.</p></div>
+    <div class="card"><h4>학교가 섞인 팀 구성</h4><p>공동교육과정의 강점은 이질적 조합입니다. 회차 7 프로젝트 팀은 서로 다른 학교 학생이 섞이도록 편성합니다.</p></div>
+  </div>
+
+  <h3 class="bh">근거 자료</h3>
+  <div class="box">
+    · 2026-2 공동교육과정 강좌 운영계획서_인공지능융합프로젝트_최종.hwpx — 일정 · 평가 방법 · 최소 성취수준 보장 계획<br>
+    · 교과서 『인공지능 융합프로젝트』 Ⅰ 단원융합 프로젝트의 이해 / Ⅱ 단원융합 프로젝트를 위한 기술 / Ⅲ 단원융합 프로젝트 구현<br>
+    · 수업용 PPT 6종 — 1-1 배경 기술의 발전, 1-2 융합 프로젝트의 개요, 2-2 센서 데이터 수집과 피지컬 컴퓨팅, 2-3 인공지능 모델과 웹 서비스, 3-1 센싱 데이터를 활용한 인공지능 프로젝트, 3-2 테트리스 게임 프로젝트<br>
+    · 교수학습과정안 1~3단원 · 교과서 예시답안 Ⅰ·Ⅱ · 지도서 1~3단원
+  </div>
+</div></section>
+
+<div id="timer">
+  <div class="hd"><span>수업 타이머</span><button onclick="document.getElementById('timer').classList.remove('show')">✕</button></div>
+  <div id="tdisp">00:00</div>
+  <div id="tlabel">—</div>
+  <div class="trow">
+    <button onclick="setT(90,'강의 90분')">90</button>
+    <button onclick="setT(60,'과제 60분')">60</button>
+    <button onclick="setT(30,'토의 30분')">30</button>
+  </div>
+  <div class="trow">
+    <button onclick="setT(10,'휴식 10분')">10</button>
+    <button onclick="setT(15,'소회의실 15분')">15</button>
+    <button onclick="setT(5,'정리 5분')">5</button>
+  </div>
+  <div class="trow"><button class="pri" id="tgo">시작</button><button onclick="stopT()">정지</button></div>
+</div>
+
+<footer><div class="wrap">
+  2026학년도 2학기 온라인 공동교육과정 · 인공지능 융합프로젝트 — 대전대신고등학교 하진수<br>
+  수업 운영실 · 교과서 및 운영계획서 기반 재구성
+</div></footer>
+
+<script>
+/* ===== 회차 데이터 ===== */
+const S=[
+{n:1,date:"2026.08.11",dow:"화",time:"18:00~22:00",ch:"1~4차시",mode:"대면",title:"오리엔테이션 · 배경 기술의 발전 · 융합 프로젝트의 개념",
+ goals:["강좌 운영 방식과 안전·학교폭력 예방 수칙을 이해한다.","데이터 인프라와 지능형 처리 기술의 발전 흐름을 설명할 수 있다.","융합 프로젝트의 개념과 핵심 역량을 사례로 설명할 수 있다."],
+ lec:[["안전 교육과 오리엔테이션","안전사고·학교폭력 예방 교육 / 강좌 운영 방식·평가 구조·제출 규칙 안내 / 실습 환경 점검"],
+      ["데이터의 흐름과 기술의 발전 <span style='color:var(--dim)'>교과서 13~21쪽</span>","수집–전송–저장–공유 / 센서·API·클라우드·엣지 / 규칙 기반 → 기계학습 → 딥러닝 → 생성형 AI"],
+      ["융합 프로젝트의 개념과 핵심 역량 <span style='color:var(--dim)'>교과서 14~15쪽</span>","도시 열섬 사례(과학+수학+정보) / 길러지는 5가지 역량 / 데이터 윤리와 협업 도구"]],
+ task:"내가 매일 쓰는 서비스 1개(배달 앱·내비게이션·스마트워치 등)를 골라 <b>데이터 흐름도</b>를 그리고, 수집–전송–저장–공유 각 단계에서 어떤 기술이 쓰이는지 표로 정리한다. (교과서 25쪽 역량 키우기 활동)",
+ taskout:"데이터 흐름도 1장 + 기술 정리표",
+ talk:["이 기술이 발전하지 않았다면 내가 고른 서비스는 어떻게 달라졌을까?","이 서비스가 수집하는 데이터 중 '최소 수집' 원칙에 어긋나 보이는 것은 없는가?"],
+ ev:"진단 활동 · 미반영. 다만 관찰 기록은 세특 근거로 누적.",prep:["줌 접속 확인","교과서","필기 도구"],done:true},
+
+{n:2,date:"2026.08.17",dow:"월",time:"17:00~21:00",ch:"5~8차시",mode:"원격",title:"융합 프로젝트를 위한 배경 기술의 발전",
+ goals:["데이터 인프라·지능형 처리·책임·표현·협업의 발전 과정을 종합적으로 이해하고 설명할 수 있다.","기술의 발전이 프로젝트의 성공과 사회에 미치는 영향을 사례로 분석할 수 있다.","기술과 방법을 선택한 근거를 설명할 수 있다."],
+ lec:[["데이터와 네트워크의 발전 <span style='color:var(--dim)'>교과서 14~17쪽</span>","수집(센서·IoT·CSV/JSON·오픈데이터) / 전송(유선LAN·Wi-Fi·4G5G·LPWAN·HTTP·API) / 저장(DB·DW·클라우드·분산·엣지) / 표준과 공유(공공데이터포털)"],
+      ["데이터 처리 방법의 발전 <span style='color:var(--dim)'>교과서 18~21쪽</span>","규칙 기반의 장점과 한계 / 기계학습(지도·비지도·강화, 블랙박스, CPU vs GPU) / 딥러닝(이미지·자연어·자율주행, 에너지 부담) / 생성형 AI(멀티모달·TPU·허위정보·저작권)"],
+      ["데이터 윤리와 협업의 진화 <span style='color:var(--dim)'>교과서 22~26쪽</span>","책임 있는 데이터 활용 5원칙 / 4대 위험과 대응 / 설명 가능한 인공지능(XAI) 비교표 / 형상 관리·이슈 트래킹·공유 문서"]],
+ task:"<b>융합 프로젝트를 만드는 기술의 변화</b>(교과서 27쪽 역량 키우기). 생활 속 서비스 1개를 골라 수집–전송–저장–처리–표현 6단계를 근거와 함께 분석하고, 데이터 흐름을 그림으로 정리한 뒤 정리하기 3문항에 답한다.",
+ taskout:"활동지 1부 (구글 문서)",
+ talk:["편리함과 개인정보, 어디까지 내줄 수 있는가 — 우리 조의 '최소 수집' 기준선 만들기","더 새로운 기술이 항상 더 좋은 기술인가 — 딥러닝 대신 규칙 기반이라면","인공지능이 만든 데이터로 인공지능을 가르쳐도 되는가"],
+ ev:"[영역 1] 활동지 채점 기준표 25점 → <b>8점</b>으로 환산",prep:["교과서 12~27쪽","구글 계정(문서 제출)","앱 권한·개인정보처리방침 확인"]},
+
+{n:3,date:"2026.09.14",dow:"월",time:"17:00~21:00",ch:"9~12차시",mode:"원격",title:"융합 프로젝트의 개요 — 개념 · 배경 · 특징 · 단계 · 나만의 주제 정하기",
+ goals:["융합 프로젝트의 개념과 필요성을 사례를 들어 설명할 수 있다.","융합 프로젝트의 주요 특징과 네 단계를 설명할 수 있다.","문제 해결에 필요한 교과 지식과 기술을 찾아 제안할 수 있다."],
+ lec:[["융합 프로젝트란 무엇이고 왜 필요한가 <span style='color:var(--dim)'>교과서 29~33쪽</span>","프로젝트와 융합 프로젝트의 정의 / 도시 열섬 사례(과학·수학·정보) / 화성 사고 실험 / 미국 STEAM·핀란드 현상 기반 학습·우리나라 / 다섯 역량"],
+      ["융합 프로젝트의 특징과 네 단계 <span style='color:var(--dim)'>교과서 34~36쪽</span>","문제 중심·다학문적·과정 중심·학생 주도성·창의성 / 문제 인식 → 탐구 계획 → 실행 및 탐구 → 결과 공유 및 성찰"],
+      ["사례로 끝까지 따라가기 — 안전거리 <span style='color:var(--dim)'>교과서 37~42쪽</span>","신문 기사 → 관성·공주거리·제동거리 → 핵심 요소 추출 → 순서도 → 파이썬 프로그램 → 반응 시간 측정과 시뮬레이터 → 개선과 확장"]],
+ task:"<b>나만의 융합 프로젝트 주제 제안서</b>(교과서 43쪽 역량 키우기). 문제·근거·교과 지식·데이터·핵심 질문·한 문장 주제·4단계 계획·예상 산출물을 작성하고 교과서 주제 선정 확인 사항 4항목을 통과시킨다.",
+ taskout:"주제 제안서 (구글 문서)",
+ talk:["주제를 좁히는 것과 넓히는 것 중 무엇이 더 어려운가","내 주제에서 '융합'은 어디에 있는가","이 주제를 11월까지 끌고 갈 수 있는가"],
+ ev:"[영역 1] 활동지 채점 기준표 25점 → <b>8점</b>으로 환산. 최종 보고서 1장의 초안으로 누적",prep:["교과서 28~43쪽","2회차 활동지 10번 칸","생활 속 문제 세 가지 메모"]},
+
+{n:4,date:"2026.09.21",dow:"월",time:"17:00~21:00",ch:"13~16차시",mode:"원격",title:"센서 데이터 수집과 피지컬 컴퓨팅 — 데이터 기록과 문제 해결",
+ goals:["마이크로비트로 환경 데이터를 자동 기록할 수 있다.","수집 계획(종류·주기·기간·저장)을 세울 수 있다.","센서 데이터로 실생활 문제 해결책을 제안할 수 있다."],
+ lec:[["데이터 기록(로깅)의 개념 <span style='color:var(--dim)'>교과서 77~78쪽</span>","시간 경과에 따른 기록 / 마이크로비트 내장 센서(온도·소리·빛·가속도) / log 모듈 — set_labels(), add(), delete() / 타임스탬프 단위"],
+      ["자동 기록 코드와 데이터 내려받기 <span style='color:var(--dim)'>교과서 79~81쪽</span>","@run_every(s=5) 데코레이터로 5초 주기 자동 기록 / MY_DATA.HTM 파일 → Visual preview로 그래프 확인 / CSV 내보내기"],
+      ["데이터 기반 문제 해결 <span style='color:var(--dim)'>교과서 82~83쪽</span>","교실 온도 모니터링(학습 집중도) / 낙상 감지 장치(가속도 임계값) / 수면 시간 데이터 분석과 시각화"]],
+ task:"<b>7일간 수면 시간 로그</b>(또는 교실 온도 1시간 간격 로그)를 수집해 평균·최고·최저를 계산하고 그래프로 시각화한다. 수집 계획표(데이터 종류·측정 주기·기간·저장 방법)를 함께 제출.",
+ taskout:"로그 CSV + 통계값 + 그래프 + 수집 계획표",
+ talk:["측정 주기를 5초로 할 때와 1시간으로 할 때 무엇이 달라지는가? — 저장 용량, 배터리, 놓치는 사건","내 데이터에서 '이상값'으로 보이는 지점은 오류인가, 진짜 사건인가?"],
+ ev:"[영역 1-2] 센서 데이터 수집·기록 <b>8점</b> — 마이크로비트 미보유 학생은 시뮬레이터/제공 CSV 사용, 감점 없음",prep:["micro:bit v2 또는 MakeCode 시뮬레이터","USB 케이블","MicroPython 편집기"]},
+
+{n:5,date:"2026.09.28",dow:"월",time:"17:00~21:00",ch:"17~20차시",mode:"원격",title:"인공지능 모델과 웹 서비스 — 급식 메뉴 조회 웹페이지 · 대단원 평가",
+ goals:["분류와 객체 탐지의 차이를 구별하고 대표 알고리즘을 비교할 수 있다.","HTML·CSS·JavaScript의 역할을 구분해 웹 페이지를 만들 수 있다.","공공데이터 API 인증키를 발급받아 데이터를 조회할 수 있다."],
+ lec:[["인공지능 모델 <span style='color:var(--dim)'>교과서 84~90쪽</span>","지도학습 / 분류 — 의사결정트리 vs 서포트 벡터 머신 / 객체 탐지 — YOLO vs Faster R-CNN / COCO-SSD 사전학습 모델 체험"],
+      ["웹 서비스 3요소","HTML 구조(html·head·body, 태그와 속성) / CSS 표현(선택자·속성·값, 3가지 적용 방법) / JavaScript 동작(사용자 입력 처리, 화면 제어)"],
+      ["API와 인증키 <span style='color:var(--dim)'>교과서 개념 정리</span>","API = 프로그램 간 데이터 통로 / 교육정보 개방 포털(open.neis.go.kr) 인증키 발급 / 급식식단정보 데이터셋 · 교육청 코드·학교 코드 / 요청 URL 구성과 응답 파싱"]],
+ task:"<b>급식 메뉴 조회 웹페이지</b> 제작. 기본 — 오늘 날짜 자동 입력, 우리 학교 중식 조회. 확장(택1) — ① 조·중·석식 모두 조회 ② 이번 주(월~일) 주간 메뉴 조회. 인증키는 반드시 마스킹해 제출.",
+ taskout:"HTML 파일 + 실행 화면 캡처 + 프롬프트 로그",
+ talk:["API 인증키를 코드에 그대로 넣어 GitHub에 올리면 어떤 일이 벌어지는가? — 개인정보 유출·데이터 편향·저작권·보안 4대 위험과 대응(교과서 23쪽)","내 웹페이지는 급식이 없는 날(주말·방학)에 어떻게 동작하는가?"],
+ ev:"[영역 1-3] 웹 서비스·API 구현 <b>10점</b> + [영역 1-4] 개념 이해 점검 <b>4점</b> → <b>영역 1 마감(30점)</b>",prep:["open.neis.go.kr 계정","텍스트 에디터","학교 코드 확인"]},
+
+{n:6,date:"2026.10.12",dow:"월",time:"17:00~21:00",ch:"21~24차시",mode:"원격",title:"융합 직업의 세계 · 군집화 · 인공신경망 · 노코드 모델 체험",
+ goals:["융합 기술 기반 직업을 탐색하고 자신의 진로와 연결할 수 있다.","군집화로 데이터의 숨은 패턴을 찾을 수 있다.","ANN·CNN의 기본 작동 원리를 설명할 수 있다."],
+ lec:[["융합 직업의 세계","데이터 사이언티스트·AI 엔지니어·MLOps·프롬프트 디자이너·AI 윤리 전문가 / 각 직업이 다루는 데이터와 필요 역량 / 내 프로젝트 주제와 연결되는 직업 찾기"],
+      ["군집화(K-Means)","비지도학습 — 정답 없이 패턴 찾기 / 중심점 초기화 → 거리 계산 → 재할당 → 중심 갱신 / k 결정(엘보우) / 코랩 실습"],
+      ["인공신경망 ANN·CNN","퍼셉트론·가중치·활성화 함수 직관 / 층을 쌓는 이유 / CNN — 합성곱으로 특징 추출, 풀링으로 요약 / 이미지 인식에 강한 이유"]],
+ task:"<b>Teachable Machine으로 나만의 분류 모델</b> 학습. 클래스 3개 이상, 클래스당 샘플 50개 이상. 학습 후 정확도 확인 + <b>오분류 사례 3개</b>를 찾아 원인을 분석해 제출.",
+ taskout:"모델 링크 + 정확도 캡처 + 오분류 분석표",
+ talk:["왜 내 모델은 특정 상황에서 틀리는가? — 조명·배경·각도·샘플 편향","군집화 결과의 '군집'에 이름을 붙일 수 있는가? 붙일 수 없다면 그 군집은 의미가 있는가?"],
+ ev:"[영역 2-1] AI 모델 이해 <b>8점</b> — <b>영역 2 시작</b>",prep:["코랩","웹캠","Teachable Machine 접속"]},
+
+{n:7,date:"2026.10.19",dow:"월",time:"17:00~21:00",ch:"25~28차시",mode:"원격",title:"센싱 데이터를 활용한 인공지능 프로젝트 — 문제 인식 · 탐구 계획 · 실행",
+ goals:["SDGs에서 인공지능으로 해결할 문제를 정의할 수 있다.","센서 구성과 데이터 수집 계획을 설계할 수 있다.","수집 데이터를 전처리하고 상관관계를 분석할 수 있다."],
+ lec:[["문제 인식 <span style='color:var(--dim)'>교과서 Ⅲ단원</span>","지속가능발전목표(SDGs) 17개 검토 / 스마트 화분 사례 — 같은 화분·같은 흙인데 왜 결과가 달랐을까 / 문제를 '측정 가능한 형태'로 다시 쓰기"],
+      ["탐구 계획","센서 구성 — 온도(내장), 조도(내장), 토양 수분(외장 핀), 소음 / 측정 주기 5분 / 데이터셋 설계와 라벨 정의(물 필요 1 / 불필요 0) / 지도학습 알고리즘 선정"],
+      ["실행 — 데이터 전처리와 시각화 <span style='color:var(--dim)'>코랩</span>","microbit.csv 불러오기 / shape·isna()로 결측치 확인·제거 / 단위 통일(백분율 변환) / describe() 통계 요약 / 상관계수 히트맵 · 산점도 · 3D 산점도"]],
+ task:"팀별 <b>탐구 계획서</b>(탐구 주제·목표·수집할 데이터·센서·주기·라벨 기준·사용할 알고리즘) 작성 + <b>수집 데이터 전처리·시각화 노트북</b> 제출.",
+ taskout:"탐구 계획서 + 코랩 노트북(전처리·상관분석·시각화)",
+ talk:["우리 팀 데이터로 정말 예측이 가능한가? — 어떤 특성이 라벨과 관계가 있는지 상관계수로 확인","'물이 필요하다'의 기준을 누가 정하는가? 팀 내 기준을 하나로 합의하라"],
+ ev:"[영역 2-2] 문제 정의·탐구 계획 <b>12점</b>",prep:["팀 편성(타 학교 학생 혼합)","센서 또는 제공 데이터셋","코랩"]},
+
+{n:8,date:"2026.10.26",dow:"월",time:"17:00~21:00",ch:"29~32차시",mode:"원격",title:"모델 학습·성능 평가 · 최적 조건 탐색 · 테트리스 프로젝트 착수",
+ goals:["훈련·테스트 분할로 모델을 학습하고 평가할 수 있다.","혼동행렬로 오류의 종류와 비용을 해석할 수 있다.","분석 결과에서 실행 가능한 최적 조건을 도출할 수 있다."],
+ lec:[["모델 학습과 평가","의사결정트리 학습 / k-최근접 이웃(k=5) 적용 / 훈련·테스트 분할 / 정확도의 함정 / <b>혼동행렬</b> — '물 필요'를 '불필요'로 놓친 경우의 실제 비용"],
+      ["최적 조건 탐색","온도 22~26℃ · 조도 40~85% · 토양 수분 45~70% · 소음 20~60dB 범위 해석 / 하나의 요인이 아닌 상호작용 / 도출된 규칙을 피지컬 컴퓨팅 제어 조건으로 변환"],
+      ["테트리스 게임 프로젝트 개요 <span style='color:var(--dim)'>교과서 Ⅲ-2</span>","게임 전체 흐름도 / 기능적 요소(블록 생성·이동 회전·줄 삭제·충돌 판정·게임 오버) vs 편의성 요소(미리보기·그림자·랭킹·튜토리얼) / 기능 단위 프롬프트 설계 원칙 — 한 번에 전체 코드를 받지 않는다"]],
+ task:"① <b>모델 성능 비교표</b>(의사결정트리 vs KNN — 정확도·혼동행렬·해석) + 최적 조건 해석문 ② <b>테트리스 요구사항 명세 초안</b>(기능 요소·화면 요소 표)",
+ taskout:"성능 비교표 + 최적 조건 해석문 + 요구사항 명세 초안",
+ talk:["정확도가 높은데도 쓸 수 없는 모델이 있다 — 우리 문제에서 더 치명적인 오류는 무엇인가?","생성형 AI에게 전체 코드를 한 번에 받으면 왜 학습에 방해가 되는가?"],
+ ev:"[영역 2-3] 모델 학습·성능 평가 <b>12점</b>",prep:["코랩","Anaconda·Spyder·pygame 사전 설치(D-3 안내)"]},
+
+{n:9,date:"2026.11.02",dow:"월",time:"17:00~21:00",ch:"33~36차시",mode:"원격",title:"인공지능 가위바위보 게임 프로젝트 — 손 모양 인식 모델",
+ goals:["이미지 분류 문제로 게임 규칙을 구현할 수 있다.","모델의 취약점을 찾아 데이터로 보완할 수 있다.","프로젝트 결과를 보고서 형식으로 정리할 수 있다."],
+ lec:[["문제 인식과 탐구 계획","손 모양을 가위·바위·보로 인식하는 분류 문제 정의 / 필요한 데이터 — 손 크기·각도·조명·배경의 다양성 / 클래스 불균형 방지"],
+      ["실행 — 모델 학습과 내보내기","Teachable Machine 이미지 모델 학습 / 웹으로 내보내기(모델 URL) / JavaScript로 예측값 받기 / 승패 판정 로직 구현"],
+      ["예측 결과 개선","조명·배경·손 크기 변화에 대한 강건성 테스트 / 실패 사례를 학습 데이터로 재투입 / 임계값(confidence) 설정으로 '판정 불가' 처리"]],
+ task:"<b>가위바위보 인식 모델 + 승패 판정 프로토타입</b> 제작. 3라운드 진행이 가능해야 하며, 인식 실패 시 처리 로직을 포함한다. 모델 정확도와 실패 사례를 함께 기록.",
+ taskout:"동작하는 프로토타입 + 모델 성능 기록 + 프롬프트 로그",
+ talk:["<b>모델을 속여 보자</b> — 다른 팀 모델을 3분간 공격해 오작동시키고, 그 사례를 돌려준다","받은 공격 사례를 어떻게 데이터로 방어할 것인가?"],
+ ev:"[영역 2-4] 결과 해석·최적 조건 도출 <b>8점</b> → <b>영역 2 마감(40점)</b>",prep:["웹캠","Teachable Machine","텍스트 에디터"]},
+
+{n:10,date:"2026.11.09",dow:"월",time:"17:00~21:00",ch:"37~40차시",mode:"원격",title:"프로토타입 구현 및 융합 — UI 설계 · 모델 연동 · 사용자 테스트",
+ goals:["Gradio/Streamlit으로 사용자 인터페이스를 설계할 수 있다.","학습된 모델과 UI를 연동해 동작하는 서비스를 만들 수 있다.","사용자 테스트로 개선점을 도출할 수 있다."],
+ lec:[["웹·앱 인터페이스 설계","Gradio·Streamlit 구성 요소 / 입력(이미지·수치·텍스트) → 처리 → 출력 흐름 설계 / 화면에 무엇을 보여줄 것인가 — 예측값만? 신뢰도도?"],
+      ["모델과 UI 연동","모델 로드 / 예측 함수 정의 / 결과 렌더링 / 코랩에서 공유 링크 생성 / 오류 처리(입력 없음·형식 오류·모델 실패)"],
+      ["사용자 테스트 설계","과업 기반 테스트 — '이 사람에게 설명 없이 시켜 본다' / 관찰 항목(막힌 지점·오해한 지점·소요 시간) / 오류 로그 수집 / 개선 우선순위 결정"]],
+ task:"<b>동작하는 프로토타입</b> 완성 + <b>사용자 테스트 기록</b>(3명 이상, 각 과업·막힌 지점·소요 시간·개선 제안). 테스트 후 최소 2개 개선을 반영하고 전후를 비교한다.",
+ taskout:"프로토타입 링크/실행 영상 + 사용자 테스트 기록표 + 개선 전후 비교",
+ talk:["<b>상호 사용자 테스트</b> — 다른 팀 프로토타입을 3분간 설명 없이 사용하고 개선점 2개씩 전달","'나는 되는데 남은 안 된다'는 왜 생기는가?"],
+ ev:"[영역 3-1] 프로토타입 동작·UI 연동 <b>12점</b> — <b>영역 3 시작</b>",prep:["코랩(Gradio/Streamlit)","학습 완료 모델","테스트 참여자 섭외"]},
+
+{n:11,date:"2026.11.16",dow:"월",time:"17:00~21:00",ch:"41~44차시",mode:"원격",title:"프로젝트 보고서 작성 및 검증 — GitHub 업로드 · 발표 준비",
+ goals:["GitHub 저장소에 코드와 문서를 정리해 공개할 수 있다.","보고서 8요소를 갖춰 프로젝트를 기술할 수 있다.","동료 보고서를 검증하고 개선점을 제안할 수 있다."],
+ lec:[["GitHub 저장소 만들기","저장소 생성 / README 구성(개요·실행 방법·화면·사용 라이브러리) / 코드 업로드 / 출처와 라이선스 표기 / <b>인증키·개인정보 제거 확인</b>"],
+      ["보고서 8요소 <span style='color:var(--dim)'>교과서 보고서 양식</span>","① 주제·문제 정의 ② 데이터 수집 계획 ③ 전처리·시각화 ④ 모델 설계·예측 결과 ⑤ 최적 조건 분석 ⑥ 구현·자동화 ⑦ 결론·성찰 ⑧ 참고 자료 및 출처 — 각 항목이 앞선 회차 산출물과 어떻게 대응하는지 매핑"],
+      ["발표 자료 구성","5분 시연 구성 — 문제 30초 · 접근 90초 · 시연 120초 · 배운 점 60초 / <b>데모 실패 대비 백업 영상 필수</b> / 질문 예상 3개 준비"]],
+ task:"<b>최종 보고서 + GitHub 저장소 링크 + 발표 자료</b> 제출. 앞선 회차 산출물(제안서·계획서·노트북·성능표·프로토타입)을 8요소에 배치해 완성한다.",
+ taskout:"최종 보고서 + GitHub 링크 + 발표 슬라이드 + 백업 시연 영상",
+ talk:["<b>동료 리뷰</b> — 다른 팀 GitHub을 받아 README만 보고 실행해 본다. 재현 가능한가?","보고서에서 '결과'와 '해석'이 섞여 있는 부분을 찾아 준다"],
+ ev:"[영역 3-2] 보고서·산출물 관리 <b>10점</b>",prep:["GitHub 계정","누적 산출물 전체","발표 자료 템플릿"]},
+
+{n:12,date:"2026.11.17",dow:"화",time:"18:00~22:00",ch:"45~48차시",mode:"대면",title:"성과공유회 및 최종 평가 — 시연 발표 · 동료 평가 · 교사 피드백",
+ goals:["프로젝트 결과를 시연하며 설득력 있게 전달할 수 있다.","동료의 결과를 기준에 따라 평가하고 피드백할 수 있다.","전 과정을 성찰하고 다음 도전 과제를 설정할 수 있다."],
+ lec:[["팀별 시연 발표 <span style='color:var(--dim)'>40분</span>","팀당 5분 시연 + 3분 질의 / 실제 장치·프로토타입 작동 시연 / 센서 데이터 → 모델 예측 → 자동 제어까지의 흐름 설명"],
+      ["동료 평가 및 상호 피드백 <span style='color:var(--dim)'>30분</span>","평가 기준표(데이터 분석·기능 구현·창의성·협업) 기반 상호 평가 / 가장 배우고 싶은 점 1개씩 전달"],
+      ["교사 종합 피드백 <span style='color:var(--dim)'>20분</span>","성취도 산출 안내 / 개인별 강점과 성장 지점 / 세부능력 및 특기사항 기록 방향 공유"]],
+ task:"<b>최종 성찰문</b> 작성 — 좋았던 점 · 개선할 점 · 배운 점 · 다음에 시도하고 싶은 것. 동료 평가표 제출.",
+ taskout:"최종 성찰문 + 동료 평가표",
+ talk:["이 프로젝트를 후배에게 물려준다면 무엇을 바꾸라고 하겠는가?","우리가 만든 것 중 실제로 누군가에게 쓸모 있는 것은 무엇인가?"],
+ ev:"[영역 3-3] 발표·협업·성찰 <b>8점</b> → <b>영역 3 마감(30점)</b> · 최종 성취도 산출",prep:["시연 장비","백업 영상","동료 평가표","프로젝터 점검"]}
+];
+
+/* ===== 루브릭 데이터 ===== */
+const R=[
+{t:"영역 1 · 융합프로젝트를 위한 기술",p:30,when:"평가시기 8~9월 · 회차 2~5 (5~20차시)",
+ items:[
+ {c:"1-1",n:"데이터 분석·시각화",p:8,src:"회차 3 과제",
+  hi:"결측치 처리 근거를 설명하고, 사용자가 조작 가능한 인터랙티브 시각화를 완성했으며 그래프에서 의미 있는 해석을 도출했다.",
+  mid:"결측치를 처리하고 시각화를 완성했으나 해석이 표면적이거나 인터랙티브 요소가 제한적이다.",
+  lo:"데이터를 그래프로 나타냈으나 전처리 과정이 없거나 결과 해석이 없다."},
+ {c:"1-2",n:"센서 데이터 수집·기록",p:8,src:"회차 4 과제",
+  hi:"수집 계획(종류·주기·기간·저장)을 수립하고 자동 기록으로 데이터를 확보했으며 통계값과 그래프로 패턴을 설명했다.",
+  mid:"데이터를 기록하고 통계·그래프를 제시했으나 수집 계획이 부실하거나 패턴 설명이 약하다.",
+  lo:"데이터 기록을 시도했으나 분량이 부족하거나 분석이 없다."},
+ {c:"1-3",n:"웹 서비스·API 구현",p:10,src:"회차 5 과제",
+  hi:"HTML·CSS·JS의 역할을 구분해 작성하고 API 인증키로 데이터를 정상 조회하며, 확장 기능(조·중·석식 또는 주간 조회)까지 구현하고 예외 상황을 처리했다.",
+  mid:"기본 급식 조회가 동작하나 확장 기능이 없거나 예외 처리(급식 없는 날 등)가 미흡하다.",
+  lo:"웹페이지 구조는 만들었으나 API 연동이 동작하지 않는다."},
+ {c:"1-4",n:"개념 이해 점검",p:4,src:"회차 5 대단원 평가",
+  hi:"데이터 처리·AI 모델·웹 기술의 개념을 정확히 구분하고 사례에 적용해 설명한다.",
+  mid:"주요 개념은 이해하나 일부 혼동이 있다.",
+  lo:"개념 간 구분이 불명확하다."}]},
+{t:"영역 2 · 융합 프로젝트 구현",p:40,when:"평가시기 9~10월 · 회차 6~9 (21~36차시)",
+ items:[
+ {c:"2-1",n:"AI 모델 이해",p:8,src:"회차 6 과제",
+  hi:"지도·비지도학습을 구분하고 분류 모델을 직접 학습시켰으며, 오분류 사례의 원인을 데이터 관점에서 분석했다.",
+  mid:"모델을 학습시키고 정확도를 확인했으나 오분류 원인 분석이 피상적이다.",
+  lo:"모델 학습은 했으나 결과를 해석하지 못한다."},
+ {c:"2-2",n:"문제 정의·탐구 계획",p:12,src:"회차 7 과제",
+  hi:"해결할 문제를 측정 가능한 형태로 정의하고, 센서 구성·측정 주기·라벨 기준·알고리즘 선정까지 근거를 갖춰 계획했으며 전처리와 상관분석으로 계획의 타당성을 검증했다.",
+  mid:"문제와 계획은 세웠으나 라벨 기준이나 알고리즘 선정 근거가 약하다.",
+  lo:"주제만 정하고 구체적 수집·분석 계획이 없다."},
+ {c:"2-3",n:"모델 학습·성능 평가",p:12,src:"회차 8 과제",
+  hi:"둘 이상의 알고리즘을 비교 학습하고 혼동행렬로 오류 유형별 비용을 해석했으며, 문제 맥락에 맞는 모델을 근거와 함께 선택했다.",
+  mid:"모델을 학습·평가했으나 정확도 중심의 해석에 머문다.",
+  lo:"모델을 학습시켰으나 평가 지표를 제시하지 못한다."},
+ {c:"2-4",n:"결과 해석·최적 조건 도출",p:8,src:"회차 9 과제",
+  hi:"분석 결과에서 실행 가능한 조건(범위·임계값)을 도출하고, 모델의 취약점을 스스로 찾아 데이터로 보완했다.",
+  mid:"조건을 도출했으나 근거가 부분적이거나 개선 시도가 1회에 그친다.",
+  lo:"결과를 나열했을 뿐 실행 가능한 조건으로 정리하지 못했다."}]},
+{t:"영역 3 · 융합프로젝트 구현실습",p:30,when:"평가시기 9~10월(→ 10~11월 정정 검토) · 회차 10~12 (37~48차시)",
+ items:[
+ {c:"3-1",n:"프로토타입 동작·UI 연동",p:12,src:"회차 10 과제",
+  hi:"모델과 UI가 안정적으로 연동되어 제3자가 설명 없이 사용할 수 있으며, 사용자 테스트 결과를 반영해 개선하고 전후를 비교 제시했다.",
+  mid:"프로토타입이 동작하나 오류 처리나 사용자 테스트 반영이 부족하다.",
+  lo:"UI는 만들었으나 모델 연동이 불완전하다."},
+ {c:"3-2",n:"보고서·산출물 관리",p:10,src:"회차 11 과제",
+  hi:"보고서 8요소를 모두 갖추고 결과와 해석을 구분해 기술했으며, GitHub에서 README만으로 재현 가능하고 출처·라이선스·개인정보 처리가 적절하다.",
+  mid:"보고서와 저장소를 제출했으나 일부 항목이 누락되거나 재현이 어렵다.",
+  lo:"산출물을 제출했으나 구성이 미흡하고 출처 표기가 없다."},
+ {c:"3-3",n:"발표·협업·성찰",p:8,src:"회차 12 성과공유회",
+  hi:"시연으로 결과를 설득력 있게 전달하고 질문에 근거를 들어 답하며, 동료 평가에 구체적 피드백을 제공하고 성찰에서 다음 과제를 도출했다.",
+  mid:"발표와 성찰은 수행했으나 내용이 일반적이다.",
+  lo:"발표에 참여했으나 자신의 기여와 배운 점을 설명하지 못한다."}]}
+];
+
+/* ===== 렌더 ===== */
+function timeline(s){
+  const st=s.time.split("~")[0], [h,m]=st.split(":").map(Number);
+  let cur=h*60+m;
+  const fmt=v=>String(Math.floor(v/60)%24).padStart(2,"0")+":"+String(v%60).padStart(2,"0");
+  const seg=(mins,cls,name,desc)=>{const a=fmt(cur),b=fmt(cur+mins);cur+=mins;
+    return `<div class="tli ${cls}"><div class="tm">${a} – ${b}</div><div class="du">${mins}분</div><div class="cn">${name}${desc?`<small>${desc}</small>`:""}</div></div>`;};
+  let h2="";
+  h2+=seg(10,"c0","접속 확인 · 출결 · 지난 과제 피드백","");
+  h2+=seg(30,"c1","강의 ① "+s.lec[0][0],s.lec[0][1]);
+  h2+=seg(30,"c1","강의 ② "+s.lec[1][0],s.lec[1][1]);
+  h2+=seg(30,"c1","강의 ③ "+s.lec[2][0],s.lec[2][1]);
+  h2+=seg(10,"c0","휴식 · 실습 환경 준비","");
+  h2+=seg(60,"c2","과제 수행",s.taskout?("제출물 — "+s.taskout):"");
+  h2+=seg(10,"c0","휴식 · 제출물 업로드","");
+  h2+=seg(30,"c3","토의","소회의실 15분 → 전체 공유 15분");
+  h2+=seg(30,"c0","상호 피드백 · 정리 · 다음 회차 예고","");
+  return h2;
+}
+/* 수업 페이지가 준비된 회차 */
+const PAGES={2:"lesson02.html",3:"lesson03.html"};
+function openBtn(n){
+  return PAGES[n]
+    ? `<a class="openbtn" href="${PAGES[n]}" onclick="event.stopPropagation()">수업 열기 →</a>`
+    : `<span class="openbtn soon">수업 페이지 준비 중</span>`;
+}
+function sessCard(s){
+  const md=s.mode==="대면"?'<span class="chip off">대면 OFF</span>':'<span class="chip on">원격 ON</span>';
+  const dn=s.done?'<span class="chip done">종료</span>':'';
+  return `<div class="srow" id="ses${s.n}">
+   <div class="shead" onclick="this.parentNode.classList.toggle('open')">
+     <div class="snum">${String(s.n).padStart(2,"0")}</div>
+     <div class="stt"><div class="d">${s.date} (${s.dow}) · ${s.time} · ${s.ch}</div><div class="n">${s.title}</div></div>
+     ${openBtn(s.n)}${md}${dn}<div class="arw">›</div>
+   </div>
+   <div class="sbody">
+     <div class="sgoal"><b>학습 목표</b><ul>${s.goals.map(g=>"<li>"+g+"</li>").join("")}</ul></div>
+     <div class="lbl">240분 운영 시간표</div>
+     <div class="tl">${timeline(s)}</div>
+     <div class="lbl">과제 · 60분</div>
+     <div class="box task"><span class="tag b">TASK</span>${s.task}
+       <div class="mini"><span>제출물 — ${s.taskout}</span><span>수업 시간 내 완결</span></div>
+       <button class="cpy" onclick="cpy(this,${s.n})">학생 안내문 복사</button></div>
+     <div class="lbl">토의 · 30분</div>
+     <div class="box talk"><span class="tag g">TALK</span>
+       <ol>${s.talk.map(t=>"<li>"+t+"</li>").join("")}</ol>
+       <div class="mini"><span>3인 소회의실 15분</span><span>전체 공유 15분</span><span>발화 관찰 기록</span></div></div>
+     <div class="lbl">평가 연계 · 준비물</div>
+     <div class="box ev"><span class="tag">EVAL</span>${s.ev}
+       <div class="mini">${s.prep.map(p=>"<span>"+p+"</span>").join("")}</div></div>
+   </div></div>`;
+}
+document.getElementById("slist").innerHTML=S.map(sessCard).join("");
+
+/* 다음 수업 안내 카드 */
+(function(){
+  const t=new Date();
+  const nx=S.find(s=>new Date(s.date.replace(/\./g,"/")+" 23:59")>=t)||S[S.length-1];
+  const d=new Date(nx.date.replace(/\./g,"/")+" 00:00");
+  const days=Math.ceil((d-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/86400000);
+  const when=days===0?"오늘":days===1?"내일":days>0?days+"일 뒤":"지난 수업";
+  document.getElementById("leadcard").innerHTML=`
+    <div class="lc-l">
+      <div class="lc-e">다음 수업 · ${when}</div>
+      <div class="lc-t">${nx.n}회차 — ${nx.title}</div>
+      <div class="lc-d">${nx.date} (${nx.dow}) · ${nx.time} · ${nx.ch} · ${nx.mode==="대면"?"대면":"원격"}<br>${nx.ev}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      ${PAGES[nx.n]?`<a class="openbtn" href="${PAGES[nx.n]}" style="padding:11px 20px;font-size:13px">수업 페이지 열기 →</a>`
+        :`<span class="openbtn soon" style="padding:11px 20px">수업 페이지 준비 중</span>`}
+      <button class="tbtn ghost" onclick="document.getElementById('btnNext').click()">운영안 보기</button>
+    </div>`;
+})();
+
+/* 로드맵 */
+document.getElementById("roadmap").innerHTML=S.map(s=>
+ `<tr><td class="ctr"><b>${s.n}</b><br><span style="font-size:11px;color:var(--dim)">${s.date.slice(5)}</span></td>
+  <td><b>${s.taskout.split("+")[0].trim()}</b></td><td>${s.task.replace(/<b>|<\/b>/g,"")}</td>
+  <td>${s.ev.split("—")[0]}</td></tr>`).join("");
+
+/* 루브릭 */
+document.getElementById("rubrics").innerHTML=R.map(r=>
+ `<h3 class="bh">${r.t} <span style="color:var(--accent)">${r.p}점</span></h3>
+  <p class="bsub">${r.when}</p>
+  <div class="tw"><table>
+   <thead><tr><th style="width:56px">코드</th><th style="width:150px">평가 요소</th><th style="width:52px" class="ctr">배점</th><th style="width:96px">채점 근거</th><th>상 (100~80%)</th><th>중 (79~50%)</th><th>하 (49% 이하)</th></tr></thead>
+   <tbody>${r.items.map(i=>`<tr><td><b>${i.c}</b></td><td><b>${i.n}</b></td><td class="ctr pt">${i.p}</td><td>${i.src}</td><td>${i.hi}</td><td>${i.mid}</td><td>${i.lo}</td></tr>`).join("")}</tbody>
+  </table></div>`).join("");
+
+/* 탭 */
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll("section").forEach(x=>x.classList.remove("on"));
+  b.classList.add("active");document.getElementById(b.dataset.t).classList.add("on");
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+function allSess(o){document.querySelectorAll(".srow").forEach(r=>r.classList.toggle("open",o));}
+document.getElementById("btnNext").onclick=()=>{
+  const t=new Date(),nx=S.find(s=>new Date(s.date.replace(/\./g,"/")+" 23:59")>=t)||S[S.length-1];
+  document.querySelector('[data-t="s-ses"]').click();
+  setTimeout(()=>{const el=document.getElementById("ses"+nx.n);el.classList.add("open");el.scrollIntoView({behavior:"smooth",block:"start"});},120);
+};
+function cpy(btn,n){
+  const s=S.find(x=>x.n===n);
+  const strip=h=>h.replace(/<[^>]+>/g,"");
+  const txt=`[${s.date} ${s.dow} ${s.time}] ${s.ch} — ${s.title}
+
+■ 학습 목표
+${s.goals.map((g,i)=>` ${i+1}. ${g}`).join("\n")}
+
+■ 오늘의 과제 (수업 중 60분 내 완성)
+${strip(s.task)}
+ · 제출물: ${s.taskout}
+ · 제출 경로: 구글 드라이브 [이름_${s.n}회차_산출물명]
+
+■ 토의 논제 (30분)
+${s.talk.map((t,i)=>` ${i+1}. ${strip(t)}`).join("\n")}
+
+■ 평가 연계
+ ${strip(s.ev)}
+
+■ 준비물
+ ${s.prep.join(" / ")}`;
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent="복사되었습니다";setTimeout(()=>btn.textContent="학생 안내문 복사",1600);})
+  .catch(()=>{btn.textContent="복사 실패 — 직접 선택하세요";});
+}
+
+/* 타이머 */
+let tsec=0,tid=null,trun=false;
+const disp=document.getElementById("tdisp"),tlab=document.getElementById("tlabel"),tgo=document.getElementById("tgo");
+document.getElementById("btnTimer").onclick=()=>document.getElementById("timer").classList.toggle("show");
+function paint(){const m=Math.floor(Math.abs(tsec)/60),s=Math.abs(tsec)%60;
+  disp.textContent=(tsec<0?"-":"")+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  disp.classList.toggle("warn",tsec<=60);}
+function setT(m,label){tsec=m*60;tlab.textContent=label;paint();stopT();}
+function stopT(){clearInterval(tid);tid=null;trun=false;tgo.textContent="시작";}
+tgo.onclick=()=>{if(trun){stopT();return;}
+  if(tsec===0){setT(90,"강의 90분");}
+  trun=true;tgo.textContent="일시정지";
+  tid=setInterval(()=>{tsec--;paint();if(tsec===0){disp.classList.add("warn");}},1000);};
+paint();
+
+/* 채점 시트 */
+const EL=[["1-1",8],["1-2",8],["1-3",10],["1-4",4],["2-1",8],["2-2",12],["2-3",12],["2-4",8],["3-1",12],["3-2",10],["3-3",8]];
+const KEY="aifp2026_sheet_v1";
+document.getElementById("sheadRow").innerHTML=
+  EL.slice(0,4).map(e=>`<th class="ctr gh">${e[0]}<br><span style="color:var(--dim)">${e[1]}</span></th>`).join("")+`<th class="ctr gh">소계</th>`+
+  EL.slice(4,8).map(e=>`<th class="ctr gh">${e[0]}<br><span style="color:var(--dim)">${e[1]}</span></th>`).join("")+`<th class="ctr gh">소계</th>`+
+  EL.slice(8).map(e=>`<th class="ctr gh">${e[0]}<br><span style="color:var(--dim)">${e[1]}</span></th>`).join("")+`<th class="ctr gh">소계</th>`;
+let ROWS=JSON.parse(localStorage.getItem(KEY)||"null")||Array.from({length:15},(_,i)=>({name:"",v:Array(11).fill("")}));
+function grade(t){return t>=90?["A","gA"]:t>=80?["B","gB"]:t>=70?["C","gC"]:t>=60?["D","gD"]:["E","gE"];}
+function render(){
+  const tb=document.getElementById("sbody");
+  tb.innerHTML=ROWS.map((r,ri)=>{
+    let c=`<tr><td><input class="nm" value="${r.name.replace(/"/g,"&quot;")}" placeholder="학생 ${ri+1}" data-r="${ri}" data-f="name"></td>`;
+    const seg=[[0,4],[4,8],[8,11]];
+    seg.forEach(([a,b])=>{
+      for(let i=a;i<b;i++){const v=r.v[i];const bad=v!==""&&(+v>EL[i][1]||+v<0);
+        c+=`<td><input type="number" min="0" max="${EL[i][1]}" step="0.5" value="${v}" data-r="${ri}" data-i="${i}" class="${bad?"bad":""}"></td>`;}
+      const sub=r.v.slice(a,b).reduce((x,y)=>x+(+y||0),0);
+      c+=`<td class="sub">${sub||"·"}</td>`;});
+    const tot=r.v.reduce((x,y)=>x+(+y||0),0);
+    const filled=r.v.some(v=>v!=="");
+    const [g,cl]=grade(tot);
+    c+=`<td class="tot">${filled?tot:"·"}</td><td class="gr ${filled?cl:""}">${filled?g:"·"}</td></tr>`;
+    return c;}).join("");
+  tb.querySelectorAll("input").forEach(inp=>{
+    inp.onchange=inp.oninput=e=>{const ri=+e.target.dataset.r;
+      if(e.target.dataset.f==="name")ROWS[ri].name=e.target.value;
+      else ROWS[ri].v[+e.target.dataset.i]=e.target.value;
+      save();};
+    inp.onblur=()=>render();});
+  const done=ROWS.filter(r=>r.v.some(v=>v!==""));
+  const avg=done.length?(done.reduce((a,r)=>a+r.v.reduce((x,y)=>x+(+y||0),0),0)/done.length).toFixed(1):"—";
+  document.getElementById("stat").textContent=`입력 ${done.length}명 / ${ROWS.length}명 · 평균 ${avg}점`;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(ROWS));
+  const done=ROWS.filter(r=>r.v.some(v=>v!==""));
+  const avg=done.length?(done.reduce((a,r)=>a+r.v.reduce((x,y)=>x+(+y||0),0),0)/done.length).toFixed(1):"—";
+  document.getElementById("stat").textContent=`입력 ${done.length}명 / ${ROWS.length}명 · 평균 ${avg}점`;}
+document.getElementById("btnAdd").onclick=()=>{ROWS.push({name:"",v:Array(11).fill("")});save();render();};
+document.getElementById("btnClear").onclick=()=>{if(confirm("입력한 모든 점수를 지웁니다. 계속할까요?")){ROWS=Array.from({length:15},()=>({name:"",v:Array(11).fill("")}));save();render();}};
+document.getElementById("btnCsv").onclick=()=>{
+  const head=["학생",...EL.map(e=>e[0]),"영역1","영역2","영역3","총점","성취도"];
+  const lines=[head.join(",")];
+  ROWS.forEach(r=>{
+    const s1=r.v.slice(0,4).reduce((x,y)=>x+(+y||0),0),s2=r.v.slice(4,8).reduce((x,y)=>x+(+y||0),0),s3=r.v.slice(8).reduce((x,y)=>x+(+y||0),0);
+    lines.push([`"${r.name}"`,...r.v.map(v=>v===""?"":v),s1,s2,s3,s1+s2+s3,grade(s1+s2+s3)[0]].join(","));});
+  const blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="인공지능융합프로젝트_수행평가.csv";a.click();};
+render();
+</script>
+</body></html>
