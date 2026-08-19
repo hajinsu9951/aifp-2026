@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>2회차 · 융합 프로젝트를 위한 배경 기술의 발전</title>
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=12">
 </head><body>
 
 <div class="lhead" id="lhead"></div>
@@ -371,10 +371,11 @@ blocks:[
  {n:"02",h:"편향은 어떻게 만들어지는가 — 직접 조작해 보기",
   lead:"&ldquo;정확도 95%&rdquo;라는 모델이 어떻게 누군가에게는 쓸모없을 수 있는지, 슬라이더 하나로 확인해 봅니다.",
   html:`<div class="box"><b>상황</b> · 학교 출입문에 얼굴 인식 시스템을 만듭니다. 학습에 쓸 수 있는 사진은 <b>총 100장</b>.
-   우리 학교에는 <b>A 유형과 B 유형 학생이 반반</b> 있습니다. 100장을 어떻게 나눠 담을지는 <b>여러분이 정합니다.</b></div>
+   우리 학교 학생은 <b>100명</b>이고, 사진은 <b>학생 수에 비례해</b> 모았습니다.
+   즉 슬라이더를 90 : 10에 놓으면 <b>A 유형 학생이 90명, B 유형이 10명</b>인 학교입니다.</div>
    <div class="bias">
     <div class="ctl">
-     <div class="lab">A 유형 사진 <b id="bA">50</b>장 / B 유형 <b id="bB">50</b>장</div>
+     <div class="lab">A 유형 <b id="bA">50</b>명 / B 유형 <b id="bB">50</b>명 <span style="color:var(--dim)">(사진 수도 동일)</span></div>
      <input type="range" id="bRange" min="0" max="100" step="5" value="50">
     </div>
     <div class="bars">
@@ -538,7 +539,7 @@ blocks:[
    그렇다면 자동차 회사는 <b>나라마다 다른 알고리즘</b>을 넣어야 할까요? 아니면 하나로 통일해야 할까요? 우리 조의 답과 근거를 만들어 보세요.</div>
   <div class="box talk" style="margin-top:12px"><span class="tag g">논제 2 · 편향 시뮬레이터에서 이어서</span>
    <b>전체 정확도만 보고한 사람은 거짓말을 한 것인가?</b><br>
-   시뮬레이터를 90 : 10에 놓으면 전체 정확도는 80%가 넘습니다. 숫자는 사실입니다. 그런데 B 유형 학생에게 그 시스템은 사실상 작동하지 않습니다.
+   시뮬레이터를 90 : 10에 놓으면 전체 정확도는 <b>93%</b>가 나옵니다. 숫자는 사실입니다. 그런데 B 유형 학생에게 그 시스템은 <b>65%</b>로 사실상 작동하지 않습니다.
    <b>거짓말이 아니라면 무엇이 잘못된 것</b>일까요? 앞으로 우리가 결과를 보고할 때 <b>반드시 함께 적어야 할 것</b>을 한 문장으로 정해 보세요.</div>
   <div class="box talk" style="margin-top:12px"><span class="tag g">논제 3 · 편리함의 값</span>
    <b>편리함과 개인정보, 어디까지 내줄 수 있는가?</b><br>
@@ -639,8 +640,8 @@ blocks:[
   a:2,why:"뒤에 나온 기술이 항상 더 좋은 것은 아닙니다. 학습 목표 3번이 &lsquo;사용한 기술과 방법을 <b>선택한 근거를 설명</b>할 수 있다&rsquo;입니다. 교과서 12쪽 · 47쪽 점검하기 5번."}],}
 ]};
 </script>
-<script src="config.js?v=10"></script>
-<script src="app.js?v=10"></script>
+<script src="config.js?v=12"></script>
+<script src="app.js?v=12"></script>
 <script>
 boot();
 
@@ -704,15 +705,27 @@ function nqPick(i,j){
     const a=+r.value, b=100-a;
     document.getElementById("bA").textContent=a;
     document.getElementById("bB").textContent=b;
-    const accA=acc(a), accB=acc(b), tot=(accA+accB)/2;
+    const accA=acc(a), accB=acc(b);
+    /* 전체 정확도는 단순 평균이 아니라 실제 학생 수 비율로 가중평균한다.
+       사진을 학생 수에 비례해 모았으므로 가중치는 슬라이더 비율과 같다. */
+    const tot=(a*accA + b*accB)/100;
     const set=(fl,vv,v)=>{document.getElementById(fl).style.width=v+"%";document.getElementById(vv).textContent=v.toFixed(0)+"%";};
     set("flA","vA",accA); set("flB","vB",accB); set("flT","vT",tot);
     const gap=Math.abs(accA-accB);
-    const weak = accA<accB ? "A" : "B";
+    const weakIsA = accA<accB;
+    const weak = weakIsA ? "A" : "B";
+    const weakN = weakIsA ? a : b;              /* 불리한 쪽 학생 수 */
+    const weakAcc = Math.min(accA,accB);
     const m=document.getElementById("bMsg");
-    if(gap<6) m.innerHTML=`두 유형의 정확도 차이가 <b>${gap.toFixed(0)}%p</b>입니다. 데이터를 고르게 모았을 때 나오는 결과입니다. 전체 정확도는 <b>${tot.toFixed(0)}%</b>.`;
-    else if(gap<25) m.innerHTML=`전체 정확도는 <b>${tot.toFixed(0)}%</b>로 나쁘지 않아 보입니다. 그런데 <b>${weak} 유형</b> 학생은 <b>${Math.min(accA,accB).toFixed(0)}%</b>밖에 되지 않습니다. 차이 <b>${gap.toFixed(0)}%p</b>.`;
-    else m.innerHTML=`전체 정확도 <b>${tot.toFixed(0)}%</b>. 하지만 <b>${weak} 유형</b> 학생에게는 <b>${Math.min(accA,accB).toFixed(0)}%</b> — 사실상 <b>쓸 수 없는 시스템</b>입니다. 그 학생들은 매일 아침 문 앞에서 멈춰 서게 됩니다. 이것이 <b>데이터 편향</b>입니다.`;
+    if(gap<6)
+      m.innerHTML=`두 유형의 정확도 차이가 <b>${gap.toFixed(0)}%p</b>입니다. 데이터를 고르게 모았을 때 나오는 결과입니다. 전체 정확도 <b>${tot.toFixed(0)}%</b>.`;
+    else if(gap<25)
+      m.innerHTML=`전체 정확도는 <b>${tot.toFixed(0)}%</b>로 나쁘지 않아 보입니다. 그런데 <b>${weak} 유형</b> 학생은 <b>${weakAcc.toFixed(0)}%</b>밖에 되지 않습니다. 차이 <b>${gap.toFixed(0)}%p</b>.`;
+    else
+      m.innerHTML=`전체 정확도 <b>${tot.toFixed(0)}%</b> — 보고서에 쓰면 훌륭해 보입니다. `
+        +`<b>수가 많은 쪽이 잘 맞아서 전체 평균을 끌어올린 것</b>입니다.<br>`
+        +`하지만 <b>${weak} 유형 ${weakN}명</b>에게는 <b>${weakAcc.toFixed(0)}%</b>입니다. `
+        +`그 ${weakN}명은 매일 아침 문 앞에서 멈춰 서게 됩니다. 이것이 <b>데이터 편향</b>입니다.`;
   }
   r.addEventListener("input",upd); upd();
 })();

@@ -1,0 +1,707 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12회차 · 성과공유회</title>
+<link rel="stylesheet" href="style.css?v=12">
+<style>
+/* 12회차 전용 — 발표 순서 · 동료 평가표 */
+.order{display:grid;gap:8px;margin:16px 0}
+.ord{display:grid;grid-template-columns:64px 1fr 100px;gap:12px;align-items:center;border:1px solid var(--line);
+ border-radius:4px;padding:12px 15px;background:rgba(255,255,255,.014);transition:.16s}
+.ord.now{border-color:var(--accent);background:rgba(216,180,90,.09)}
+.ord.past{opacity:.5}
+.ord .no2{font-family:var(--serif);font-size:20px;font-weight:800;color:var(--accent);line-height:1}
+.ord input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:3px;color:var(--tx);
+ padding:8px 11px;font-size:13px;font-family:var(--sans)}
+.ord input:focus{outline:0;border-color:var(--accent)}
+.ord .tm4{font-family:var(--mono);font-size:11.5px;color:var(--dim);text-align:right}
+.pe{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:20px;margin:16px 0}
+.pe .team{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.pe .team input{flex:1 1 200px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:3px;
+ color:var(--tx);padding:9px 11px;font-size:13px;font-family:var(--sans)}
+.pe table{min-width:520px}
+.pe .yn{display:flex;gap:6px;justify-content:center}
+.pe .yn button{font-size:11.5px;font-weight:700;border:1px solid var(--line2);background:transparent;color:var(--mut);
+ border-radius:2px;padding:5px 11px;cursor:pointer;font-family:var(--sans)}
+.pe .yn button.y.on{background:var(--green);color:var(--ink);border-color:transparent}
+.pe .yn button.n.on{background:var(--rose);color:var(--ink);border-color:transparent}
+.pe textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:3px;color:var(--tx);
+ padding:10px 12px;font-size:13px;font-family:var(--sans);line-height:1.7;resize:vertical;margin-top:6px}
+.pe .saved2{display:grid;gap:7px;margin-top:14px}
+.pe .card2{border:1px solid var(--line);border-radius:3px;padding:11px 14px;font-size:12.5px;color:var(--mut);
+ background:rgba(255,255,255,.015);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.pe .card2 b{color:var(--tx)}
+.pe .card2 .sc2{font-family:var(--serif);font-weight:800;color:var(--accent);font-size:15px;white-space:nowrap}
+
+/* ── 학생 사례 갤러리 ── */
+.gal{margin:16px 0}
+.galbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.galgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.gcard{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--ink2);cursor:pointer;
+ transition:.18s;display:flex;flex-direction:column;text-align:left}
+.gcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.gcard .thumb{aspect-ratio:4/3;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;
+ overflow:hidden;position:relative}
+.gcard .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gcard .thumb .ph{font-size:34px;opacity:.35}
+.gcard .kind{position:absolute;top:8px;left:8px;font-size:10.5px;font-weight:800;letter-spacing:.04em;
+ background:rgba(12,13,18,.82);color:var(--accent);border:1px solid var(--line2);border-radius:2px;padding:3px 7px}
+.gcard .body{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column;gap:5px}
+.gcard .ttl{font-family:var(--serif);font-size:15.5px;font-weight:800;color:var(--tx);line-height:1.35}
+.gcard .who{font-size:11.5px;color:var(--dim)}
+.gcard .one{font-size:12.5px;color:var(--mut);line-height:1.6;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.galempty{border:1px dashed var(--line2);border-radius:5px;padding:34px 20px;text-align:center;color:var(--dim);font-size:13px}
+
+/* 사례 등록 폼 */
+.gform{border:1px solid var(--line);border-radius:5px;background:var(--ink2);padding:20px;margin-top:16px;display:none}
+.gform.on{display:block}
+.gform .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:12px}
+.gform label{display:block;font-size:12px;font-weight:700;color:var(--tx);margin-bottom:5px}
+.gform input[type=text],.gform select,.gform textarea{width:100%;background:rgba(255,255,255,.04);
+ border:1px solid var(--line);border-radius:3px;color:var(--tx);padding:9px 11px;font-size:13px;
+ font-family:var(--sans);line-height:1.7;resize:vertical}
+.gform input:focus,.gform select:focus,.gform textarea:focus{outline:0;border-color:var(--accent)}
+.gform select option{background:var(--ink2);color:var(--tx)}
+.gform .drop{border:1px dashed var(--line2);border-radius:4px;padding:16px;text-align:center;font-size:12.5px;
+ color:var(--dim);cursor:pointer;transition:.16s}
+.gform .drop:hover{border-color:var(--accent);color:var(--mut)}
+.gform .drop img{max-height:130px;border-radius:3px;display:block;margin:0 auto 8px}
+
+/* 사례 뷰어 */
+#gv{position:fixed;inset:0;background:rgba(6,7,10,.94);z-index:120;display:none;
+ align-items:center;justify-content:center;padding:24px}
+#gv.on{display:flex}
+#gv .sheet{background:var(--ink2);border:1px solid var(--line2);border-radius:6px;max-width:860px;width:100%;
+ max-height:92vh;overflow:auto;padding:0}
+#gv .shot{width:100%;max-height:46vh;object-fit:contain;background:rgba(255,255,255,.03);display:block}
+#gv .in2{padding:24px 28px 28px}
+#gv h3{font-family:var(--serif);font-size:24px;font-weight:800;color:var(--tx);margin:0 0 6px;line-height:1.3}
+#gv .meta2{font-size:12px;color:var(--dim);margin-bottom:16px}
+#gv .sect{margin-top:16px}
+#gv .sect b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.05em;color:var(--accent);margin-bottom:5px}
+#gv .sect p{font-size:13.5px;color:var(--mut);line-height:1.8;margin:0;white-space:pre-wrap}
+#gv .lnk{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+#gv .lnk a{font-size:12px;font-weight:700;color:var(--accent);border:1px solid var(--line2);border-radius:3px;
+ padding:7px 13px;text-decoration:none}
+#gv .lnk a:hover{border-color:var(--accent)}
+#gv .foot2{display:flex;justify-content:space-between;align-items:center;gap:12px;
+ border-top:1px solid var(--line);margin-top:22px;padding-top:16px}
+#gv .cnt{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+#gv .x2{position:fixed;top:18px;right:22px;background:transparent;border:0;color:var(--mut);font-size:26px;cursor:pointer}
+</style></head><body>
+
+<div class="lhead" id="lhead"></div>
+<div class="bnav" id="bnav"></div>
+<div id="blocks"></div>
+<div id="timer"></div>
+
+<div id="gv" onclick="if(event.target.id==='gv')gvClose()">
+  <button class="x2" onclick="gvClose()">✕</button>
+  <div class="sheet" id="gvSheet"></div>
+</div>
+
+<footer><div class="wrap-n">
+  2026-2 온라인 공동교육과정 · 인공지능 융합프로젝트 — 대전대신고등학교 하진수<br>
+  <b>성과공유회</b> · 2026. 11. 17.(화) 융합과학실 ·
+  <a href="index.html" style="color:var(--accent)">운영실 메인</a> ·
+  <a href="lesson11.html" style="color:var(--accent)">← 이전 회차</a> ·
+  <button class="tbtn ghost" style="margin-left:6px" onclick="resetLesson()">이 회차 기록 초기화</button>
+</div></footer>
+
+<script>
+const LESSON={
+n:12,date:"2026.11.17",dow:"화",time:"18:00~22:00",ch:"45~48차시",mode:"대면 수업 · 융합과학실",
+title:"성과공유회",
+goals:[
+ "프로젝트 결과를 시연하며 제작 과정을 명확하게 설명할 수 있다.",
+ "평가 기준에 따라 동료의 결과물을 평가하고 구체적인 피드백을 제공할 수 있다.",
+ "전 과정을 성찰하고 다음 도전 과제를 설정할 수 있다."],
+/* 휴식은 발표 1부와 2부 사이(19:00), 그리고 교사 피드백 뒤(21:00). 발표 순서표의 휴식과 일치시킨다. */
+breaks:[{after:1,mins:10},{after:4,mins:10}],
+blocks:[
+
+/* ============ 0. 개회 ============ */
+{kind:"open",nav:"개회",mins:20,title:"오늘, 넉 달을 마무리합니다",
+ sub:"8월 11일에 시작한 강좌의 마지막 시간입니다. 48차시 중 45~48차시.",
+ sections:[
+ {n:"01",h:"여러분이 지나온 길",
+  html:`<div class="hook"><div class="hk">2026.08.11 → 2026.11.17</div>
+   <div class="hq">넉 달 전 오늘,<br>여러분은 <em style="color:var(--accent);font-style:normal">아무것도 만들 줄 몰랐습니다.</em></div>
+   <p>지금 여러분의 손에는 <b>작동하는 스마트 화분</b>과 <b>직접 만든 게임</b>, 그리고 <b>공개된 코드 저장소</b>가 있습니다.
+   <br><br>오늘은 그것을 다른 사람에게 보여 주는 날입니다.
+   <b>완벽하지 않아도 괜찮습니다.</b> 중요한 것은 <b>무엇을 시도했고 무엇을 배웠는지</b>를 말하는 것입니다.</p></div>
+   <div class="tw"><table style="min-width:560px">
+    <thead><tr><th style="width:90px">회차</th><th style="width:190px">그날 배운 것</th><th>지금 손에 있는 것</th></tr></thead>
+    <tbody>
+     <tr><td><b>2~3</b></td><td>배경 기술 · 융합 프로젝트</td><td>나만의 프로젝트 주제</td></tr>
+     <tr><td><b>4~6</b></td><td>데이터 분석 · 센서 · AI 모델과 웹</td><td>산불 분석 · 센싱 코드 · 급식 조회 웹페이지</td></tr>
+     <tr><td><b>7~8</b></td><td>센싱 데이터 AI 프로젝트</td><td><b>스마트 화분</b>과 분석 보고서</td></tr>
+     <tr><td><b>9~10</b></td><td>테트리스 게임 프로젝트</td><td><b>작동하는 게임</b>과 제작 보고서</td></tr>
+     <tr><td><b>11</b></td><td>가위바위보 AI · GitHub</td><td><b>공개 저장소</b>와 발표 자료</td></tr>
+    </tbody></table></div>`},
+ {n:"02",h:"장비 점검 — 지금 확인하세요",
+  lead:"발표 중에 안 되는 것은 <b>지금도 안 됩니다.</b> 이 20분에 반드시 확인하세요.",
+  html:`<div class="box warn"><b class="t">순서대로 확인</b>
+   <ol>
+    <li><b>노트북을 프로젝터에 연결</b>해 화면이 뜨는지 — 어댑터가 필요한 사람은 지금 빌리세요</li>
+    <li><b>발표 자료</b>를 열어 슬라이드가 정상 표시되는지</li>
+    <li><b>백업 영상</b>을 재생해 보기 — <b>소리까지</b> 나오는지</li>
+    <li>게임을 실행해 보기 — pygame이 이 노트북에 설치되어 있는지</li>
+    <li>장치가 있다면 전원을 켜고 센서 값이 읽히는지</li>
+   </ol></div>
+   <div class="box tip"><b>안 되는 것이 있다면</b> · 지금 손을 들어 주세요. 발표 순서를 뒤로 미뤄 드립니다.
+   <b>고칠 시간을 지금 드리는 것</b>이 발표 중에 멈추는 것보다 훨씬 낫습니다.</div>`},
+ {n:"03",h:"발표 순서",
+  lead:"팀 이름을 입력하면 순서와 시각이 계산됩니다. <b>내 차례 5분 전에 준비</b>하세요.",
+  html:`<div class="order" id="ordList"></div>
+   <div class="box"><b>발표 방식</b> · 팀당 <b>5분 시연 + 3분 질의</b>입니다.
+   교사가 타이머를 띄웁니다. <b>5분이 되면 마무리해 주세요.</b>
+   <br><br>발표가 끝난 팀은 <b>다음 팀이 연결하는 동안</b> 자리로 돌아가고, 다음다음 팀은 미리 준비합니다.</div>`},
+ {n:"04",h:"오늘의 평가 방법",
+  html:`<div class="tw"><table style="min-width:560px">
+   <thead><tr><th style="width:140px">누가</th><th style="width:150px">무엇을</th><th>어떻게</th></tr></thead>
+   <tbody>
+    <tr><td><b>자기 평가</b></td><td>다섯 기준</td><td>발표 직후 스스로 예/아니요와 이유를 기록</td></tr>
+    <tr><td><b>동료 평가</b></td><td>다섯 기준 + 배우고 싶은 점</td><td>모든 팀의 발표를 들으며 이 페이지에 기록</td></tr>
+    <tr><td><b>교사 평가</b></td><td>영역 3 · 8점</td><td>발표 · 시연 완성도 · 질의 응답 · 협업과 피드백</td></tr>
+   </tbody></table></div>
+   <div class="box tip"><b>동료 평가는 점수가 아니라 기록입니다</b> · 서로 순위를 매기는 것이 아니라,
+   <b>배울 점을 찾는 활동</b>입니다. 모든 팀에게 <b>배우고 싶은 점 하나씩</b>은 반드시 적어 주세요.</div>`}]},
+
+/* ============ 1. 발표 1부 ============ */
+{kind:"act",nav:"발표 1부",mins:40,title:"팀별 시연 발표 (1부)",
+ sub:"팀당 5분 시연 + 3분 질의. 앞의 절반이 발표합니다.",
+ sections:[
+ {n:"01",h:"발표자에게",
+  html:`<div class="tw"><table style="min-width:540px">
+   <thead><tr><th style="width:110px">시간</th><th>할 일</th></tr></thead>
+   <tbody>
+    <tr><td><b>0:00~0:30</b></td><td><b>문제</b> — 구체적인 장면으로 시작. &ldquo;지난달 5교시, 저희 반 28명 중 11명이 졸고 있었습니다.&rdquo;</td></tr>
+    <tr><td><b>0:30~2:00</b></td><td><b>접근</b> — 어떤 데이터를 어떻게 모았고, 어떤 모델을 왜 골랐는가</td></tr>
+    <tr><td><b>2:00~4:00</b></td><td><b>시연</b> — 실제로 작동시킵니다. <b>안 되면 즉시 영상으로</b></td></tr>
+    <tr><td><b>4:00~5:00</b></td><td><b>배운 점과 한계</b> — 못 한 것을 솔직하게</td></tr>
+   </tbody></table></div>
+   <div class="box warn"><b class="t">시연이 안 될 때</b>당황하지 말고 이렇게 말하세요.
+   <br><br><b>&ldquo;지금 작동하지 않네요. 미리 찍어 둔 영상으로 보여 드리겠습니다.&rdquo;</b>
+   <br><br>그리고 바로 영상을 재생하세요. <b>고치려고 붙잡고 있으면 5분이 다 갑니다.</b>
+   평가 기준은 &lsquo;장치가 완벽히 작동하는가&rsquo;가 아니라 <b>&lsquo;제작 과정을 명확하게 설명하고 시연했는가&rsquo;</b>입니다.</div>`},
+ {n:"02",h:"듣는 사람에게",
+  html:`<div class="box"><b>발표를 들으며 할 일</b>
+   <ul>
+    <li>아래 <b>동료 평가표</b>에 다섯 기준을 체크합니다</li>
+    <li><b>배우고 싶은 점</b>을 하나 이상 적습니다 — 이것이 오늘 가장 중요한 활동입니다</li>
+    <li>질의 시간에 <b>질문 하나</b>를 준비합니다</li>
+   </ul></div>
+   <div class="box tip"><b>좋은 질문의 예</b>
+   <ul>
+    <li>&ldquo;그 기준값(45%, 26℃)은 어떻게 정하셨나요?&rdquo;</li>
+    <li>&ldquo;데이터를 며칠 동안 모으셨나요? 그 기간으로 충분하다고 보시나요?&rdquo;</li>
+    <li>&ldquo;AI가 만들어 준 코드 중에 <b>이해 안 되는 부분</b>은 없었나요?&rdquo;</li>
+    <li>&ldquo;다시 한다면 무엇을 다르게 하시겠어요?&rdquo;</li>
+   </ul>
+   <b>비난이 아니라 궁금함</b>으로 물어 주세요. 내가 받고 싶은 질문을 하면 됩니다.</div>`},
+ {n:"03",h:"학생 사례 — 오늘 발표한 프로젝트",
+  lead:"발표가 끝난 순서대로 <b>[+ 사례 추가]</b>를 눌러 등록합니다. 카드를 누르면 크게 열리고 <b>← →</b> 키로 넘길 수 있습니다.",
+  html:`<div class="gal">
+   <div class="galbar">
+    <button class="tbtn" onclick="gFormToggle()">+ 사례 추가</button>
+    <button class="tbtn ghost" onclick="gExport()">사례 모음 내보내기 (.json)</button>
+    <button class="tbtn ghost" onclick="document.getElementById('gImp').click()">불러오기</button>
+    <input type="file" id="gImp" accept=".json,application/json" style="display:none" onchange="gImport(this)">
+    <span class="saved" id="gMsg"></span>
+   </div>
+   <div class="gform" id="gForm">
+    <div class="row">
+     <div><label>프로젝트 제목 <span style="color:var(--rose)">*</span></label>
+      <input type="text" id="gTtl" placeholder="예) 물 주는 날을 스스로 아는 화분"></div>
+     <div><label>분야</label>
+      <select id="gKind">
+       <option>스마트 화분</option><option>테트리스 게임</option>
+       <option>가위바위보 AI</option><option>데이터 분석</option><option>기타</option>
+      </select></div>
+    </div>
+    <div class="row">
+     <div><label>학교</label><input type="text" id="gSch" placeholder="대전○○고등학교"></div>
+     <div><label>학생 · 팀 <span style="color:var(--rose)">*</span></label>
+      <input type="text" id="gWho" placeholder="예) 2학년 홍길동 · 김○○"></div>
+    </div>
+    <div style="margin-bottom:12px"><label>한 줄 소개 <span style="color:var(--rose)">*</span></label>
+     <input type="text" id="gOne" placeholder="예) 흙 습도와 온도를 3일간 재서, 물 주는 날을 하루 전에 알려 줍니다."></div>
+    <div style="margin-bottom:12px"><label>화면 · 장치 사진</label>
+     <div class="drop" id="gDrop" onclick="document.getElementById('gPic').click()">
+      <div id="gPrev"></div>클릭해서 사진을 고르세요 · 시연 화면 캡처나 장치 사진</div>
+     <input type="file" id="gPic" accept="image/*" style="display:none" onchange="gPick(this)"></div>
+    <div class="row">
+     <div><label>GitHub 주소</label><input type="text" id="gGit" placeholder="https://github.com/..."></div>
+     <div><label>시연 영상 주소</label><input type="text" id="gVid" placeholder="https://..."></div>
+    </div>
+    <div style="margin-bottom:12px"><label>어떻게 만들었나</label>
+     <textarea id="gHow" rows="3" placeholder="어떤 데이터를 어떻게 모았고, 어떤 모델·라이브러리를 왜 골랐는지"></textarea></div>
+    <div style="margin-bottom:14px"><label>배운 점과 한계</label>
+     <textarea id="gLim" rows="3" placeholder="못 한 것을 솔직하게 적을수록 좋은 사례가 됩니다."></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+     <button class="tbtn" onclick="gSave()">사례 등록</button>
+     <button class="tbtn ghost" onclick="gFormToggle(0)">취소</button>
+     <span class="saved" id="gFormMsg"></span>
+    </div>
+   </div>
+   <div id="gWrap" style="margin-top:16px"></div>
+  </div>
+  <div class="box tip"><b>사진은 브라우저 안에만 저장됩니다</b> ·
+  등록한 사례는 이 컴퓨터에 남습니다. 다른 컴퓨터나 다음 해 수업에서 보여 주려면
+  <b>[사례 모음 내보내기]</b>로 <span class="code">cases.json</span>을 저장해 두었다가 <b>[불러오기]</b>로 여세요.
+  <br><br>파일을 <span class="code">cases.json</span>이라는 이름으로 이 페이지 옆에 두면 <b>처음 열 때 자동으로 표시</b>됩니다.</div>`},
+ {n:"04",h:"동료 평가표",
+  lead:"교과서 127쪽·145쪽의 평가 기준입니다. 팀 이름을 적고 다섯 기준을 체크한 뒤 <b>저장</b>을 누르세요.",
+  html:`<div class="pe">
+   <div class="team">
+    <input type="text" id="peTeam" placeholder="평가할 팀 이름 또는 발표자 이름">
+    <button class="tbtn" onclick="peSave()">이 팀 평가 저장</button>
+    <button class="tbtn ghost" onclick="peClear()">입력 비우기</button>
+   </div>
+   <div class="tw"><table>
+    <thead><tr><th style="width:140px">평가 기준</th><th>확인 질문</th><th style="width:130px" class="ctr">평가</th></tr></thead>
+    <tbody id="peRows"></tbody>
+   </table></div>
+   <label style="display:block;font-size:12.5px;font-weight:700;color:var(--tx);margin-top:14px">이 팀에게서 배우고 싶은 점 <span style="color:var(--rose)">*</span></label>
+   <textarea id="peLearn" rows="2" placeholder="예) 혼동행렬을 그래프로 보여 준 것이 이해하기 쉬웠다. 우리 발표에도 넣고 싶다."></textarea>
+   <label style="display:block;font-size:12.5px;font-weight:700;color:var(--tx);margin-top:12px">궁금한 점 · 제안</label>
+   <textarea id="peAsk" rows="2" placeholder="예) 데이터를 겨울에 다시 모으면 결과가 달라질지 궁금하다."></textarea>
+   <div class="saved2" id="peSaved"></div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="tbtn ghost" onclick="peCopy()">평가 전체 복사</button>
+    <span class="saved" id="peMsg"></span>
+   </div>
+  </div>`}]},
+
+/* ============ 2. 발표 2부 ============ */
+{kind:"act",nav:"발표 2부",mins:40,title:"팀별 시연 발표 (2부)",
+ sub:"나머지 팀이 발표합니다. 동료 평가표는 <b>발표 1부</b> 탭에서 계속 사용하세요.",
+ sections:[
+ {n:"01",h:"진행",
+  html:`<div class="box"><b>1부와 같은 방식으로 진행합니다.</b>
+   팀당 5분 시연 + 3분 질의. 동료 평가표는 <b>발표 1부</b> 블록에 있으니 그곳에서 계속 기록하세요.
+   <br><br>발표 순서는 <b>개회</b> 블록의 목록에서 확인할 수 있습니다.</div>
+   <div class="box tip"><b>2부 발표자에게</b> · 앞 팀들의 발표를 보셨습니다.
+   좋았던 점이 있다면 <b>내 발표에서 바로 적용</b>해도 됩니다. 그것도 배움입니다.
+   <br><br>다만 <b>내용을 바꾸려 하지는 마세요.</b> 지금 바꾸면 흔들립니다. 전달 방식만 조금 다듬으세요.</div>`},
+ {n:"02",h:"질의 응답을 위한 준비",
+  html:`<div class="box warn"><b class="t">대답하기 어려운 질문을 받았을 때</b>
+   <ul>
+    <li><b>모르면 모른다고 하세요.</b> &ldquo;그건 확인해 보지 못했습니다&rdquo;는 좋은 답입니다.</li>
+    <li>추측으로 답하지 마세요. &ldquo;아마 그럴 것 같습니다&rdquo;보다 <b>&ldquo;저희가 확인한 것은 여기까지입니다&rdquo;</b>가 낫습니다.</li>
+    <li>지적을 받으면 <b>메모하세요.</b> 성찰문에 &ldquo;이런 지적을 받았고 동의한다&rdquo;고 쓰면 좋은 평가를 받습니다.</li>
+   </ul>
+   교과서 평가 기준 · <b>&ldquo;다른 모둠의 피드백을 수용해 개선안을 도출하였는가?&rdquo;</b></div>
+   <div class="doit"><div class="dh">발표가 끝난 팀은 <span class="m">즉시</span></div>
+    <p>발표 직후 기억이 생생할 때 <b>정리</b> 블록의 성찰 활동지에 이것부터 적으세요.
+    <br>· 받은 질문 중 <b>대답하지 못한 것</b>
+    <br>· 발표하며 <b>스스로 아쉬웠던 점</b></p></div>`}]},
+
+/* ============ 3. 동료 평가 ============ */
+{kind:"act",nav:"동료 평가",mins:30,title:"상호 피드백",
+ sub:"모든 발표가 끝났습니다. 이제 서로에게 피드백을 전합니다.",
+ sections:[
+ {n:"01",h:"진행 방식",
+  html:`<div class="flow">
+   <div class="fstep"><div class="n">0~10분</div><div class="t">평가표 정리</div><div class="d">발표 1부 블록의 동료 평가표를 마저 작성</div></div>
+   <div class="fstep"><div class="n">10~20분</div><div class="t">팀별 순회</div><div class="d">다른 팀에게 가서 <b>직접</b> 피드백 전달</div></div>
+   <div class="fstep"><div class="n">20~30분</div><div class="t">전체 공유</div><div class="d">가장 인상 깊었던 팀과 그 이유를 발표</div></div>
+  </div>
+  <div class="box"><b>순회 방식</b> · 대면 수업의 장점을 살립니다.
+  <b>자리를 옮겨 다니며</b> 다른 팀 앞에서 직접 이야기하세요.
+  <ul>
+   <li>&ldquo;○○ 부분이 좋았습니다&rdquo; — <b>구체적으로</b></li>
+   <li>&ldquo;저는 이렇게 해 봤는데 어떠세요?&rdquo; — <b>내 방법도 나누기</b></li>
+   <li>&ldquo;아까 질문 못 했는데…&rdquo; — <b>못 한 질문 던지기</b></li>
+  </ul>
+  장치가 있는 팀은 <b>직접 만져 보게</b> 해 주세요. 화면으로 보는 것과 다릅니다.</div>`},
+ {n:"02",h:"전체 공유 — 이 질문에 답해 주세요",
+  html:`<div class="box talk"><span class="tag g">질문 1</span>
+   <b>오늘 가장 배우고 싶었던 것은 어느 팀의 무엇이었나요?</b><br>
+   팀 이름과 <b>구체적으로 무엇을</b> 배우고 싶은지 말해 주세요.</div>
+  <div class="box talk" style="margin-top:12px"><span class="tag g">질문 2</span>
+   <b>다시 한다면 무엇을 다르게 하시겠습니까?</b><br>
+   다른 팀의 발표를 보고 &ldquo;아, 저렇게 할 걸&rdquo; 싶었던 것이 있나요?</div>
+  <div class="box talk" style="margin-top:12px"><span class="tag g">질문 3</span>
+   <b>이 강좌를 후배에게 물려준다면 무엇을 바꾸라고 하시겠습니까?</b><br>
+   수업 방식, 프로젝트 주제, 진행 속도 — 무엇이든 좋습니다.
+   <b>솔직하게 말해 주세요.</b> 내년 수업이 달라집니다.</div>`}]},
+
+/* ============ 4. 교사 피드백 ============ */
+{kind:"act",nav:"교사 피드백",mins:40,title:"종합 피드백과 성적 안내",
+ sub:"교사가 진행합니다. 성취도 산출 방식과 개인별 피드백을 안내합니다.",
+ sections:[
+ {n:"01",h:"수행평가 최종 구조",
+  lead:"이 강좌는 <b>지필평가 없이 수행평가 100%</b>로 운영되었습니다.",
+  html:`<div class="tw"><table style="min-width:600px">
+   <thead><tr><th style="width:180px">영역</th><th style="width:80px" class="ctr">배점</th><th>평가한 회차</th></tr></thead>
+   <tbody>
+    <tr><td><b>영역 1</b><br>융합프로젝트를 위한 기술</td><td class="ctr pt">30</td>
+     <td>2회차 8점 · 3회차 8점 · 4회차 7점 · 5회차 7점</td></tr>
+    <tr><td><b>영역 2</b><br>융합 프로젝트 구현</td><td class="ctr pt">40</td>
+     <td>6회차 8점 · 7회차 12점 · 8회차 12점 · 9회차 8점</td></tr>
+    <tr><td><b>영역 3</b><br>융합프로젝트 구현실습</td><td class="ctr pt">30</td>
+     <td>10회차 12점 · 11회차 10점 · <b>12회차 8점(오늘)</b></td></tr>
+   </tbody></table></div>
+   <div class="tw"><table style="min-width:420px">
+    <thead><tr><th style="width:80px" class="ctr">성취도</th><th>점수 범위</th></tr></thead>
+    <tbody>
+     <tr><td class="ctr"><b>A</b></td><td>90점 이상</td></tr>
+     <tr><td class="ctr"><b>B</b></td><td>80점 이상 ~ 90점 미만</td></tr>
+     <tr><td class="ctr"><b>C</b></td><td>70점 이상 ~ 80점 미만</td></tr>
+     <tr><td class="ctr"><b>D</b></td><td>60점 이상 ~ 70점 미만</td></tr>
+     <tr><td class="ctr"><b>E</b></td><td>60점 미만</td></tr>
+    </tbody></table></div>
+   <div class="box"><b>고정 분할점수</b>를 사용하므로 <b>상대평가가 아닙니다.</b>
+   다른 사람과 비교해 등급이 정해지는 것이 아니라, <b>기준을 넘으면 모두 A를 받을 수 있습니다.</b></div>`},
+ {n:"02",h:"오늘 평가하는 것 — 영역 3의 마지막 8점",
+  html:`<div class="tw"><table style="min-width:560px">
+   <thead><tr><th style="width:150px">평가 요소</th><th style="width:60px" class="ctr">배점</th><th>무엇을 보는가</th></tr></thead>
+   <tbody>
+    <tr><td><b>시연과 설명</b></td><td class="ctr pt">3</td>
+     <td>제작 과정을 명확하게 설명하고 시연했는가. <b>장치의 작동 여부가 아니라 설명의 명료함</b></td></tr>
+    <tr><td><b>질의 응답</b></td><td class="ctr pt">3</td>
+     <td>기준값의 근거, 코드의 동작, AI 활용 범위에 <b>근거를 들어</b> 답했는가</td></tr>
+    <tr><td><b>협업과 피드백</b></td><td class="ctr pt">2</td>
+     <td>다른 팀에게 <b>구체적인 피드백</b>을 제공하고, 받은 지적을 성찰문에 반영했는가</td></tr>
+   </tbody></table></div>
+   <div class="box tip"><b>모르는 것을 모른다고 한 것은 감점이 아닙니다</b> · 추측으로 답한 것이 감점입니다.
+   <b>&ldquo;저희가 확인한 것은 여기까지입니다&rdquo;</b>는 정직하고 정확한 답변입니다.</div>`},
+ {n:"03",h:"세부능력 및 특기사항",
+  lead:"오늘 발표와 그동안의 활동 기록이 학교생활기록부에 반영됩니다.",
+  html:`<div class="box"><b>기재에 반영되는 것</b>
+   <ul>
+    <li><b>문제 정의의 독창성</b> — 남과 다른 문제를 발견했는가</li>
+    <li><b>기술 선택의 근거</b> — &ldquo;왜 그것을 골랐는가&rdquo;에 답할 수 있었는가</li>
+    <li><b>모델 개선 시도</b> — 한 번에 끝내지 않고 고쳐 나갔는가</li>
+    <li><b>토의 발화</b> — 매 회차 토의에서 어떤 관점을 제시했는가</li>
+    <li><b>동료 피드백 수용</b> — 지적을 받아 실제로 고쳤는가</li>
+    <li><b>정직성</b> — 못 한 것을 밝히고 한계를 인식했는가</li>
+   </ul>
+   매 회차 <b>활동지와 토의 기록</b>이 근거 자료입니다. 성실히 쓴 사람이 유리합니다.</div>
+   <div class="box warn"><b class="t">성적 확인과 이의 신청</b>최종 점수는 별도로 안내합니다.
+   환산 과정에 궁금한 점이 있으면 <b>담당 교사에게 문의</b>해 주세요. 채점 기준표는 각 회차 페이지에 그대로 공개되어 있습니다.</div>`}]},
+
+/* ============ 5. 정리 ============ */
+{kind:"close",nav:"정리",mins:50,title:"최종 성찰과 마무리",
+ sub:"넉 달을 돌아보며 스스로 정리합니다. 오늘의 마지막 활동입니다.",
+ sections:[
+ {n:"01",h:"돌아보기",
+  html:`<div class="box" style="border-left:2px solid var(--accent)"><b>2회차에 읽었던 인터뷰를 마지막으로 다시 봅니다</b>
+   <br><br>&ldquo;팀 리더인 제가 프로젝트의 명확한 비전과 구심점을 제시하지 못했습니다. 결국 팀은 와해되었습니다.&rdquo;
+   <br>&ldquo;딥러닝 공부와 같이 방대한 개발 공부보다, 인공지능을 <b>여러분의 꿈을 이루는 도구</b>로서 활용할 수 있어야 합니다.&rdquo;
+   <br>&ldquo;AI에게 올바른 명령과 지시를 내리기 위해서는 논리적으로 문제를 분석하고 <b>글을 잘 쓰는 역량</b>이 필요합니다.&rdquo;
+   <br>&ldquo;도전하기 전에 <b>완벽한 준비를 하지 마세요.</b>&rdquo;
+   <br><br><span style="color:var(--dim)">— 개발자 이동욱, 교과서 50쪽 「융합 직업의 세계」</span></div>
+   <div class="box tip"><b>넉 달 전에는 남의 이야기였습니다</b> · 지금은 여러분이 겪은 일입니다.
+   팀에서 우선순위를 정하느라 다투기도 했고, 프롬프트를 쓰는 데 <b>글쓰기 실력</b>이 필요하다는 것도 알게 되었을 겁니다.
+   그리고 <b>완벽하지 않은 상태로 시작해서 작동하는 것을 만들었습니다.</b></div>`},
+ {n:"02",h:"이 강좌가 남긴 질문들",
+  html:`<div class="tw"><table style="min-width:560px">
+   <thead><tr><th style="width:80px">회차</th><th>그때 던진 질문</th></tr></thead>
+   <tbody>
+    <tr><td><b>2</b></td><td>편리함과 개인정보, 어디까지 내줄 수 있는가</td></tr>
+    <tr><td><b>3</b></td><td>내 주제에서 &lsquo;융합&rsquo;은 어디에 있는가</td></tr>
+    <tr><td><b>4</b></td><td>데이터가 틀렸을 때 AI는 틀린 것을 알까</td></tr>
+    <tr><td><b>5</b></td><td>측정할 수 없는 문제는 프로젝트가 될 수 없는가</td></tr>
+    <tr><td><b>6</b></td><td>사전 학습 모델을 가져다 쓴 것도 &lsquo;내가 만든 것&rsquo;인가</td></tr>
+    <tr><td><b>7</b></td><td>3일치 데이터로 학습한 모델을 1년 내내 믿어도 되는가</td></tr>
+    <tr><td><b>8</b></td><td>식물이 마르는 것과 물을 낭비하는 것, 어느 쪽을 감수할 것인가</td></tr>
+    <tr><td><b>9</b></td><td>&lsquo;내가 이 코드를 이해했다&rsquo;고 말할 수 있는 기준은</td></tr>
+    <tr><td><b>10</b></td><td>못 만든 기능을 보고서에 어떻게 써야 하는가</td></tr>
+   </tbody></table></div>
+   <div class="box"><b>이 질문들에는 정답이 없습니다.</b> 그리고 앞으로도 계속 마주치게 됩니다.
+   오늘 성찰문에 <b>가장 오래 남을 질문 하나</b>를 골라 적어 주세요.</div>`}],
+ worksheet:{title:"최종 성찰문",
+  desc:"이 강좌의 마지막 활동지입니다. 넉 달을 돌아보며 <b>솔직하게</b> 적어 주세요. 성적을 위한 글이 아니라 <b>스스로를 위한 기록</b>입니다.",
+  fields:[
+  {label:"1. 좋았던 점",req:1,rows:3,hint:"수업에서든 내 프로젝트에서든, 좋았던 것을 구체적으로.",ph:"예) 내가 만든 코드가 처음으로 화면에서 돌아갔을 때. 데이터를 직접 모아 보니 뉴스에 나오는 통계가 어떻게 만들어지는지 알게 되었다."},
+  {label:"2. 개선할 점",req:1,rows:3,hint:"내가 아쉬웠던 것, 다음에 다르게 할 것.",ph:"예) 데이터를 3일만 모은 것이 아쉽다. 처음부터 2주 계획을 세웠어야 했다. 팀에서 역할을 정해 놓고도 서로 확인하지 않아 중복 작업이 있었다."},
+  {label:"3. 배운 점",req:1,rows:3,hint:"기술적인 것뿐 아니라 태도나 생각의 변화도 좋습니다.",ph:"예) 정확도가 높다고 좋은 모델이 아니라는 것. 그리고 AI에게 시킬 때 '어떻게 물어보는가'가 결과를 완전히 바꾼다는 것."},
+  {label:"4. 오늘 발표에서 받은 질문 중 대답하지 못한 것",req:1,rows:3,hint:"질문을 그대로 적고, 지금 생각하는 답을 함께 적으세요.",ph:"질문 — \n지금 생각하는 답 — "},
+  {label:"5. 다른 팀에게서 배우고 싶었던 것",req:1,rows:3,hint:"어느 팀의 무엇을, 왜 배우고 싶었는지.",ph:"예) ○○팀이 혼동행렬을 색으로 보여 준 것. 숫자만 있을 때보다 훨씬 이해가 빨랐다. 앞으로 발표할 때 써먹고 싶다."},
+  {label:"6. 이 강좌가 남긴 질문 중 가장 오래 남을 것",req:1,rows:3,hint:"위 표에서 하나를 고르거나 직접 쓰세요. 왜 그 질문인지도 적어 주세요.",ph:"예) '사전 학습 모델을 가져다 쓴 것도 내가 만든 것인가'. 앞으로 AI를 쓸 일이 더 많아질 텐데, 내 몫이 무엇인지 계속 물어야 할 것 같다."},
+  {label:"7. 다음에 도전하고 싶은 것",req:1,rows:3,hint:"이 강좌에서 못 한 것, 더 해 보고 싶은 것, 진로와 연결되는 것.",ph:"예) 스마트 화분에 습도 센서를 추가해 비 오는 날을 구분하고 싶다. 그리고 GitHub에 올린 코드를 계속 다듬어 볼 생각이다."},
+  {label:"8. 이 강좌를 후배에게 물려준다면",rows:3,hint:"솔직하게 적어 주세요. 내년 수업이 달라집니다.",ph:"예) 프로젝트 주제를 3회차에 정하는데, 그때는 뭘 할 수 있는지 몰라서 막막했다. 4~6회차를 먼저 배우고 주제를 정하면 더 좋을 것 같다."},
+  {label:"9. 함께한 모둠원에게 한마디",rows:2,hint:"넉 달을 함께한 사람들에게."},
+  {label:"10. 자기 평가 — 다섯 기준",rows:5,hint:"기능 구현 · 창의성 · 완성도 · 프롬프트 활용 · 발표력에 대해 예/아니요와 이유를 한 줄씩.",ph:"기능 구현 — \n창의성 — \n완성도 — \n프롬프트 활용 — \n발표력 — "}]},
+ rubric:{title:"성과공유회 채점 기준표",
+  area:"영역 3 · 융합프로젝트 구현실습", areaPoints:30, when:"평가시기 10~11월 · 45~48차시",
+  items:[
+  {n:"시연과 설명",pt:3,
+   hi:"제작 과정을 <b>명확하게 설명</b>하고 시연했다. 시연이 안 될 때 백업으로 매끄럽게 전환했다.",
+   mid:"설명은 했으나 흐름이 매끄럽지 않거나 시간을 크게 초과했다.",
+   lo:"준비가 되지 않아 설명이 어려웠다."},
+  {n:"질의 응답",pt:3,
+   hi:"기준값의 근거 · 코드 동작 · AI 활용 범위에 <b>근거를 들어</b> 답했고, 모르는 것은 모른다고 밝혔다.",
+   mid:"답했으나 근거가 약하거나 추측이 섞였다.",
+   lo:"답하지 못했다."},
+  {n:"협업과 피드백",pt:2,
+   hi:"다른 팀에게 <b>구체적인 피드백</b>을 제공하고, 받은 지적을 성찰문에 반영했다.",
+   mid:"피드백을 주고받았으나 일반적이다.",
+   lo:"참여가 소극적이었다."}],
+  note:"이 <b>8점</b>이 영역 3의 마지막 항목입니다. 영역 3 = 10회차 12점 + 11회차 10점 + 12회차 8점 = <b>30점</b>.<br>세 영역 합계 <b>100점</b>으로 성취도(A~E)를 산출합니다. <b>고정 분할점수</b>를 사용하므로 상대평가가 아닙니다."},
+ tail:`<div class="box task" style="margin-top:20px"><span class="tag b">제출</span>
+  <b>제출물</b> · 최종 성찰문 + 동료 평가 기록<br>
+  <b>제출 방법</b> · 활동지 아래 <b>[📄 구글 문서로 만들기]</b>로 제출하거나, 종이로 받은 성찰지에 작성해 제출<br>
+  <b>마감</b> · 오늘 수업 종료 전
+  <br><br><b>넉 달 동안 수고 많으셨습니다.</b> 여러분이 만든 것은 저장소에 남아 있고,
+  배운 것은 다음 프로젝트에서 다시 쓰이게 될 것입니다.</div>`,
+ quiz:[
+ {q:"이 강좌에서 반복해서 강조한 &lsquo;좋은 결론&rsquo;의 조건은?",
+  opts:["긍정적인 결과만 강조한다","상관과 인과를 구분하고 한계를 스스로 밝힌다","정확도 수치를 크게 쓴다","교과서 결론을 옮긴다"],
+  a:1,why:"7회차 상관계수, 8회차 결론의 정직성, 10회차 보고서의 정직성에서 반복된 원칙입니다. <b>한계를 밝히는 것이 신뢰를 얻는 방법</b>입니다."},
+ {q:"기술을 선택할 때 이 강좌가 일관되게 요구한 것은?",
+  opts:["가장 최신 기술을 고른다","가장 정확도가 높은 것을 고른다","문제에 맞는 것을 고르고 그 근거를 설명할 수 있어야 한다","다른 팀을 따라 고른다"],
+  a:2,why:"2회차 학습 목표 3번부터 12회차 질의 응답까지 이어진 원칙입니다. 뒤에 나온 기술이 항상 더 좋은 것은 아닙니다."},
+ {q:"생성형 AI를 활용한 프로젝트에서 &lsquo;내 몫&rsquo;을 보여 주는 가장 확실한 방법은?",
+  opts:["코드를 손으로 다시 타이핑한다","프롬프트 로그와 수정 이력을 남기고, 코드의 동작을 설명할 수 있다","AI를 쓰지 않는다","코드를 길게 만든다"],
+  a:1,why:"9회차·10회차 토의 논제였습니다. <b>설계는 내가 했고 AI는 도구였다</b>는 것을 프롬프트 로그와 수정 이력, 그리고 <b>설명할 수 있는 능력</b>으로 보여 줍니다."},
+ {q:"이 강좌의 수행평가 성취도는 어떻게 산출되는가?",
+  opts:["상대평가로 등급을 나눈다","고정 분할점수를 사용해 기준을 넘으면 모두 같은 등급을 받을 수 있다","발표 점수만으로 정한다","출석만으로 정한다"],
+  a:1,why:"<b>고정 분할점수</b>를 사용합니다. 90점 이상 A, 80점 이상 B… 다른 사람과 비교하지 않으므로 <b>모두가 A를 받을 수도 있습니다.</b>"}]}
+]};
+</script>
+<script src="config.js?v=12"></script>
+<script src="app.js?v=12"></script>
+<script>
+boot();
+
+/* ---------------- 발표 순서 ---------------- */
+const ORD_START=18*60+20;   /* 18:20 */
+const ORD_SLOT=8;           /* 5분 발표 + 3분 질의 */
+const ORD_BREAK_AFTER=5;    /* 5팀 발표 뒤 휴식 10분 */
+function ordMin(i){ return ORD_START + i*ORD_SLOT + (i>=ORD_BREAK_AFTER?10:0); }
+function fmin(m){ return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0"); }
+/* 시작~끝은 그 팀의 슬롯(8분)으로만 계산한다. 휴식은 다음 팀의 시작에만 반영한다. */
+function ordTime(i){ const s=ordMin(i); return fmin(s)+" ~<br>"+fmin(s+ORD_SLOT); }
+function ordSave(i,v){
+  const d=STORE.get("order",{}); d[i]=v; STORE.set("order",d);
+}
+(function(){
+  const N=8;
+  const d=STORE.get("order",{});
+  let html="";
+  for(let i=0;i<N;i++){
+    html+=`<div class="ord"><div class="no2">${i+1}</div>
+     <input type="text" value="${(d[i]||"").replace(/"/g,"&quot;")}" placeholder="팀 이름 또는 발표자"
+      oninput="ordSave(${i},this.value)">
+     <div class="tm4">${ordTime(i)}</div></div>`;
+    if(i===ORD_BREAK_AFTER-1)
+      html+=`<div class="ord" style="grid-template-columns:64px 1fr 100px;opacity:.6">
+        <div class="no2" style="font-size:14px">휴식</div>
+        <div style="font-size:12.5px;color:var(--dim)">다음 팀은 이 시간에 연결과 실행을 미리 확인하세요</div>
+        <div class="tm4">${fmin(ordMin(ORD_BREAK_AFTER)-10)} ~<br>${fmin(ordMin(ORD_BREAK_AFTER))}</div></div>`;
+  }
+  document.getElementById("ordList").innerHTML=html;
+})();
+
+/* ---------------- 동료 평가표 ---------------- */
+const PE_CRIT=[
+ {k:"기능 구현",q:"게임 또는 시스템의 필수 기능이 정상적으로 동작하는가?"},
+ {k:"창의성",q:"독창적인 아이디어와 기능이 포함되었는가?"},
+ {k:"완성도",q:"화면 구성과 조작감 등 결과물의 완성도가 높은가?"},
+ {k:"프롬프트 활용",q:"생성형 인공지능을 적절히 활용하여 문제를 해결했는가?"},
+ {k:"발표력",q:"제작 과정을 명확하게 설명하고 시연했는가?"}
+];
+let peCur={};
+function peSet(i,v){
+  peCur[i]=v;
+  document.querySelectorAll(`.yn[data-i="${i}"] button`).forEach(b=>{
+    b.classList.toggle("on", b.dataset.v===v);
+  });
+}
+function peSave(){
+  const team=document.getElementById("peTeam").value.trim();
+  const learn=document.getElementById("peLearn").value.trim();
+  if(!team){toast("팀 이름을 입력해 주세요");return;}
+  if(!learn){toast("배우고 싶은 점을 반드시 적어 주세요");return;}
+  const all=STORE.get("peers",[]);
+  all.push({team,ev:{...peCur},learn,ask:document.getElementById("peAsk").value.trim()});
+  STORE.set("peers",all);
+  peClear(); pePaint();
+  toast(team+" 평가를 저장했습니다");
+}
+function peClear(){
+  document.getElementById("peTeam").value="";
+  document.getElementById("peLearn").value="";
+  document.getElementById("peAsk").value="";
+  peCur={};
+  document.querySelectorAll(".yn button").forEach(b=>b.classList.remove("on"));
+}
+function peDel(i){
+  const all=STORE.get("peers",[]); all.splice(i,1); STORE.set("peers",all); pePaint();
+}
+function pePaint(){
+  const all=STORE.get("peers",[]);
+  document.getElementById("peSaved").innerHTML = all.length
+    ? all.map((p,i)=>{
+        const y=Object.values(p.ev).filter(v=>v==="y").length;
+        return `<div class="card2"><div><b>${esc(p.team)}</b> — ${esc(p.learn).slice(0,60)}${p.learn.length>60?"…":""}</div>
+          <div style="display:flex;gap:10px;align-items:center"><span class="sc2">예 ${y}/5</span>
+          <button class="tbtn ghost" style="padding:4px 9px;font-size:11px" onclick="peDel(${i})">삭제</button></div></div>`;
+      }).join("")
+    : `<div style="font-size:12.5px;color:var(--dim)">아직 저장된 평가가 없습니다. 발표를 들으며 기록해 주세요.</div>`;
+  document.getElementById("peMsg").textContent = all.length? all.length+"개 팀 평가 완료" : "";
+}
+function peCopy(){
+  const all=STORE.get("peers",[]);
+  if(!all.length){toast("저장된 평가가 없습니다");return;}
+  let t=`[2026.11.17 성과공유회] 동료 평가 기록\n${"─".repeat(40)}\n\n`;
+  all.forEach(p=>{
+    t+=`■ ${p.team}\n`;
+    PE_CRIT.forEach((c,i)=>{t+=`  ${c.k} — ${p.ev[i]==="y"?"예":p.ev[i]==="n"?"아니요":"미기록"}\n`;});
+    t+=`  배우고 싶은 점 — ${p.learn}\n`;
+    if(p.ask)t+=`  궁금한 점 — ${p.ask}\n`;
+    t+="\n";
+  });
+  copyText(t,null);
+}
+/* ---------------- 학생 사례 갤러리 ---------------- */
+/* 사례는 이 브라우저(localStorage)에 저장한다. 사진은 긴 변 900px JPEG로 줄여
+   용량 초과를 피하고, 교사는 내보내기/불러오기로 다른 컴퓨터에 옮긴다. */
+let CASES=[], gPicData="";
+
+function gLoad(){ CASES=STORE.get("cases",[]); gPaint(); }
+function gStore(){
+  try{ STORE.set("cases",CASES); return true; }
+  catch(e){ toast("저장 공간이 가득 찼습니다. 사진 없이 등록하거나 내보내기 후 정리해 주세요."); return false; }
+}
+function gFormToggle(open){
+  const f=document.getElementById("gForm");
+  const on = open===0 ? false : !f.classList.contains("on");
+  f.classList.toggle("on",on);
+  if(on) document.getElementById("gTtl").focus();
+}
+function gPick(inp){
+  const f=inp.files&&inp.files[0]; if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    const im=new Image();
+    im.onload=()=>{
+      const max=900, sc=Math.min(1,max/Math.max(im.width,im.height));
+      const cv=document.createElement("canvas");
+      cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      gPicData=cv.toDataURL("image/jpeg",0.75);
+      document.getElementById("gPrev").innerHTML=`<img src="${gPicData}" alt="">`;
+    };
+    im.src=fr.result;
+  };
+  fr.readAsDataURL(f);
+}
+function gSave(){
+  const v=id=>document.getElementById(id).value.trim();
+  if(!v("gTtl")||!v("gWho")||!v("gOne")){ toast("제목 · 학생/팀 · 한 줄 소개는 반드시 적어 주세요"); return; }
+  CASES.push({ttl:v("gTtl"),kind:v("gKind"),sch:v("gSch"),who:v("gWho"),one:v("gOne"),
+              pic:gPicData,git:v("gGit"),vid:v("gVid"),how:v("gHow"),lim:v("gLim")});
+  if(!gStore()){ CASES.pop(); return; }
+  ["gTtl","gSch","gWho","gOne","gGit","gVid","gHow","gLim"].forEach(id=>document.getElementById(id).value="");
+  gPicData=""; document.getElementById("gPrev").innerHTML="";
+  gFormToggle(0); gPaint();
+  toast("사례를 등록했습니다");
+}
+function gDel(i,ev){
+  ev.stopPropagation();
+  if(!confirm(`「${CASES[i].ttl}」 사례를 지울까요?`))return;
+  CASES.splice(i,1); gStore(); gPaint(); gvClose();
+}
+function gPaint(){
+  const w=document.getElementById("gWrap");
+  if(!CASES.length){
+    w.innerHTML=`<div class="galempty">아직 등록된 사례가 없습니다.<br>
+      발표가 끝난 팀부터 <b>[+ 사례 추가]</b>로 넣어 주세요.</div>`;
+  }else{
+    w.innerHTML=`<div class="galgrid">`+CASES.map((c,i)=>`
+      <div class="gcard" onclick="gvOpen(${i})">
+        <div class="thumb">${c.pic?`<img src="${c.pic}" alt="">`:`<span class="ph">🖥</span>`}
+          <span class="kind">${esc(c.kind||"프로젝트")}</span></div>
+        <div class="body">
+          <div class="ttl">${esc(c.ttl)}</div>
+          <div class="who">${esc([c.sch,c.who].filter(Boolean).join(" · "))}</div>
+          <div class="one">${esc(c.one)}</div>
+        </div></div>`).join("")+`</div>`;
+  }
+  document.getElementById("gMsg").textContent = CASES.length? `사례 ${CASES.length}건` : "";
+}
+
+/* ── 사례 뷰어 (이전/다음 넘김) ── */
+let GVI=-1;
+function gvOpen(i){ GVI=i; gvPaint(); document.getElementById("gv").classList.add("on"); }
+function gvClose(){ document.getElementById("gv").classList.remove("on"); GVI=-1; }
+function gvStep(d){ if(!CASES.length)return; GVI=(GVI+d+CASES.length)%CASES.length; gvPaint(); }
+function gvPaint(){
+  const c=CASES[GVI]; if(!c)return;
+  const sect=(t,v)=>v?`<div class="sect"><b>${t}</b><p>${esc(v)}</p></div>`:"";
+  const lnk=(t,u)=>u?`<a href="${esc(u)}" target="_blank" rel="noopener">${t} ↗</a>`:"";
+  document.getElementById("gvSheet").innerHTML=
+    (c.pic?`<img class="shot" src="${c.pic}" alt="">`:"")+
+    `<div class="in2">
+      <h3>${esc(c.ttl)}</h3>
+      <div class="meta2">${esc(c.kind||"")}${c.kind?" · ":""}${esc([c.sch,c.who].filter(Boolean).join(" · "))}</div>
+      <div class="sect"><b>한 줄 소개</b><p>${esc(c.one)}</p></div>
+      ${sect("어떻게 만들었나",c.how)}
+      ${sect("배운 점과 한계",c.lim)}
+      <div class="lnk">${lnk("GitHub",c.git)}${lnk("시연 영상",c.vid)}</div>
+      <div class="foot2">
+        <button class="tbtn ghost" onclick="gDel(${GVI},event)">이 사례 삭제</button>
+        <span class="cnt">${GVI+1} / ${CASES.length}</span>
+        <span style="display:flex;gap:8px">
+          <button class="tbtn ghost" onclick="gvStep(-1)">‹ 이전</button>
+          <button class="tbtn ghost" onclick="gvStep(1)">다음 ›</button>
+        </span>
+      </div>
+    </div>`;
+}
+document.addEventListener("keydown",e=>{
+  if(!document.getElementById("gv").classList.contains("on"))return;
+  if(e.key==="Escape")gvClose();
+  else if(e.key==="ArrowLeft")gvStep(-1);
+  else if(e.key==="ArrowRight")gvStep(1);
+});
+
+/* ── 내보내기 · 불러오기 ── */
+function gExport(){
+  if(!CASES.length){toast("등록된 사례가 없습니다");return;}
+  const blob=new Blob([JSON.stringify(CASES,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="cases.json";
+  document.body.appendChild(a); a.click(); a.remove();
+  toast(`사례 ${CASES.length}건을 cases.json으로 저장했습니다`);
+}
+function gImport(inp){
+  const f=inp.files&&inp.files[0]; if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const arr=JSON.parse(fr.result);
+      if(!Array.isArray(arr))throw 0;
+      /* 제목+학생이 같은 사례는 중복으로 보고 건너뛴다 */
+      const key=c=>c.ttl+"|"+c.who, have=new Set(CASES.map(key));
+      const add=arr.filter(c=>c&&c.ttl&&!have.has(key(c)));
+      CASES=CASES.concat(add); gStore(); gPaint();
+      toast(add.length?`사례 ${add.length}건을 불러왔습니다`:"새로 추가할 사례가 없습니다");
+    }catch(e){ toast("사례 파일을 읽지 못했습니다 (cases.json 형식이 아닙니다)"); }
+    inp.value="";
+  };
+  fr.readAsText(f);
+}
+/* 페이지 옆에 cases.json 이 있으면 처음 열 때 자동으로 채운다 */
+gLoad();
+if(!CASES.length){
+  fetch("cases.json").then(r=>r.ok?r.json():null).then(a=>{
+    if(Array.isArray(a)&&a.length){ CASES=a.filter(c=>c&&c.ttl); gStore(); gPaint(); }
+  }).catch(()=>{});
+}
+
+(function(){
+  document.getElementById("peRows").innerHTML=PE_CRIT.map((c,i)=>
+   `<tr><td><b>${c.k}</b></td><td>${c.q}</td>
+     <td class="ctr"><div class="yn" data-i="${i}">
+      <button class="y" data-v="y" onclick="peSet(${i},'y')">예</button>
+      <button class="n" data-v="n" onclick="peSet(${i},'n')">아니요</button>
+     </div></td></tr>`).join("");
+  pePaint();
+})();
+</script>
+</body></html>
