@@ -2,22 +2,13 @@
 <title>11회차 · 가위바위보 게임 · GitHub · 발표 준비</title>
 <link rel="stylesheet" href="style.css?v=12">
 <style>
-/* 11회차 전용 — 발표 타임라인 · 제출물 점검 · README 만들기 */
+/* 11회차 전용 — 발표 타임라인 · README 만들기 */
 .tl3{display:grid;gap:8px;margin:16px 0}
 .tl3 .row3{display:grid;grid-template-columns:78px 1fr;gap:13px;align-items:start;border-left:2px solid var(--line2);padding:11px 0 11px 15px}
 .tl3 .row3.hi3{border-left-color:var(--accent);background:rgba(216,180,90,.05)}
 .tl3 .tm3{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;padding-top:1px}
 .tl3 .ct3{font-size:13px;color:var(--mut);line-height:1.7}
 .tl3 .ct3 b{color:var(--tx)}
-.chk2{display:grid;gap:7px;margin:14px 0}
-.chk2 label{display:flex;gap:11px;align-items:flex-start;font-size:13px;color:var(--mut);border:1px solid var(--line);
- border-radius:3px;padding:11px 14px;cursor:pointer;line-height:1.7;transition:.14s}
-.chk2 label:hover{border-color:var(--line2)}
-.chk2 input{margin:3px 0 0;width:16px;height:16px;accent-color:#d8b45a;flex-shrink:0}
-.chk2 input:checked+span{color:var(--tx)}
-.chk2 .grp{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:700;margin:14px 0 4px}
-.subbar{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;margin:14px 0 6px}
-.subbar i{display:block;height:100%;background:linear-gradient(90deg,#8bc0a4,#a9d4c0);transition:width .3s}
 .rd{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:20px;margin:16px 0}
 .rd label{display:block;font-size:12.5px;font-weight:700;color:var(--tx);margin-top:12px}
 .rd input,.rd textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:3px;
@@ -335,12 +326,28 @@ KEY = <span class="s">"여기에 본인 인증키를 넣으세요"</span>   <spa
     <li><b>&ldquo;AI가 만들어 준 거 아니에요?&rdquo;</b> — 설계는 내가 했고 AI는 도구였다는 것을
      <b>프롬프트 로그와 수정 이력</b>으로 보여 주세요.</li>
    </ol></div>`},
- {n:"02",h:"제출물 최종 점검",
-  lead:"내일 발표 전까지 있어야 할 것들입니다. 하나씩 눌러 확인하세요.",
-  html:`<div class="chk2" id="subList"></div>
-   <div class="subbar"><i id="subBar" style="width:0%"></i></div>
-   <div class="progtx" id="subTx" style="font-size:12.5px;color:var(--mut)">—</div>
-   <div class="box tip" style="margin-top:14px" id="subTip">항목을 눌러 확인해 보세요.</div>`},
+ {n:"02",h:"제출물 — 내일 발표 전까지 있어야 할 것",
+  lead:"세 갈래로 정리했습니다. <b>굵게 표시한 넷</b>은 없으면 발표 자체가 어려워집니다.",
+  html:`<div class="tw"><table style="min-width:560px">
+   <thead><tr><th style="width:150px">갈래</th><th>제출물</th></tr></thead>
+   <tbody>
+    <tr><td><b>스마트 화분</b></td>
+     <td>탐구 계획서 (7회차) · 프로젝트 보고서 8항목 (8회차) · 코랩 노트북 링크(공유 설정 확인)<br>
+      <b>시연 영상</b> — 센서 측정 → 예측 → 급수 장면</td></tr>
+    <tr><td><b>테트리스</b></td>
+     <td>게임 설계서 (9회차) · 제작 보고서 (10회차, 구현 여부는 정직하게) · 최종 .py 파일 전체<br>
+      <b>시연 영상</b> — 게임이 돌아가는 화면 녹화</td></tr>
+    <tr><td><b>저장소와 발표</b></td>
+     <td>GitHub 저장소(코드 업로드) · README.md(실행 방법과 조작 키) · 발표 자료 5~7장 · 예상 질문 3개와 답<br>
+      <b>인증키 제거</b> — <span class="code">KEY=</span> 로 검색해 보기 · <b>개인정보 확인</b> — 실명 · 얼굴 사진 · 개인 경로</td></tr>
+    <tr><td><b>내일 준비물</b></td>
+     <td>노트북과 충전기 · HDMI 어댑터 · 장치 · 보조 배터리 · 물병 (해당 시)<br>
+      백업 영상을 <b>오프라인에서도</b> 재생 가능하게</td></tr>
+   </tbody></table></div>
+   <div class="box warn"><b class="t">되돌리기 어려운 두 가지</b>
+   <b>인증키</b>와 <b>개인정보</b>는 공개 저장소에 한 번 올라가면 지워도 이력에 남습니다.
+   업로드 전에 <span class="code">KEY=</span>로 검색하고, 실명·얼굴 사진·개인 경로가 코드나 캡처에 들어갔는지 눈으로 확인하세요.
+   <br><br>그리고 <b>백업 영상</b>. 내일 장치가 안 돌아갈 확률은 생각보다 높습니다.</div>`},
  {n:"03",h:"리허설 — 오늘 반드시 한 번",
   html:`<div class="doit"><div class="dh">모둠 리허설 <span class="m">과제 시간 마지막 15분</span></div>
    <p><b>타이머를 5분에 맞추고</b> 실제로 발표해 보세요. 소회의실에서 모둠끼리 진행합니다.</p>
@@ -493,55 +500,7 @@ KEY = <span class="s">"여기에 본인 인증키를 넣으세요"</span>   <spa
 <script>
 boot();
 
-/* ---------------- 제출물 최종 점검 ---------------- */
-const SUBS=[
- {g:"스마트 화분 프로젝트",t:"탐구 계획서 (7회차)"},
- {g:"",t:"프로젝트 보고서 8항목 (8회차)"},
- {g:"",t:"코랩 노트북 링크 — 공유 설정 확인"},
- {g:"",t:"<b>시연 영상</b> — 센서 측정 → 예측 → 급수 장면"},
- {g:"테트리스 프로젝트",t:"게임 설계서 (9회차)"},
- {g:"",t:"제작 보고서 (10회차) — 구현 여부 정직하게"},
- {g:"",t:"최종 .py 파일 전체 (tetris1~8 중 만든 것)"},
- {g:"",t:"<b>시연 영상</b> — 게임이 돌아가는 화면 녹화"},
- {g:"저장소와 발표",t:"<b>GitHub 저장소</b> — 코드 업로드 완료"},
- {g:"",t:"README.md — 실행 방법과 조작 키 포함"},
- {g:"",t:"<b>인증키 제거 확인</b> — KEY= 로 검색해 보기"},
- {g:"",t:"개인정보 확인 — 실명 · 얼굴 사진 · 개인 경로 없음"},
- {g:"",t:"발표 자료 5~7장"},
- {g:"",t:"예상 질문 3개와 답 준비"},
- {g:"",t:"<b>5분 리허설 완료</b> — 시간 재어 봄"},
- {g:"내일 준비물",t:"노트북과 충전기 · HDMI 어댑터 확인"},
- {g:"",t:"장치 · 보조 배터리 · 물병 (해당 시)"},
- {g:"",t:"백업 영상을 <b>오프라인에서도</b> 재생 가능하게"}
-];
-function subToggle(i){
-  const d=STORE.get("subs",[]);
-  const k=d.indexOf(i); if(k>=0)d.splice(k,1); else d.push(i);
-  STORE.set("subs",d); subPaint();
-}
-function subPaint(){
-  const d=STORE.get("subs",[]);
-  document.querySelectorAll("#subList input").forEach((el,i)=>{el.checked=d.includes(i);});
-  const pct=d.length/SUBS.length*100;
-  document.getElementById("subBar").style.width=pct+"%";
-  document.getElementById("subTx").innerHTML=`확인 <b style="color:var(--accent);font-family:var(--serif);font-size:16px">${d.length}</b> / ${SUBS.length}항목`;
-  const key=[10,11].every(i=>d.includes(i));   /* 인증키·개인정보 */
-  const vid=[3,7,17].every(i=>d.includes(i));  /* 영상 */
-  const tip=document.getElementById("subTip");
-  if(d.length===SUBS.length) tip.innerHTML=`<b>전부 확인했습니다.</b> 내일 편하게 발표하시면 됩니다.`;
-  else if(!key) tip.innerHTML=`<b style="color:var(--rose)">인증키와 개인정보 확인이 아직입니다.</b> 공개 저장소는 되돌리기 어렵습니다 — 이것부터 하세요.`;
-  else if(!vid) tip.innerHTML=`<b style="color:var(--rose)">백업 영상이 아직입니다.</b> 내일 장치가 안 돌아갈 확률이 생각보다 높습니다.`;
-  else tip.innerHTML=`남은 <b>${SUBS.length-d.length}개</b>를 오늘 안에 끝내세요. 내일 아침에는 시간이 없습니다.`;
-}
-(function(){
-  let html="";
-  SUBS.forEach((s,i)=>{
-    if(s.g) html+=`<div class="grp">${s.g}</div>`;
-    html+=`<label><input type="checkbox" onchange="subToggle(${i})"><span>${s.t}</span></label>`;
-  });
-  document.getElementById("subList").innerHTML=html;
-  subPaint();
-})();
+/* 체크리스트는 쓰지 않는다. 제출물은 읽는 표로만 제시한다. */
 
 /* ---------------- README 만들기 ---------------- */
 function rdBuild(){

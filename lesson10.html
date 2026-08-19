@@ -2,22 +2,8 @@
 <title>10회차 · 테트리스 게임 구현</title>
 <link rel="stylesheet" href="style.css?v=12">
 <style>
-/* 10회차 전용 — 진행 체커 · 오류 해결 도우미 */
-.steps{display:grid;gap:9px;margin:16px 0}
-.stp{display:grid;grid-template-columns:96px 1fr 90px;gap:12px;align-items:center;border:1px solid var(--line);
- border-radius:4px;padding:13px 15px;background:rgba(255,255,255,.014);transition:.16s}
-.stp.done2{border-color:rgba(139,192,164,.45);background:rgba(139,192,164,.07)}
-.stp .fn{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:700}
-.stp .ds{font-size:13px;color:var(--mut);line-height:1.6}
-.stp .ds b{color:var(--tx)}
-.stp button{font-size:11.5px;font-weight:700;border-radius:2px;padding:7px 0;cursor:pointer;font-family:var(--sans);
- border:1px solid var(--line2);background:transparent;color:var(--mut)}
-.stp button:hover{border-color:var(--accent);color:var(--tx)}
-.stp.done2 button{background:var(--green);color:var(--ink);border-color:transparent}
-.prog{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;margin:14px 0 6px}
-.prog i{display:block;height:100%;background:linear-gradient(90deg,#8bc0a4,#a9d4c0);transition:width .3s}
-.progtx{font-size:12.5px;color:var(--mut)}
-.progtx b{color:var(--accent);font-family:var(--serif);font-size:16px}
+/* 10회차 전용 — 단계 표 · 오류 해결 도우미 */
+.fn2{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:700}
 .dbg{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:20px;margin:16px 0}
 .dbg select,.dbg textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:3px;
  color:var(--tx);padding:10px 12px;font-size:13px;font-family:var(--sans);margin-top:6px}
@@ -247,12 +233,32 @@ pip install pygame</pre></div></div>`},
 {kind:"lecture",nav:"강의 ③",mins:30,title:"확장 기능 코딩 — tetris5~8",
  sub:"39차시 — 게임을 &lsquo;쓸 만하게&rsquo; 만드는 기능들입니다. 교과서 143~144쪽.",
  sections:[
- {n:"01",h:"진행 상황 체커 — 어디까지 왔나",
-  lead:"오늘 만든 것을 눌러 표시해 보세요. <b>기본 4개까지가 필수</b>이고, 확장은 시간이 되는 만큼 하면 됩니다.",
-  html:`<div class="steps" id="stpList"></div>
-   <div class="prog"><i id="stpBar" style="width:0%"></i></div>
-   <div class="progtx" id="stpTx">—</div>
-   <div class="box tip" style="margin-top:14px" id="stpTip">기본 기능 4개를 먼저 완성하세요.</div>`},
+ {n:"01",h:"여덟 단계 — 어디까지가 필수인가",
+  lead:"<b>tetris1~4가 필수</b>입니다. 5~8은 시간이 되는 만큼 하면 됩니다. <b>확장보다 기본을 먼저</b> 끝내세요.",
+  html:`<div class="tw"><table style="min-width:560px">
+   <thead><tr><th style="width:118px">파일</th><th style="width:70px" class="ctr">구분</th><th>만드는 것</th></tr></thead>
+   <tbody>
+    <tr><td class="fn2">tetris1.py</td><td class="ctr"><b>필수</b></td>
+     <td><b>핵심 기능</b> — 블록 생성 · 이동/회전 · 줄 삭제 · 중력 · 충돌 판정 · 게임 종료</td></tr>
+    <tr><td class="fn2">tetris2.py</td><td class="ctr"><b>필수</b></td>
+     <td><b>점수 부여</b> — 1줄 10 · 2줄 30 · 3줄 50 · 4줄 70점, 오른쪽 상단 표시</td></tr>
+    <tr><td class="fn2">tetris3.py</td><td class="ctr"><b>필수</b></td>
+     <td><b>상태와 조작 키</b> — START · PAUSED · RESTART · GAME OVER</td></tr>
+    <tr><td class="fn2">tetris4.py</td><td class="ctr"><b>필수</b></td>
+     <td><b>다음 블록 미리보기</b> — 오른쪽에 축소 아이콘</td></tr>
+    <tr><td class="fn2">tetris5.py</td><td class="ctr">확장</td>
+     <td>그림자 기능 — 충돌 직전 위치를 반투명 표시</td></tr>
+    <tr><td class="fn2">tetris6.py</td><td class="ctr">확장</td>
+     <td>빠르게 떨어지기 — 소프트 드롭 · 하드 드롭</td></tr>
+    <tr><td class="fn2">tetris7.py</td><td class="ctr">확장</td>
+     <td>글자 크기와 위치 — UI 조절 (AI 없이 직접 고쳐 보기)</td></tr>
+    <tr><td class="fn2">tetris8.py</td><td class="ctr">확장</td>
+     <td>랭킹 저장 — 파일에 기록, 상위 5위 정렬</td></tr>
+   </tbody></table></div>
+   <div class="box tip"><b>넷까지만 만들어도 좋은 평가를 받습니다</b> ·
+   채점 기준은 &lsquo;몇 단계까지 갔는가&rsquo;가 아니라 <b>&lsquo;만든 것을 설명할 수 있는가&rsquo;</b>입니다.
+   여덟 단계를 다 만들고 코드를 설명하지 못하는 것보다, <b>넷을 만들고 함수 구조를 정확히 아는 쪽</b>이 낫습니다.
+   <br><br>확장 기능보다 <b>보고서와 시연 영상</b>이 먼저입니다.</div>`},
  {n:"02",h:"② 블록 빠르게 떨어지기",
   lead:"소프트 드롭과 하드 드롭을 구현해 하강 속도를 <b>가변적으로</b> 조절합니다. 교과서 143쪽.",
   html:`<figure class="fig"><img src="assets/x_drop_143.png" alt="교과서 143쪽 블록 빠르게 떨어지기" loading="lazy">
@@ -481,48 +487,7 @@ pip install pygame</pre></div></div>`},
 <script>
 boot();
 
-/* ---------------- 진행 상황 체커 ---------------- */
-const STEPS=[
- {f:"tetris1.py",d:"<b>핵심 기능</b> — 블록 생성 · 이동/회전 · 줄 삭제 · 중력 · 충돌 판정 · 게임 종료",req:1},
- {f:"tetris2.py",d:"<b>점수 부여</b> — 1줄 10 · 2줄 30 · 3줄 50 · 4줄 70점, 오른쪽 상단 표시",req:1},
- {f:"tetris3.py",d:"<b>상태와 조작 키</b> — START · PAUSED · RESTART · GAME OVER",req:1},
- {f:"tetris4.py",d:"<b>다음 블록 미리보기</b> — 오른쪽에 축소 아이콘",req:1},
- {f:"tetris5.py",d:"<b>그림자 기능</b> — 충돌 직전 위치를 반투명 표시",req:0},
- {f:"tetris6.py",d:"<b>빠르게 떨어지기</b> — 소프트 드롭 · 하드 드롭",req:0},
- {f:"tetris7.py",d:"<b>글자 크기와 위치</b> — UI 조절 (AI 없이 직접 고쳐 보기)",req:0},
- {f:"tetris8.py",d:"<b>랭킹 저장</b> — 파일에 기록, 상위 5위 정렬",req:0}
-];
-function stpToggle(i){
-  const d=STORE.get("steps",[]);
-  const k=d.indexOf(i);
-  if(k>=0)d.splice(k,1); else d.push(i);
-  STORE.set("steps",d); stpPaint();
-}
-function stpPaint(){
-  const d=STORE.get("steps",[]);
-  document.querySelectorAll(".stp").forEach((el,i)=>{
-    const on=d.includes(i);
-    el.classList.toggle("done2",on);
-    el.querySelector("button").textContent=on?"완료 ✓":"완료 표시";
-  });
-  const base=STEPS.filter(s=>s.req).length;
-  const baseDone=d.filter(i=>STEPS[i].req).length;
-  const pct=d.length/STEPS.length*100;
-  document.getElementById("stpBar").style.width=pct+"%";
-  document.getElementById("stpTx").innerHTML=
-    `완료 <b>${d.length}</b> / ${STEPS.length}단계 · 기본 기능 <b>${baseDone}</b> / ${base}`;
-  const tip=document.getElementById("stpTip");
-  if(baseDone<base) tip.innerHTML=`기본 기능이 <b>${base-baseDone}개</b> 남았습니다. 확장보다 <b>기본을 먼저</b> 완성하세요.`;
-  else if(d.length===STEPS.length) tip.innerHTML=`<b>여덟 단계를 모두 완성했습니다.</b> 이제 코드를 함수 위주로 분석해 보고서에 정리하세요.`;
-  else tip.innerHTML=`기본 기능을 모두 완성했습니다. 확장 기능 <b>${STEPS.length-d.length}개</b>가 남았지만, <b>보고서와 시연 영상이 더 중요합니다.</b>`;
-}
-(function(){
-  document.getElementById("stpList").innerHTML=STEPS.map((s,i)=>
-   `<div class="stp"><div class="fn">${s.f}${s.req?'':' <span style="color:var(--dim);font-weight:400">확장</span>'}</div>
-     <div class="ds">${s.d}</div>
-     <button onclick="stpToggle(${i})">완료 표시</button></div>`).join("");
-  stpPaint();
-})();
+/* 체크리스트는 쓰지 않는다. 단계 목록은 읽는 표로만 제시한다. */
 
 /* ---------------- 오류 해결 질문 만들기 ---------------- */
 function dbBuild(){
