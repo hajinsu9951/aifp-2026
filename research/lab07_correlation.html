@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>상관계수 손계산 실습실</title>
+<meta name="description" content="7회차 연구 실습실 · 김세환 — 편차의 곱, 공분산, 표준화로 상관계수의 블랙박스를 엽니다.">
+<link rel="stylesheet" href="../style.css?v=12">
+<style>
+/* 7회차 연구 실습실 · 상관계수 전용 (8회차 실습실 양식을 따름) */
+body{overflow-x:hidden}
+.pane h2.sh{margin-top:0}
+.lab{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:18px;margin:16px 0}
+.lab .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.lab label{font-size:12.5px;color:var(--mut)}
+.lab select,.lab input[type=number],.lab input[type=text]{background:#0a0b10;color:var(--tx);border:1px solid var(--line2);border-radius:2px;padding:6px 8px;font-size:12.5px;font-family:var(--sans)}
+.chk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--mut);margin-right:10px;cursor:pointer}
+.chk input{accent-color:#d8b45a}
+.split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+canvas.cv{width:100%;display:block;background:#0a0b10;border:1px solid var(--line);border-radius:3px;touch-action:none;cursor:crosshair}
+canvas.cv.tap{touch-action:manipulation;cursor:pointer}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.steps button{flex:1 1 92px;font-size:12px;font-weight:700;padding:9px 8px;border-radius:2px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer;font-family:var(--sans);text-align:left}
+.steps button i{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;color:var(--dim)}
+.steps button.on{border-color:var(--accent);color:var(--tx);background:rgba(216,180,90,.1)}
+.steps button.done{color:var(--green)}
+.explain{border-left:2px solid var(--accent);background:rgba(216,180,90,.05);padding:12px 15px;font-size:13px;line-height:1.85;color:var(--mut);border-radius:2px;min-height:80px}
+.explain b{color:var(--tx)}
+.f{font-family:var(--mono);font-size:12px;color:#d8dae4;background:#0a0b10;border:1px solid var(--line);padding:1px 6px;border-radius:2px;white-space:nowrap}
+.dtab{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
+.dtab th,.dtab td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono);white-space:nowrap}
+.dtab th{color:var(--accent);font-family:var(--sans);font-size:11px;letter-spacing:.02em}
+.dtab td:first-child,.dtab th:first-child{text-align:left}
+.dtab tfoot td{color:var(--tx);border-top:1px solid var(--line2);background:rgba(216,180,90,.05)}
+.dtab td.pos{color:var(--green)} .dtab td.neg{color:var(--rose)}
+.dtab td.new{animation:flash .7s}
+@keyframes flash{from{background:rgba(216,180,90,.35)}to{background:transparent}}
+.dtab input{width:64px;background:#0a0b10;color:var(--tx);border:1px solid var(--line2);border-radius:2px;padding:3px 5px;font-family:var(--mono);font-size:12px;text-align:right}
+.dtab input.ok{border-color:var(--green);color:var(--green)} .dtab input.no{border-color:var(--rose);color:var(--rose)}
+.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:9px;margin:12px 0}
+.metric > div{border:1px solid var(--line);border-radius:3px;padding:9px 11px;background:rgba(255,255,255,.015)}
+.metric .l{font-size:10.5px;letter-spacing:.06em;color:var(--dim)}
+.metric .v{font-family:var(--serif);font-size:19px;font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric > div.key{border-color:rgba(216,180,90,.5);background:rgba(216,180,90,.06)}
+.metric div.key .v{color:var(--accent)}
+.pycode{font-family:var(--mono);font-size:12px;line-height:1.8;background:#0a0b10;border:1px solid var(--line);border-radius:3px;padding:10px 0;overflow-x:auto;color:#9a9caa}
+.pycode div{padding:0 14px;white-space:pre}
+.pycode div.hl{background:rgba(216,180,90,.13);color:#f3f1ea;box-shadow:inset 2px 0 0 var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:2px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:transparent;color:var(--mut);border:0;border-right:1px solid var(--line2);padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--accent);color:#0c0d12}
+.gauge{position:relative;height:30px;margin:6px 0 2px}
+.gauge .tr{position:absolute;left:0;right:0;top:12px;height:6px;border-radius:3px;background:linear-gradient(90deg,#7fa8d4,#2a2c38 50%,#e7c37a)}
+.gauge .mk{position:absolute;top:3px;width:4px;height:24px;background:#f3f1ea;border-radius:1px;box-shadow:0 0 0 2px #0a0b10,0 0 8px rgba(231,195,122,.8);transition:left .25s;margin-left:-1px}
+.gauge .lb{position:absolute;top:-4px;font-size:10px;color:var(--dim);transform:translateX(-50%)}
+.flow5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:18px 0 0;position:relative}
+@media(max-width:760px){.flow5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.flow5 div{border:1px solid var(--line);border-radius:3px;padding:10px 12px;background:rgba(255,255,255,.02);font-size:12px;color:var(--mut);line-height:1.6}
+.flow5 b{display:block;color:var(--tx);font-size:13px}
+.flow5 i{font-style:normal;color:var(--accent);font-family:var(--serif);font-weight:800;margin-right:4px}
+.hero .links{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.mini2{font-size:11.5px;color:var(--dim)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.pill{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:9px;border:1px solid var(--line2);color:var(--mut);margin-left:6px;font-family:var(--sans);font-weight:600}
+.quiz{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:16px 18px;margin:12px 0}
+.quiz .qn{font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+.quiz .qt{font-size:14px;color:var(--tx);margin:4px 0 10px;line-height:1.75}
+.quiz .op{display:block;width:100%;text-align:left;background:transparent;border:1px solid var(--line2);color:var(--mut);padding:9px 12px;border-radius:2px;margin:6px 0;font-size:13px;cursor:pointer;font-family:var(--sans);line-height:1.6}
+.quiz .op:hover{border-color:var(--accent);color:var(--tx)}
+.quiz .op.ok{border-color:var(--green);background:rgba(139,192,164,.1);color:var(--tx)}
+.quiz .op.no{border-color:var(--rose);background:rgba(217,138,122,.08)}
+.quiz .why{display:none;margin-top:8px;font-size:13px;color:var(--mut);line-height:1.8;border-left:2px solid var(--violet);padding:6px 12px;background:rgba(169,154,212,.05)}
+.quiz .why.on{display:block}
+.quiz .why b{color:var(--tx)}
+.score{font-family:var(--serif);font-size:26px;font-weight:800;color:var(--accent)}
+.tabs .tab{white-space:nowrap}
+@media(max-width:600px){.tabs{flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tab{padding:7px 10px;font-size:12.5px}.lab{padding:12px}}
+footer{padding:30px 0 50px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;line-height:1.9}
+</style></head><body>
+
+<header class="hero"><div class="wrap">
+ <div class="eyebrow">7회차 연구 실습실 · 김세환 · 블랙박스 열기 수업모형</div>
+ <h1>상관계수를 <em>손으로</em>:<br>공분산과 <em>표준화</em></h1>
+ <p class="lead">7회차에서 코랩의 <span class="f">df.corr()</span> 한 줄로 얻은 숫자 &minus;0.32, +0.23은 어디서 왔을까요?
+ 이 실습실은 그 한 줄을 <b>편차 &rarr; 곱 &rarr; 공분산 &rarr; 표준화 &rarr; 상관계수</b>로 풀어 헤칩니다.
+ 점 여섯 개로 손계산을 하고, 단위를 바꿔 보고, 점을 끌어 함정을 만들어 본 뒤, 8회차에서 쓸 스마트 화분 데이터로 돌아갑니다.</p>
+ <div class="hstats">
+  <div><b>6</b><span>손계산 점</span></div><div><b>1,440</b><span>센서 기록</span></div>
+  <div><b>5</b><span>함정 프리셋</span></div><div><b>&minus;1&nbsp;~&nbsp;1</b><span>r의 범위</span></div>
+ </div>
+ <div class="links">
+  <a class="tbtn" href="../lesson07.html">&larr; 7회차 수업 페이지</a>
+  <a class="tbtn ghost" href="index.html">연구 산출물 허브</a>
+  <a class="tbtn ghost" href="../data/smart_plant_sensor.csv" download>센서 기록 CSV</a>
+  <a class="tbtn ghost" href="../data/plants_optimal.csv" download>식물 적정값 CSV</a>
+ </div>
+ <div class="flow5">
+  <div><i>①</i><b>질문하기</b>&minus;0.32는 무엇을 잰 숫자인가?</div>
+  <div><i>②</i><b>손으로 계산하기</b>탭 ① · ③ 점 6개 손계산</div>
+  <div><i>③</i><b>실습실에서 조작하기</b>탭 ② · ④ 단위·점 조작</div>
+  <div><i>④</i><b>코드로 옮기기</b>탭 ③ · ⑤ 파이썬 코드</div>
+  <div><i>⑤</i><b>함정 찾고 성찰하기</b>탭 ④ · ⑤ · ⑥</div>
+ </div>
+</div></header>
+
+<nav class="bar"><div class="wrap in">
+ <div class="tabs" id="tabs">
+  <button class="tab active" data-p="p1">① 사분면</button>
+  <button class="tab" data-p="p2">② 공분산 vs r</button>
+  <button class="tab" data-p="p3">③ 표준화 단계</button>
+  <button class="tab" data-p="p4">④ 함정 실험실</button>
+  <button class="tab" data-p="p5">⑤ 화분 상관 행렬</button>
+  <button class="tab" data-p="p6">⑥ 확인 문제</button>
+ </div>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= ① 사분면 ================= -->
+<section class="pane on" id="p1">
+ <h2 class="sh">① 평균선으로 <em>네 칸</em>을 나누면 부호가 보입니다</h2>
+ <p class="sdesc">스마트 화분 한 개를 엿새 동안 같은 시각에 잰 <b>온도와 토양 수분</b>입니다(설명용으로 만든 숫자).
+ 평균선 두 개를 그으면 산점도가 네 칸으로 나뉩니다. 오른쪽 위·왼쪽 아래(Ⅰ·Ⅲ) 점은 <b>편차의 곱이 양수</b>, 왼쪽 위·오른쪽 아래(Ⅱ·Ⅳ) 점은 <b>음수</b>입니다.
+ <b>점을 끌어</b> 옮기면 표와 공분산이 바로 바뀝니다.</p>
+ <div class="lab">
+  <div class="row">
+   <span class="chk"><input type="checkbox" id="q1rect" checked>편차의 곱을 넓이(사각형)로 보기</span>
+   <span class="chk"><input type="checkbox" id="q1hand">손계산 모드 (곱 칸을 비워 두기)</span>
+   <button class="tbtn ghost" id="q1reset">처음 값으로</button>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv" id="q1c" data-h="400"></canvas>
+    <div class="mini2" style="margin-top:6px"><span class="dot" style="background:#8bc0a4"></span>곱 &gt; 0 <span class="dot" style="background:#d98a7a"></span>곱 &lt; 0 <span class="dot" style="background:#6d6f7d"></span>곱 = 0 · 금색 점선 = 평균선 · 점을 손가락이나 마우스로 끌어 보세요</div>
+   </div>
+   <div>
+    <div class="tw" style="margin-top:0"><table class="dtab" id="q1tab"></table></div>
+    <div class="explain" id="q1ex"></div>
+   </div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box ev"><b>왜 &lsquo;곱&rsquo;인가</b> · 두 편차의 부호가 같으면(둘 다 평균보다 크거나 둘 다 작으면) 곱은 양수, 다르면 음수입니다.
+  곱을 모두 더하면 &ldquo;같은 방향으로 움직인 점&rdquo;과 &ldquo;반대로 움직인 점&rdquo;의 <b>힘겨루기 결과</b>가 남습니다.
+  점에서 평균선 교차점까지 그린 사각형의 <b>넓이</b>가 곧 그 곱의 크기입니다. 멀리 있는 점일수록 목소리가 큽니다.</div>
+  <div class="box tip"><b>공분산의 정의</b> (이 실습실은 모두 <b>모집단 공식</b>, n으로 나눕니다)<br>
+  <span class="f">Cov(x, y) = &Sigma;(x &minus; x&#772;)(y &minus; y&#772;) &divide; n</span><br>
+  통계 프로그램은 표본 공식(n &minus; 1로 나눔)을 쓰기도 합니다. 공분산 값은 달라지지만, 뒤에서 만드는 <b>상관계수 r은 어느 쪽으로 계산해도 같습니다</b>(탭 ③에서 확인).</div>
+ </div>
+ <div class="ask"><div class="ah">발문</div><ol>
+  <li>Ⅰ·Ⅲ 칸 점이 3개, Ⅱ·Ⅳ 칸 점이 3개로 같은데 공분산은 음수입니다. 개수가 아니라 무엇이 결과를 정했나요?</li>
+  <li>점 6을 끌어 평균선 교차점 가까이 옮기면 공분산이 어떻게 변하나요? 왜 그런가요?</li>
+  <li>편차를 곱하지 않고 그냥 더하면(&Sigma;(x &minus; x&#772;)) 언제나 얼마인가요? 그래서 곱이 필요합니다.</li>
+ </ol></div>
+</section>
+
+<!-- ================= ② 공분산 vs r ================= -->
+<section class="pane" id="p2">
+ <h2 class="sh">② 단위를 바꾸면 <em>공분산은 흔들리고</em> r은 버팁니다</h2>
+ <p class="sdesc">같은 화분, 같은 엿새입니다. 온도를 화씨로, 토양 수분을 소수로 바꿔 적어도 <b>점의 모양은 그대로</b>입니다(축 눈금만 바뀝니다).
+ 그런데 공분산은 단위를 따라 커졌다 작아졌다 합니다. &ldquo;관계의 세기&rdquo;를 재는 자로는 쓸 수 없다는 뜻입니다.</p>
+ <div class="lab">
+  <div class="row"><b style="font-size:13px;min-width:72px">온도 단위</b>
+   <div class="seg" id="u2x"><button data-v="C" class="on">섭씨 ℃</button><button data-v="F">화씨 ℉ (1.8x + 32)</button><button data-v="K">켈빈 K (x + 273.15)</button></div></div>
+  <div class="row"><b style="font-size:13px;min-width:72px">수분 단위</b>
+   <div class="seg" id="u2y"><button data-v="P" class="on">퍼센트 %</button><button data-v="D">소수 (y &divide; 100)</button><button data-v="R">건조도 (100 &minus; y)</button></div></div>
+  <div class="metric" id="u2met"></div>
+  <div class="split">
+   <canvas class="cv tap" id="u2c" data-h="330"></canvas>
+   <div>
+    <div class="tw" style="margin-top:0"><table class="dtab" id="u2tab"></table></div>
+    <div class="explain" id="u2ex"></div>
+   </div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box ev"><b>규칙 한 줄</b> · x&prime; = a&middot;x + b, y&prime; = c&middot;y + d로 바꾸면<br>
+   <span class="f">Cov(x&prime;, y&prime;) = a&middot;c&middot;Cov(x, y)</span> · <span class="f">&sigma;x&prime; = |a|&sigma;x</span> · <span class="f">&sigma;y&prime; = |c|&sigma;y</span><br>
+   그래서 <span class="f">r&prime; = a&middot;c&middot;Cov &divide; (|a|&sigma;x &middot; |c|&sigma;y) = &plusmn;r</span>. 더하는 수 b, d(켈빈의 +273.15, 화씨의 +32)는 평균만 옮기고 편차를 바꾸지 못합니다.</div>
+  <div class="box warn"><b class="t">부호가 뒤집히는 경우</b>&lsquo;건조도 = 100 &minus; 수분&rsquo;처럼 c가 음수이면 r의 <b>부호만</b> 바뀌고 크기는 같습니다.
+  &ldquo;온도가 높을수록 수분이 줄어든다&rdquo;와 &ldquo;온도가 높을수록 건조도가 커진다&rdquo;는 같은 이야기입니다. 보고서에서 변수를 어떻게 정의했는지 꼭 밝혀야 하는 이유입니다.</div>
+ </div>
+</section>
+
+<!-- ================= ③ 표준화 ================= -->
+<section class="pane" id="p3">
+ <h2 class="sh">③ 표준화를 <em>한 단계씩</em> 실행하기</h2>
+ <p class="sdesc">단위 문제를 없애는 방법은 각 값을 &ldquo;평균에서 표준편차 몇 개만큼 떨어졌나&rdquo;로 바꾸는 것, 곧 <b>표준화</b>입니다.
+ <span class="f">z = (x &minus; x&#772;) &divide; &sigma;</span>로 바꾼 뒤 곱의 평균을 내면 그것이 <b>상관계수</b>입니다. 단계 버튼을 눌러 계산과 그림과 코드가 함께 움직이는 것을 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>예제 <select id="z3set">
+    <option value="A">A · 탭 ①의 점 6개 (손계산용)</option>
+    <option value="B">B · 몬스테라 실제 기록 8개 (온도&ndash;습도)</option>
+   </select></label>
+   <span class="chk"><input type="checkbox" id="z3ddof">표본 공식 (n &minus; 1로 나누기)</span>
+   <button class="tbtn ghost" id="z3play">▶ 처음부터 자동 재생</button>
+  </div>
+  <div class="steps" id="z3steps">
+   <button data-s="1"><i>STEP 1</i>평균</button>
+   <button data-s="2"><i>STEP 2</i>편차</button>
+   <button data-s="3"><i>STEP 3</i>표준편차</button>
+   <button data-s="4"><i>STEP 4</i>z 점수</button>
+   <button data-s="5"><i>STEP 5</i>z의 곱</button>
+   <button data-s="6"><i>STEP 6</i>곱의 평균 = r</button>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv tap" id="z3c" data-h="380"></canvas>
+    <div class="explain" id="z3ex" style="margin-top:10px"></div>
+   </div>
+   <div>
+    <div class="tw" style="margin-top:0"><table class="dtab" id="z3tab"></table></div>
+    <h3 class="bh" style="margin-top:14px;font-size:15px">지금 실행 중인 코드 <span class="pill">Python · 코랩에 그대로</span></h3>
+    <div class="pycode" id="z3code"></div>
+   </div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box ev"><b>왜 &minus;1 &le; r &le; 1 인가</b> · z 점수는 평균 0, (모집단 공식에서) 제곱의 평균 1입니다.
+  <span class="f">0 &le; &Sigma;(z<sub>x</sub> &minus; z<sub>y</sub>)&sup2; &divide; n = 1 &minus; 2r + 1</span>이므로 r &le; 1,
+  <span class="f">0 &le; &Sigma;(z<sub>x</sub> + z<sub>y</sub>)&sup2; &divide; n = 2 + 2r</span>이므로 r &ge; &minus;1.
+  등호는 모든 점이 한 직선 위에 있을 때뿐입니다.</div>
+  <div class="box tip"><b>n이냐 n &minus; 1이냐</b> · 체크 상자를 켜면 &sigma;가 조금 커지고 z가 조금 작아지지만, 마지막에 곱의 합을 다시 같은 수(n &minus; 1)로 나누므로
+  <b>r은 소수점 끝자리까지 같습니다</b>. 판다스의 <span class="f">df.corr()</span>와 넘파이의 <span class="f">np.corrcoef</span>가 같은 r을 내는 이유입니다.</div>
+ </div>
+</section>
+
+<!-- ================= ④ 함정 ================= -->
+<section class="pane" id="p4">
+ <h2 class="sh">④ 함정 실험실 — <em>r 하나</em>만 믿으면 생기는 일</h2>
+ <p class="sdesc">빈 곳을 누르면 점이 생기고, 점을 끌면 움직입니다. 프리셋을 골라 상관계수가 <b>속는 장면</b>을 직접 만들어 보세요.
+ 테두리 원이 그려진 점은 &ldquo;이 점 하나를 빼면 r이 가장 크게 바뀌는 점&rdquo;입니다.</p>
+ <div class="lab">
+  <div class="row"><b style="font-size:13px">프리셋</b>
+   <div class="seg" id="t4pre">
+    <button data-v="base" class="on">기본</button><button data-v="outlier">이상값 하나</button><button data-v="curve">곡선 관계</button><button data-v="conf">교란 변수</button><button data-v="miss">결측치</button>
+   </div></div>
+  <div class="row">
+   <div class="seg" id="t4mode"><button data-v="add" class="on">점 추가·이동</button><button data-v="del">점 지우기</button></div>
+   <button class="tbtn ghost" id="t4reset">프리셋 다시 불러오기</button>
+   <button class="tbtn ghost" id="t4clear">모두 지우기</button>
+   <span class="chk" id="t4grpw"><input type="checkbox" id="t4grp">숨은 변수(날씨)로 나눠 보기</span>
+   <label id="t4missw">결측치 처리 <select id="t4miss"><option value="drop">행 제거 (dropna)</option><option value="zero">0으로 채우기</option><option value="mean">평균으로 채우기</option></select></label>
+  </div>
+  <div class="split">
+   <div><canvas class="cv" id="t4c" data-h="420"></canvas></div>
+   <div>
+    <div class="metric" id="t4met"></div>
+    <div class="gauge" id="t4g"><div class="tr"></div><span class="lb" style="left:0%">&minus;1</span><span class="lb" style="left:50%">0</span><span class="lb" style="left:100%">+1</span><div class="mk" id="t4mk" style="left:50%"></div></div>
+    <div class="explain" id="t4ex" style="margin-top:12px"></div>
+   </div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="doit"><div class="dh">해 보기 <span class="m">15분 · 활동지에 기록</span></div><ol>
+   <li><b>이상값 하나</b> · 오른쪽 위 외딴 점을 지우기 전과 후의 r을 적으세요. 점 하나가 r을 얼마나 바꾸나요?</li>
+   <li><b>곡선 관계</b> · r이 0에 가까운데 점들은 분명한 모양을 이룹니다. &ldquo;관계가 없다&rdquo;고 말해도 될까요?</li>
+   <li><b>교란 변수</b> · 체크 상자를 켜고 날씨별 r을 적으세요. 전체 r과 왜 다를까요?</li>
+   <li><b>결측치</b> · 세 가지 처리 방식의 r을 표로 정리하고, 어떤 방식이 이 데이터에 맞는지 근거를 쓰세요.</li>
+   <li><b>내 함정 만들기</b> · 모두 지운 뒤 점 8개 이하로 r = 0.9 이상이지만 &ldquo;관계가 있다고 믿기 어려운&rdquo; 산점도를 만들어 보세요.</li>
+  </ol></div>
+  <div class="box warn"><b class="t">상관 &ne; 인과</b>조도와 온도는 실제 교실에서 강한 양의 상관을 보입니다. 그렇다고 식물등을 켜서 온도를 올릴 수 있을까요?
+  둘 다 <b>햇빛(날씨·시간대)</b>이라는 제3의 변수를 따라 움직였을 뿐입니다. 7회차 교과서가 &ldquo;상관관계는 절대적인 인과관계를 의미하지는 않는다&rdquo;고 강조한 장면을 이 프리셋이 그대로 보여 줍니다.</div>
+ </div>
+</section>
+
+<!-- ================= ⑤ 상관 행렬 ================= -->
+<section class="pane" id="p5">
+ <h2 class="sh">⑤ 스마트 화분 <em>상관 행렬</em> — 8회차로 가는 다리</h2>
+ <p class="sdesc">8회차 k-NN 실습에 쓰는 교육용 가상 데이터(<span class="f">data/smart_plant_sensor.csv</span>, 6종 &times; 240행)로 <span class="f">df.corr()</span>을 직접 그려 봅니다.
+ 이 데이터는 <b>소음이 식물 상태에 전혀 영향을 주지 않게</b>(가중치 0) 만들어졌습니다. 상관 행렬이 그 사실을 알아내는지 확인하세요. 칸을 누르면 아래에 산점도가 그려집니다.</p>
+ <div class="lab">
+  <div class="row">
+   <label>식물 <select id="h5plant"></select></label>
+   <span class="chk"><input type="checkbox" id="h5log">조도 로그 변환</span>
+   <span class="chk"><input type="checkbox" id="h5dev">환경 변수 &rarr; &lsquo;적정 범위에서 벗어난 정도&rsquo;</span>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv tap" id="h5c" data-h="440"></canvas>
+    <div class="mini2" style="margin-top:6px">금색 = 양의 상관 · 파랑 = 음의 상관 · 진할수록 |r|이 큼 · 상태: 0 건강 · 1 주의 · 2 위험</div>
+   </div>
+   <div>
+    <canvas class="cv tap" id="h5s" data-h="300"></canvas>
+    <div class="explain" id="h5ex" style="margin-top:10px"></div>
+   </div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box ev"><b>찾아볼 것 세 가지</b><ol>
+   <li><b>소음 행</b> · 모든 칸이 0 근처인가요? 정확히 0이 아닌 이유는 240개라는 유한한 표본의 우연입니다.</li>
+   <li><b>상태 열</b> · 토양 수분과 상태의 r이 0에 가깝습니다. 수분이 상태와 관계없다는 뜻일까요? 칸을 눌러 산점도를 보고, &lsquo;벗어난 정도&rsquo;로 바꿔 다시 보세요.</li>
+   <li><b>6종 모두 합치기</b> · 식물 한 종 안에서는 0 근처이던 수분&ndash;습도 r이 합치면 커집니다. 숨은 변수는 무엇일까요?</li>
+  </ol></div>
+  <div class="code"><div class="ch"><span>corr_matrix.py — 코랩에서 같은 결과 얻기</span><span><button id="h5copy">복사</button></span></div><pre id="h5code"></pre></div>
+ </div>
+ <div class="box tip"><b>교과서 숫자와 다른 이유</b> · 7회차 교과서 120쪽의 온도&ndash;수분 &minus;0.32, 조도&ndash;수분 +0.23은 <b>교과서 모둠이 직접 잰 데이터</b>의 값입니다.
+ 이 실습실의 데이터는 8회차를 위해 <b>변수끼리 서로 독립으로 뽑아 만든 가상 데이터</b>라서 환경 변수끼리의 r은 대부분 0 근처입니다. 같은 공식이라도 데이터가 다르면 값이 다릅니다.</div>
+</section>
+
+<!-- ================= ⑥ 확인 문제 ================= -->
+<section class="pane" id="p6">
+ <h2 class="sh">⑥ 확인 문제 — <em>즉시 채점</em></h2>
+ <p class="sdesc">답을 고르면 바로 채점되고 풀이가 열립니다. 계산 문제는 소수 둘째 자리까지 입력하세요.</p>
+ <div id="q6"></div>
+ <div class="lab" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <div><div class="mini2">점수</div><div class="score" id="q6score">0 / 0</div></div>
+  <button class="tbtn ghost" id="q6reset">다시 풀기</button>
+ </div>
+</section>
+
+</main>
+
+<footer><div class="wrap">
+ 2026 AIEDAP 충청권역 「AI 융합 수업실천 및 모형개발」 · 대전대신고 수학과 연구팀 · 7회차 연구 실습실(김세환)<br>
+ 데이터: <span class="f">data/smart_plant_sensor.csv</span> · <span class="f">data/plants_optimal.csv</span>(교육용 가상 데이터, <span class="f">data/make_data.py</span>로 생성)를 이 페이지에 그대로 담았습니다. 파일 없이(file://) 열어도 작동합니다.<br>
+ <a href="../lesson07.html" style="color:var(--accent)">7회차 수업 페이지</a> · <a href="index.html" style="color:var(--accent)">연구 산출물 허브</a> · <a href="../index.html" style="color:var(--accent)">운영실 메인</a>
+</div></footer>
+
+<script src="lab07_correlation.js"></script>
+</body></html>

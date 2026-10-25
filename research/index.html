@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>블랙박스 열기 연구 자료</title>
+<link rel="stylesheet" href="../style.css?v=12">
+<style>
+.hub{max-width:1080px;margin:0 auto;padding:40px 16px 70px}
+.hub h1{font-family:var(--serif);font-size:clamp(26px,5vw,40px);line-height:1.25;margin:6px 0 10px}
+.hub .kick{font-size:12px;letter-spacing:.14em;color:var(--gold)}
+.hub p.lead{color:var(--mut);max-width:720px;line-height:1.7}
+.steps5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:26px 0 34px}
+@media(max-width:820px){.steps5{grid-template-columns:minmax(0,1fr)}}
+.steps5 div{border:1px solid var(--line);border-radius:3px;padding:12px 13px;background:rgba(255,255,255,.015)}
+.steps5 b{display:block;font-family:var(--serif);font-size:15px;color:var(--accent);margin-bottom:4px}
+.steps5 span{font-size:12.5px;color:var(--mut);line-height:1.55}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.card{display:block;border:1px solid var(--line);border-radius:4px;padding:18px;background:var(--ink2);color:var(--tx);text-decoration:none;transition:.15s}
+.card:hover{border-color:var(--gold)}
+.card .n{font-size:11px;letter-spacing:.12em;color:var(--gold)}
+.card h3{font-family:var(--serif);font-size:18px;margin:6px 0 6px;line-height:1.35}
+.card .who{font-size:12.5px;color:var(--accent);margin-bottom:8px}
+.card p{font-size:13px;color:var(--mut);line-height:1.6;margin:0}
+.card .back{display:inline-block;margin-top:10px;font-size:12px;color:var(--dim)}
+.hub h2{font-family:var(--serif);font-size:21px;margin:40px 0 12px}
+.foot{margin-top:46px;font-size:12px;color:var(--dim);line-height:1.7}
+</style></head><body>
+<main class="hub">
+  <div class="kick">2026 AIEDAP 충청권역 · AI 융합 수업실천 및 모형개발</div>
+  <h1>블랙박스 열기 — 수학 원리 해부형<br>AI 융합 프로젝트 수업</h1>
+  <p class="lead">「인공지능 융합프로젝트」 수업 속 AI가 실제로 어떤 계산을 하는지, 학생이 직접 계산하고 조작해 보는 실습실 모음입니다. 대전대신고 수학과 다섯 교사가 한 회차씩 맡아 개발했습니다.</p>
+
+  <h2>수업모형 5단계</h2>
+  <div class="steps5">
+    <div><b>① 질문하기</b><span>교과서 프로젝트의 실생활 질문으로 출발</span></div>
+    <div><b>② 손으로 계산하기</b><span>작은 예제로 AI 속 수학을 직접 계산</span></div>
+    <div><b>③ 실습실에서 조작하기</b><span>값을 바꾸며 결과가 어떻게 달라지는지 관찰</span></div>
+    <div><b>④ 코드로 옮기기</b><span>코랩·생성형 AI로 구현하고 손계산과 대조</span></div>
+    <div><b>⑤ 함정 찾고 성찰하기</b><span>데이터·모델의 함정을 체험하고 토의</span></div>
+  </div>
+
+  <h2>회차별 실습실</h2>
+  <div class="cards">
+    <a class="card" href="lab04_wildfire_stats.html"><div class="n">4회차</div><h3>산불 데이터로 보는 대푯값과 추세선</h3><div class="who">이청록</div><p>대푯값과 이상값, 표준편차, 구성비, 최소제곱 추세선. 「합계」 행 하나가 모든 통계를 부풀리는 함정.</p><span class="back">수업 페이지 → lesson04</span></a>
+    <a class="card" href="lab05_fall_vector.html"><div class="n">5회차</div><h3>낙상 감지의 수학</h3><div class="who">신형철</div><p>3축 가속도 벡터의 크기, 이동평균 필터, 임계값과 히스테리시스. 거짓 경보와 놓침의 맞교환.</p><span class="back">수업 페이지 → lesson05</span></a>
+    <a class="card" href="lab06_detection_iou.html"><div class="n">6회차</div><h3>객체 탐지의 수학</h3><div class="who">김태환</div><p>소프트맥스 확률, 바운딩 박스의 IoU, 겹친 박스를 지우는 NMS, 정밀도와 재현율.</p><span class="back">수업 페이지 → lesson06</span></a>
+    <a class="card" href="lab07_correlation.html"><div class="n">7회차</div><h3>상관계수를 손으로</h3><div class="who">김세환</div><p>편차의 곱과 사분면, 공분산과 표준화, 상관계수. 이상값·곡선·교란 변수의 함정.</p><span class="back">수업 페이지 → lesson07</span></a>
+    <a class="card" href="../lesson08_lab.html"><div class="n">8회차</div><h3>k-NN의 수학으로 스마트 화분 완성</h3><div class="who">하진수 · 연구책임</div><p>유클리드 거리, 표준화, 다수결, 혼동행렬, 7일 자동화 시뮬레이터. 자료집과 코랩 노트북 포함.</p><span class="back">자료집 → lesson08_knn_guide</span></a>
+  </div>
+
+  <p class="foot">수업 운영실 메인 <a href="../index.html">aifp-2026</a> · 블랙박스 열기 연구팀 하진수(연구책임) · 이청록 · 신형철 · 김태환 · 김세환 · 대전대신고등학교<br>실습실의 센서·스마트 화분 기록은 교육용 가상 데이터, 산불 자료는 국가통계포털 자료입니다.</p>
+</main>
+</body></html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>4회차 실습실 · 산불 데이터로 보는 대푯값과 추세선</title>
+<meta name="description" content="KOSIS 산불 발생 건수(2006~2025)로 합계 행 함정, 대푯값, 표준편차, 최소제곱 추세선, 원인별 구성비를 손으로 계산하고 조작해 보는 실습실">
+<link rel="stylesheet" href="../style.css">
+<style>
+/* 4회차 실습실 전용 (lesson08_lab 스타일 계승) */
+.pane{padding:34px 0 60px}
+.lab{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:18px;margin:16px 0}
+.lab .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.lab label{font-size:12.5px;color:var(--mut)}
+.lab select{background:#0a0b10;color:var(--tx);border:1px solid var(--line2);border-radius:2px;padding:6px 8px;font-size:12.5px;font-family:var(--sans)}
+.lab input[type=range]{accent-color:#d8b45a;vertical-align:middle;width:min(320px,100%)}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut);cursor:pointer;border:1px solid var(--line2);padding:7px 11px;border-radius:2px}
+.chk input{accent-color:#d8b45a}
+.chk.on{border-color:var(--rose);color:var(--tx);background:rgba(217,138,122,.08)}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+canvas.cv{width:100%;display:block;background:#0a0b10;border:1px solid var(--line);border-radius:3px;touch-action:none}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.steps button{flex:1 1 92px;font-size:12px;font-weight:700;padding:9px 8px;border-radius:2px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer;font-family:var(--sans);text-align:left}
+.steps button i{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;color:var(--dim)}
+.steps button.on{border-color:var(--accent);color:var(--tx);background:rgba(216,180,90,.1)}
+.steps button.done{color:var(--green)}
+.explain{border-left:2px solid var(--accent);background:rgba(216,180,90,.05);padding:12px 15px;font-size:13px;line-height:1.85;color:var(--mut);border-radius:2px;min-height:80px}
+.explain b{color:var(--tx)}
+.f{font-family:var(--mono);font-size:12px;color:#d8dae4;background:#0a0b10;border:1px solid var(--line);padding:2px 6px;border-radius:2px;white-space:nowrap}
+.fblock{font-family:var(--mono);font-size:12.5px;color:#d8dae4;background:#0a0b10;border:1px solid var(--line);padding:10px 14px;border-radius:3px;line-height:1.9;overflow-x:auto;white-space:pre}
+.dtab{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
+.dtab th,.dtab td{padding:5px 7px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono);white-space:nowrap}
+.dtab th{color:var(--accent);font-family:var(--sans);font-size:11px;background:none;letter-spacing:0}
+.dtab td:first-child,.dtab th:first-child{text-align:left}
+.dtab td.hc{background:rgba(216,180,90,.13);color:var(--tx)}
+.dtab tr.tot td{color:var(--rose);background:rgba(217,138,122,.07)}
+.dtab tr.sum td{color:var(--tx);border-top:1px solid var(--line2)}
+.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:9px;margin:12px 0}
+.metric>div{border:1px solid var(--line);border-radius:3px;padding:10px 12px;background:rgba(255,255,255,.015)}
+.metric .l{font-size:10.5px;letter-spacing:.08em;color:var(--dim)}
+.metric .v{font-family:var(--serif);font-size:20px;font-weight:800;margin-top:2px}
+.metric .d{font-size:11px;color:var(--mut);font-family:var(--mono)}
+.metric>.bad .v{color:var(--rose)}
+.metric>.good .v{color:var(--green)}
+.sw{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:12px;color:var(--mut)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.mini2{font-size:11.5px;color:var(--dim)}
+.hero .links{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.stage{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--green);padding:2px 8px;border-radius:2px;margin-right:6px;vertical-align:2px}
+.ans{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.ans input{background:#0a0b10;color:var(--tx);border:1px solid var(--line2);border-radius:2px;padding:7px 9px;font-size:13px;width:120px;font-family:var(--mono)}
+@media(max-width:520px){.tab{padding:7px 9px;font-size:12px}.lab{padding:12px}.hstats{gap:14px}}
+</style></head><body>
+
+<header class="hero"><div class="wrap">
+ <div class="eyebrow">4회차 실습실 · 13~16차시 · 블랙박스 열기 수업모형</div>
+ <h1>산불 데이터로 보는<br><em>대푯값</em>과 <em>추세선</em></h1>
+ <p class="lead">파이썬의 <span class="f">df.mean()</span>, <span class="f">df.std()</span>, 추세선 그리기 버튼 뒤에서 실제로 무슨 계산이 일어나는지 직접 열어 봅니다.
+ 국가통계포털(KOSIS)의 실제 산불 발생 건수로 <b>손으로 계산하고</b>, <b>슬라이더와 드래그로 조작하고</b>, 마지막에 <b>함정</b>을 찾습니다. 모든 숫자는 이 페이지 안의 원자료에서 그 자리에서 계산됩니다.</p>
+ <div class="hstats" id="hstats"></div>
+ <div class="links">
+  <a class="tbtn" href="../lesson04.html">← 4회차 수업 페이지</a>
+  <a class="tbtn ghost" href="index.html">연구 산출물 허브</a>
+ </div>
+</div></header>
+
+<nav class="bar"><div class="wrap in">
+ <div class="tabs" id="tabs">
+  <button class="tab active" data-p="p1">① 합계 행 함정</button>
+  <button class="tab" data-p="p2">② 대푯값과 이상값</button>
+  <button class="tab" data-p="p3">③ 표준편차 단계별</button>
+  <button class="tab" data-p="p4">④ 최소제곱 추세선</button>
+  <button class="tab" data-p="p5">⑤ 원인별 구성비</button>
+  <button class="tab" data-p="p6">⑥ 정리·확인 문제</button>
+ </div>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= ① ================= -->
+<section class="pane on" id="p1">
+ <h2 class="sh">① 합계 행 하나가 <em>모든 통계</em>를 부풀린다</h2>
+ <p class="sdesc"><span class="stage">⑤ 함정 찾기 · 도입</span>KOSIS에서 내려받을 때 &lsquo;합계&rsquo;와 &lsquo;계&rsquo;를 해제하지 않으면, 표 맨 아래에 <b>합계 행</b>이 한 줄 붙어 옵니다.
+ 파이썬은 그 줄이 합계인지 모릅니다. 그냥 <b>스물한 번째 해</b>로 셉니다. 아래 토글을 켜고 끄며 통계가 어떻게 변하는지 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label class="chk" id="t1lab"><input type="checkbox" id="t1tot"> 「합계」 행 포함하기</label>
+   <span class="mini2">켜면 9,240건짜리 &lsquo;합계 해&rsquo;가 데이터에 섞입니다.</span>
+  </div>
+  <div class="metric" id="t1m"></div>
+  <div class="split">
+   <div><canvas class="cv" id="t1c" height="320"></canvas>
+    <div class="mini2" style="margin-top:6px">막대 = 연도별 산불 발생 건수 · 금색 점선 = 평균 · 초록 점선 = 중앙값</div></div>
+   <div class="sw"><table class="dtab" id="t1tab"></table></div>
+  </div>
+  <div class="explain" id="t1ex" style="margin-top:12px"></div>
+ </div>
+ <h3 class="bh">왜 정확히 2배인가 — 식으로 확인하기</h3>
+ <div class="grid g2">
+  <div class="box ev">20개 연도의 건수를 y₁, y₂, …, y₂₀이라 하고 그 합을 S라 하면, 합계 행의 값은 바로 S입니다.
+   <div class="fblock" id="t1f"></div>
+   그래서 <b>합은 정확히 2배</b>, 평균은 <b>2S/(n+1)</b>로 거의 2배가 됩니다. 표준편차는 &lsquo;평균에서 아주 먼 점 하나&rsquo; 때문에 10배 넘게 뜁니다.</div>
+  <div class="box warn"><b class="t">원인별 표에서도 똑같이 일어납니다</b>원인 열에 &lsquo;계&rsquo;가 남아 있으면 &ldquo;가장 큰 원인은?&rdquo;의 답이 <b>&lsquo;계&rsquo;</b>가 됩니다(교과서 59쪽 Q&amp;A).
+   모든 원인의 비율도 절반으로 줄어듭니다. ⑤ 탭에서 직접 켜 볼 수 있습니다.<br>
+   월(합계)과 원인(계)을 <b>둘 다</b> 남기면 전체 칸의 합은 <b id="t1x4"></b>건, 즉 <b>4배</b>가 됩니다.</div>
+ </div>
+</section>
+
+<!-- ================= ② ================= -->
+<section class="pane" id="p2">
+ <h2 class="sh">② 평균·중앙값·최빈값, 그리고 <em>이상값 하나</em></h2>
+ <p class="sdesc"><span class="stage">② 손으로 계산하기 → ③ 조작하기</span>최근 5년(2021~2025) 산불 건수 다섯 개로 먼저 손계산을 합니다.
+ 그다음 2022년 값을 슬라이더로 바꿔 보세요. 입력 실수로 <b>756</b>이 <b>7560</b>이 되면 무슨 일이 생길까요?</p>
+ <div class="lab">
+  <div class="row">
+   <label>2022년 값 <input type="range" id="t2s" min="0" max="8000" step="1" value="756"> <b id="t2v" class="hl">756</b>건</label>
+   <button class="tbtn ghost" id="t2typo">오타 재현: 7560</button>
+   <button class="tbtn ghost" id="t2reset">원래 값 756</button>
+  </div>
+  <div class="split">
+   <div><canvas class="cv" id="t2c" height="230"></canvas>
+    <div class="mini2" style="margin-top:6px">점 = 연도별 건수 · 금색 ▲ = 평균 · 초록 ▼ = 중앙값</div></div>
+   <div><div class="metric" id="t2m"></div><div class="explain" id="t2ex"></div></div>
+  </div>
+  <h3 class="bh" style="margin-top:20px">손계산 기록</h3>
+  <div class="fblock" id="t2calc"></div>
+ </div>
+ <h3 class="bh">최빈값은 어디에 쓰나 — &lsquo;그해 산불이 가장 많았던 달&rsquo;</h3>
+ <p class="sdesc">건수처럼 값이 거의 겹치지 않는 자료에는 최빈값이 쓸모없습니다. 대신 20년 각각에서 <b>산불이 가장 많았던 달</b>을 뽑으면 범주형 자료가 되고, 최빈값이 의미를 갖습니다.</p>
+ <div class="lab">
+  <div class="split">
+   <div><canvas class="cv" id="t2m2" height="230"></canvas></div>
+   <div><div class="explain" id="t2mex"></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= ③ ================= -->
+<section class="pane" id="p3">
+ <h2 class="sh">③ 표준편차를 <em>다섯 단계</em>로 열어 보기</h2>
+ <p class="sdesc"><span class="stage">② 손으로 계산하기</span>표준편차는 &ldquo;평균에서 평균적으로 얼마나 떨어져 있나&rdquo;입니다. 그런데 편차를 그냥 평균하면 <b>항상 0</b>이 됩니다. 그래서 제곱했다가 마지막에 제곱근으로 되돌립니다.
+ STEP 버튼을 차례로 눌러 보세요. 지금 계산 중인 열이 강조됩니다.</p>
+ <div class="lab">
+  <div class="row">
+   <label>자료 <select id="t3d"><option value="5">최근 5년 (2021~2025) — 손계산용</option><option value="20">전체 20년 (2006~2025)</option></select></label>
+   <button class="tbtn ghost" id="t3auto">▶ 자동 재생</button>
+  </div>
+  <div class="steps" id="t3steps">
+   <button data-s="1"><i>STEP 1</i>평균 구하기</button>
+   <button data-s="2"><i>STEP 2</i>편차 (y − ȳ)</button>
+   <button data-s="3"><i>STEP 3</i>제곱 (y − ȳ)²</button>
+   <button data-s="4"><i>STEP 4</i>평균 → 분산</button>
+   <button data-s="5"><i>STEP 5</i>제곱근 → 표준편차</button>
+  </div>
+  <div class="split">
+   <div><canvas class="cv" id="t3c" height="300"></canvas>
+    <div class="mini2" style="margin-top:6px">세로 막대 = 편차 · 반투명 사각형 = 편차의 제곱(넓이) · 금색 띠 = 평균 ± 표준편차</div></div>
+   <div><div class="explain" id="t3ex"></div>
+    <div class="sw" style="margin-top:10px"><table class="dtab" id="t3tab"></table></div></div>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box warn"><b class="t">함정 · n으로 나누나, n−1로 나누나</b>교과서(확률과 통계)의 분산은 <b>n으로</b> 나눕니다. 그런데 판다스의 <span class="f">df.std()</span>는 기본값이 <b>n−1</b>로 나누는 표본표준편차입니다.
+   전체 20년 자료로 계산하면 <b id="t3nn"></b>. AI가 짜 준 코드의 숫자와 손계산이 다르면 이 차이부터 의심하세요. <span class="f">df.std(ddof=0)</span>이면 교과서와 같아집니다.</div>
+  <div class="box tip"><b>왜 제곱인가</b> · 편차의 합은 언제나 0입니다(<span class="f">Σ(y−ȳ) = Σy − nȳ = 0</span>). 부호를 없애려면 절댓값이나 제곱을 써야 하는데,
+   제곱은 미분이 쉽고 ④의 최소제곱법과 같은 원리로 이어집니다. 대신 큰 편차를 훨씬 크게 키우므로 이상값에 민감합니다.</div>
+ </div>
+</section>
+
+<!-- ================= ④ ================= -->
+<section class="pane" id="p4">
+ <h2 class="sh">④ 최소제곱 추세선 — <em>직접 그어서</em> 이겨 보기</h2>
+ <p class="sdesc"><span class="stage">③ 조작하기 → ⑤ 함정 찾기</span>금색 손잡이 두 개를 끌어 직선을 움직여 보세요. 빨간 세로선이 <b>잔차</b>(실제값 − 직선값)이고, 아래 막대가 <b>잔차 제곱합</b>입니다.
+ 이 합을 가장 작게 만드는 직선이 바로 엑셀·파이썬이 그려 주는 &lsquo;추세선&rsquo;입니다. 정답보다 작게 만들 수 있을까요?</p>
+ <div class="lab">
+  <div class="row">
+   <label>기간 <select id="t4r"><option value="all">전체 20년 (2006~2025)</option><option value="last5">최근 5년 (2021~2025)</option><option value="mid">2012~2022 (11년)</option></select></label>
+   <button class="tbtn" id="t4ans">정답 직선 보기</button>
+   <button class="tbtn ghost" id="t4flat">평균선(기울기 0)에서 시작</button>
+   <label class="chk"><input type="checkbox" id="t4sq"> 잔차를 정사각형으로</label>
+  </div>
+  <div class="split">
+   <div><canvas class="cv" id="t4c" height="380"></canvas>
+    <div class="mini2" style="margin-top:6px">손잡이(●)를 손가락이나 마우스로 끌어 보세요 · 초록 직선 = 최소제곱 직선(정답 보기)</div></div>
+   <div><div class="metric" id="t4m"></div>
+    <canvas class="cv" id="t4bar" height="90"></canvas>
+    <div class="explain" id="t4ex" style="margin-top:10px"></div></div>
+  </div>
+  <h3 class="bh" style="margin-top:20px">정답 직선의 계산 과정 <span class="mini2">a = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)², b = ȳ − a·x̄</span></h3>
+  <div class="sw"><table class="dtab" id="t4tab"></table></div>
+ </div>
+ <div class="grid g2">
+  <div class="box warn"><b class="t">함정 · 기간을 고르면 추세가 뒤집힌다</b>위의 &lsquo;기간&rsquo;을 바꿔 보세요. 같은 자료인데 <b id="t4trap"></b>
+   &ldquo;산불이 늘고 있다/줄고 있다&rdquo;는 주장을 보면 <b>어느 기간으로 그었는지</b>부터 물어야 합니다.</div>
+  <div class="box tip"><b>결정계수 R²로 본 추세의 힘</b> · 전체 20년 직선의 R²는 <b id="t4r2"></b>입니다. 해마다의 들쭉날쭉함 중 직선이 설명하는 몫이 그만큼뿐이라는 뜻입니다.
+   기울기가 양수라는 사실만으로 &ldquo;뚜렷한 증가 추세&rdquo;라고 말하기는 어렵습니다.</div>
+ </div>
+</section>
+
+<!-- ================= ⑤ ================= -->
+<section class="pane" id="p5">
+ <h2 class="sh">⑤ 원인별 <em>구성비</em> — 2위가 &lsquo;기타&rsquo;라는 신호</h2>
+ <p class="sdesc"><span class="stage">③ 조작하기 → ⑤ 함정 찾기</span>구성비 = 해당 원인 건수 ÷ 전체 건수 × 100. 원그래프의 각도는 <b>구성비 × 3.6°</b>입니다. 연도를 바꾸며 &lsquo;기타&rsquo; 조각이 어떻게 커지는지 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>연도 <select id="t5y"></select></label>
+   <label class="chk" id="t5lab"><input type="checkbox" id="t5tot"> 「계」 열 포함하기</label>
+  </div>
+  <div class="split">
+   <div><canvas class="cv" id="t5c" height="320"></canvas><div class="legend" id="t5leg"></div></div>
+   <div><div class="sw"><table class="dtab" id="t5tab"></table></div>
+    <div class="explain" id="t5ex" style="margin-top:10px"></div></div>
+  </div>
+  <h3 class="bh" style="margin-top:20px">연도별 &lsquo;기타&rsquo;의 비중</h3>
+  <canvas class="cv" id="t5line" height="200"></canvas>
+ </div>
+ <div class="box warn"><b class="t">이 숫자로 &ldquo;산불 원인이 바뀌었다&rdquo;고 말할 수 있을까</b>잔여 범주인 &lsquo;기타&rsquo;가 최대 범주에 다가간다는 것은 <b>분류 체계가 제 기능을 못 한다</b>는 신호입니다.
+ 원인별 시계열은 분류 기준이 바뀌었는지부터 확인해야 하며, 이 자료만으로 원인의 변화를 결론 내리면 안 됩니다. 또한 2022년은 원자료에 &lsquo;어린이불장난&rsquo; 항목이 없어 0으로 처리했습니다.</div>
+</section>
+
+<!-- ================= ⑥ ================= -->
+<section class="pane" id="p6">
+ <h2 class="sh">⑥ 정리 · <em>확인 문제</em></h2>
+ <p class="sdesc"><span class="stage">⑤ 성찰하기</span>답을 고르면 바로 채점됩니다. 숫자는 모두 이 페이지의 원자료에서 계산한 값입니다.</p>
+ <div class="quiz" id="quiz"><div class="qh">확인 문제 5</div></div>
+ <h3 class="bh">오늘 연 블랙박스 한눈에</h3>
+ <div class="tw"><table>
+  <thead><tr><th>코드 한 줄</th><th>안에서 일어나는 계산</th><th>함정</th></tr></thead>
+  <tbody>
+   <tr><td><b>df.drop(합계 행)</b></td><td>분석 대상이 아닌 행 제거</td><td>남기면 합 2배, 평균 약 2배</td></tr>
+   <tr><td><b>df.mean() / median()</b></td><td>Σy/n · 정렬 후 가운데 값</td><td>평균은 이상값 하나에 끌려감</td></tr>
+   <tr><td><b>df.std()</b></td><td>편차 → 제곱 → 평균 → 제곱근</td><td>판다스 기본은 n−1로 나눔</td></tr>
+   <tr><td><b>np.polyfit(x, y, 1)</b></td><td>잔차 제곱합을 최소로 하는 a, b</td><td>기간 선택에 따라 기울기 부호가 바뀜</td></tr>
+   <tr><td><b>value_counts(normalize=True)</b></td><td>건수 ÷ 전체 → 구성비</td><td>&lsquo;기타&rsquo;가 크면 분류 자체를 의심</td></tr>
+  </tbody></table></div>
+</section>
+</main>
+
+<footer><div class="wrap-n">
+ 2026 AIEDAP 충청권역 「AI 융합 수업실천 및 모형개발」 · 대전대신고등학교 수학과 · 4회차 실습실(이청록)<br>
+ 자료: 통계청 KOSIS 통계표 TX_13625_A003 「월별·원인별 산불 발생건수」(산림청 산불방지과, 2006~2025, 2026-09-21 내려받음). 원자료의 &lsquo;-&rsquo;는 0건으로 처리했으며, 20년 합계 9,240건과 2025년 459건·최근 10년 평균 529건은 e-나라지표 「산불 발생현황」과 일치함을 확인했습니다.<br>
+ <a href="../lesson04.html" style="color:var(--accent)">4회차 수업 페이지</a> ·
+ <a href="index.html" style="color:var(--accent)">연구 산출물 허브</a>
+</div></footer>
+
+<script src="lab04_wildfire_stats.js"></script>
+</body></html>

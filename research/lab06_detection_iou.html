@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6회차 연구 실습실 · 객체 탐지의 수학</title>
+<meta name="description" content="소프트맥스 확률, IoU, NMS, 정밀도·재현율을 급식판 그림으로 직접 계산하고 조작하는 웹 실습실 (블랙박스 열기 수업모형 · 김태환)">
+<link rel="stylesheet" href="../style.css?v=12">
+<style>
+/* 6회차 연구 실습실 전용 — 객체 탐지의 수학 */
+.bar .in{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lab{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:18px;margin:16px 0}
+.lab .row{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.lab label{font-size:12.5px;color:var(--mut)}
+.lab input[type=range]{accent-color:#d8b45a;vertical-align:middle;max-width:160px}
+.lab .chk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--mut);cursor:pointer}
+.lab .chk input{accent-color:#d8b45a}
+.split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+canvas.cv{width:100%;display:block;background:#0a0b10;border:1px solid var(--line);border-radius:3px;touch-action:none;user-select:none;-webkit-user-select:none}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.steps button{flex:1 1 92px;font-size:12px;font-weight:700;padding:8px 8px;border-radius:2px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer;font-family:var(--sans);text-align:left}
+.steps button i{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;color:var(--dim)}
+.steps button.on{border-color:var(--accent);color:var(--tx);background:rgba(216,180,90,.1)}
+.steps button.done{color:var(--green)}
+.explain{border-left:2px solid var(--accent);background:rgba(216,180,90,.05);padding:12px 15px;font-size:13px;line-height:1.9;color:var(--mut);border-radius:2px;min-height:90px}
+.explain b{color:var(--tx)}
+.explain .f,.f{font-family:var(--mono);font-size:12px;color:#d8dae4;background:#0a0b10;border:1px solid var(--line);padding:1px 6px;border-radius:2px;overflow-wrap:anywhere}
+.explain .dim{opacity:.38}
+.explain .now{color:var(--tx)}
+.dtab{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
+.dtab th,.dtab td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono);white-space:nowrap}
+.dtab th{color:var(--accent);font-family:var(--sans);font-size:11px;background:transparent;letter-spacing:0}
+.dtab td:first-child,.dtab th:first-child,.dtab td.l,.dtab th.l{text-align:left}
+.dtab td.l{font-family:var(--sans)}
+.dtab tr.sel td{background:rgba(216,180,90,.1);color:var(--tx)}
+.dtab tr.click{cursor:pointer}
+.dtab tr.gone td{opacity:.38;text-decoration:line-through}
+.tsc{overflow-x:auto;max-width:100%}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.pycode{font-family:var(--mono);font-size:12px;line-height:1.8;background:#0a0b10;border:1px solid var(--line);border-radius:3px;padding:10px 0;overflow-x:auto;color:#9a9caa;margin:10px 0}
+.pycode div{padding:0 14px;white-space:pre}
+.pycode .c{color:#6d6f7d}
+.pycode div.hl{background:rgba(216,180,90,.13);color:#f3f1ea;box-shadow:inset 2px 0 0 var(--accent)}
+.bars{display:grid;gap:7px;margin-top:10px}
+.bars .vb{display:grid;grid-template-columns:70px 1fr 52px;gap:8px;align-items:center;font-size:12px;color:var(--mut)}
+.bars .tr{position:relative;height:14px;background:rgba(255,255,255,.05);border-radius:2px;overflow:visible}
+.bars .fl{height:100%;border-radius:2px;transition:width .25s}
+.bars .th{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--rose)}
+.bars .v{text-align:right;font-family:var(--mono)}
+.zrow{display:grid;grid-template-columns:70px 1fr 48px;gap:8px;align-items:center;font-size:12.5px;color:var(--mut);margin:5px 0}
+.zrow input[type=range]{width:100%;max-width:none}
+.zrow .v{font-family:var(--mono);text-align:right;color:var(--tx)}
+.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:9px;margin:12px 0}
+.metric > div{border:1px solid var(--line);border-radius:3px;padding:10px 12px;background:rgba(255,255,255,.015)}
+.metric .l{font-size:10.5px;letter-spacing:.06em;color:var(--dim)}
+.metric .v{font-family:var(--serif);font-size:20px;font-weight:800;margin-top:2px;color:var(--tx)}
+.metric .s{font-size:11px;color:var(--mut);font-family:var(--mono)}
+.stage{display:inline-block;font-size:10.5px;letter-spacing:.08em;padding:3px 9px;border-radius:10px;border:1px solid rgba(216,180,90,.4);color:var(--accent);margin:0 4px 10px 0}
+.mini2{font-size:11.5px;color:var(--dim);line-height:1.7}
+.hero .links{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.log{font-size:12.5px;color:var(--mut);line-height:1.8;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:3px;padding:8px 12px;background:#0a0b10;margin-top:10px}
+.log div.cur{color:var(--tx)}
+.log div.cur:before{content:"▶ ";color:var(--accent)}
+.tag2{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;font-family:var(--sans)}
+.tag2.tp{background:rgba(139,192,164,.18);color:var(--green)}
+.tag2.fp{background:rgba(217,138,122,.18);color:var(--rose)}
+.tag2.fn{background:rgba(217,138,122,.08);color:var(--rose);border:1px dashed var(--rose)}
+.tag2.wait{background:rgba(255,255,255,.06);color:var(--mut)}
+.tag2.keep{background:rgba(139,192,164,.18);color:var(--green)}
+.tag2.pick{background:rgba(216,180,90,.22);color:var(--accent)}
+.tag2.del{background:rgba(217,138,122,.18);color:var(--rose)}
+.qnum{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qnum input{width:110px;background:rgba(255,255,255,.035);border:1px solid var(--line2);border-radius:3px;color:var(--tx);padding:8px 10px;font-family:var(--mono);font-size:13px}
+@media(max-width:640px){
+ .lab{padding:12px}
+ .tab{padding:7px 9px;font-size:12px}
+ .bars .vb,.zrow{grid-template-columns:58px 1fr 44px}
+}
+</style></head><body>
+
+<header class="hero"><div class="wrap">
+ <div class="eyebrow">6회차 연구 실습실 · 블랙박스 열기 수업모형 · 김태환</div>
+ <h1>급식판 위의 상자들,<br><em>확률</em>과 <em>넓이의 비</em>로 열어 보기</h1>
+ <p class="lead">6회차에서 객체 탐지 모델은 사진 속 음식마다 <b>상자</b>와 <b>이름</b>과 <b>신뢰도</b>를 붙여 주었습니다.
+ 그 숫자들은 어디서 나왔고, 겹친 상자는 어떻게 정리되며, 모델이 &lsquo;맞혔다&rsquo;는 것은 무엇을 뜻할까요?
+ 이 페이지는 지수함수(소프트맥스), 사각형의 넓이(IoU), 정렬과 제거(NMS), 비율(정밀도·재현율)로 그 과정을 <b>손으로 계산하고 직접 조작</b>하는 실습판입니다.
+ 모든 계산은 브라우저 안에서 일어나며, 급식판 그림과 상자 좌표는 수업용으로 만든 가상의 값입니다.</p>
+ <div class="hstats">
+  <div><b>6</b><span>실제 물체(정답 상자)</span></div><div><b>11</b><span>모델이 낸 예측 상자</span></div>
+  <div><b>5</b><span>음식 종류</span></div><div><b>4</b><span>수학 원리</span></div>
+ </div>
+ <div class="links">
+  <a class="tbtn" href="../lesson06.html">← 6회차 수업 페이지</a>
+  <a class="tbtn ghost" href="index.html">연구 실습실 모음</a>
+ </div>
+</div></header>
+
+<nav class="bar"><div class="wrap in">
+ <div class="tabs" id="tabs">
+  <button class="tab active" data-p="p1">① 소프트맥스</button>
+  <button class="tab" data-p="p2">② IoU 손계산</button>
+  <button class="tab" data-p="p3">③ 정답 판정</button>
+  <button class="tab" data-p="p4">④ NMS 단계별</button>
+  <button class="tab" data-p="p5">⑤ 정밀도·재현율</button>
+  <button class="tab" data-p="p6">⑥ 확인 문제</button>
+ </div>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= ① 소프트맥스 ================= -->
+<section class="pane on" id="p1">
+ <span class="stage">② 손으로 계산하기</span><span class="stage">③ 조작하기</span>
+ <h2 class="sh">① 점수를 <em>확률</em>로 — 소프트맥스 계산기</h2>
+ <p class="sdesc">모델은 상자 하나를 보고 먼저 음식 종류마다 <b>점수</b>(로짓, z)를 냅니다. 점수는 음수도 되고 합도 제각각이라 그대로는 확률이 아닙니다.
+ 소프트맥스는 <span class="f">p<sub>i</sub> = e<sup>z<sub>i</sub>/T</sup> ÷ Σ e<sup>z<sub>j</sub>/T</sup></span> 로 점수를 <b>0과 1 사이, 합이 1</b>인 값으로 바꿉니다.
+ 화면에 뜨는 &lsquo;계란말이 0.88&rsquo;의 0.88이 바로 이 값입니다. 슬라이더로 점수와 온도 T를 바꾸며 표의 각 열을 손계산과 맞춰 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>음식 종류 수 <select id="smN" style="background:#0a0b10;color:var(--tx);border:1px solid var(--line2);padding:5px 7px;border-radius:2px"><option value="3">3개 (손계산용)</option><option value="5">5개</option></select></label>
+   <label>온도 T <input type="range" id="smT" min="0.25" max="4" step="0.05" value="1"> <b id="smTv">1.00</b></label>
+   <label>신뢰도 임계값 <input type="range" id="smTh" min="0" max="1" step="0.05" value="0.5"> <b id="smThv">0.50</b></label>
+  </div>
+  <div class="split">
+   <div>
+    <h4 style="margin:6px 0 4px;font-size:13px;color:var(--accent)">점수 z (모델의 마지막 층 출력)</h4>
+    <div id="smZ"></div>
+    <h4 style="margin:16px 0 4px;font-size:13px;color:var(--accent)">확률 p (막대) · 빨간 선 = 신뢰도 임계값</h4>
+    <div class="bars" id="smBars"></div>
+    <div class="row" style="margin-top:14px">
+     <button class="tbtn ghost" data-sm="hand">손계산 예제 (2.0, 1.0, 0.1)</button>
+     <button class="tbtn ghost" data-sm="plus">모든 점수에 +1</button>
+     <button class="tbtn ghost" data-sm="neg">음수 점수 섞기</button>
+     <button class="tbtn ghost" data-sm="spoon">함정 · 처음 보는 숟가락</button>
+    </div>
+   </div>
+   <div>
+    <div class="tsc"><table class="dtab" id="smTab"></table></div>
+    <div class="explain" id="smEx" style="margin-top:12px"></div>
+   </div>
+  </div>
+ </div>
+ <div class="split">
+  <div>
+   <h3 class="bh">같은 계산을 코드로</h3>
+   <div class="pycode"><div><span class="c"># 단계 ④ 코드로 옮기기 — 코랩에서 그대로 실행해 손계산과 비교</span></div><div>import math</div><div>z = [2.0, 1.0, 0.1]        <span class="c"># 밥, 국, 김치의 점수</span></div><div>T = 1.0                    <span class="c"># 온도</span></div><div>e = [math.exp(v / T) for v in z]</div><div>s = sum(e)</div><div>p = [v / s for v in e]</div><div>print([round(v, 3) for v in e], round(s, 3))</div><div>print([round(v, 3) for v in p], sum(p))</div></div>
+  </div>
+  <div>
+   <h3 class="bh">관찰할 것</h3>
+   <div class="box"><ol>
+    <li><b>왜 지수함수인가</b> · e<sup>z</sup>는 언제나 양수여서 음수 점수도 확률로 바꿀 수 있고, 점수가 1 커질 때마다 약 2.718배가 되어 <b>1등을 더 도드라지게</b> 합니다. &lsquo;그냥 나누기&rsquo; 열과 비교해 보세요.</li>
+    <li><b>모든 점수에 같은 수를 더해도</b> 확률은 그대로입니다. e<sup>z+c</sup> = e<sup>c</sup>·e<sup>z</sup>에서 e<sup>c</sup>가 분자·분모에서 약분됩니다. 확률을 정하는 것은 점수의 <b>차이</b>입니다.</li>
+    <li><b>온도 T</b> · T가 작으면 1등이 거의 1에 가까워지고(자신만만), T가 크면 확률이 고르게 퍼집니다(망설임). 점수 순서는 T와 관계없이 그대로입니다.</li>
+    <li><b>신뢰도 임계값</b> · 탐지 프로그램은 보통 가장 큰 확률이 임계값 이상일 때만 상자를 화면에 남깁니다.</li>
+   </ol></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= ② IoU 손계산 ================= -->
+<section class="pane" id="p2">
+ <span class="stage">② 손으로 계산하기</span><span class="stage">③ 조작하기</span><span class="stage">⑤ 함정</span>
+ <h2 class="sh">② 두 상자는 얼마나 겹치나 — <em>IoU</em> 손계산</h2>
+ <p class="sdesc">상자는 왼쪽 위 꼭짓점 <span class="f">(x1, y1)</span>과 오른쪽 아래 꼭짓점 <span class="f">(x2, y2)</span> 네 수로 저장됩니다. 이미지 좌표는 <b>y가 아래로 갈수록 커집니다</b>.
+ IoU(Intersection over Union)는 <b>겹친 넓이 ÷ 합친 넓이</b>입니다. 상자 안쪽을 끌면 옮겨지고, 모서리의 작은 네모를 끌면 크기가 바뀝니다(눈금에 맞춰 정수로 움직입니다).</p>
+ <div class="lab">
+  <div class="split">
+   <div>
+    <canvas class="cv" id="iouC" data-ratio="0.80"></canvas>
+    <div class="mini2" style="margin-top:6px"><span class="sw" style="background:#7fa8d4"></span>상자 A · <span class="sw" style="background:#e7c37a"></span>상자 B · 칠해진 부분 = 교집합 · 점선 = 교집합을 정하는 max/min 선</div>
+   </div>
+   <div>
+    <div class="steps" id="iouSteps">
+     <button data-s="1"><i>STEP 1</i>각 넓이</button>
+     <button data-s="2"><i>STEP 2</i>교집합 좌표</button>
+     <button data-s="3"><i>STEP 3</i>교집합 넓이</button>
+     <button data-s="4"><i>STEP 4</i>합집합</button>
+     <button data-s="5"><i>STEP 5</i>IoU</button>
+    </div>
+    <div class="explain" id="iouEx"></div>
+    <div class="row" style="margin-top:10px">
+     <span class="chk"><input type="checkbox" id="iouNoMax">함정 · max(0, …) 빼고 계산하기</span>
+    </div>
+   </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+   <button class="tbtn ghost" data-io="hand">손계산 예제로</button>
+   <button class="tbtn ghost" data-io="apart">겹치지 않을 때</button>
+   <button class="tbtn ghost" data-io="inside">한 상자가 다른 상자 안에</button>
+   <button class="tbtn ghost" data-io="small">작은 상자를 한 칸 밀기</button>
+   <button class="tbtn ghost" data-io="big">큰 상자를 한 칸 밀기</button>
+  </div>
+ </div>
+ <div class="split">
+  <div>
+   <h3 class="bh">같은 계산을 코드로</h3>
+   <div class="pycode"><div>def iou(a, b):</div><div>    <span class="c"># a, b = (x1, y1, x2, y2)</span></div><div>    ix1, iy1 = max(a[0], b[0]), max(a[1], b[1])</div><div>    ix2, iy2 = min(a[2], b[2]), min(a[3], b[3])</div><div>    inter = max(0, ix2 - ix1) * max(0, iy2 - iy1)</div><div>    area_a = (a[2] - a[0]) * (a[3] - a[1])</div><div>    area_b = (b[2] - b[0]) * (b[3] - b[1])</div><div>    return inter / (area_a + area_b - inter)</div><div></div><div>print(iou((2, 1, 6, 4), (4, 2, 8, 6)))   <span class="c"># 0.1666...</span></div></div>
+  </div>
+  <div>
+   <h3 class="bh">관찰할 것</h3>
+   <div class="box"><ol>
+    <li>교집합의 왼쪽 끝은 두 왼쪽 끝 중 <b>더 오른쪽(max)</b>, 오른쪽 끝은 두 오른쪽 끝 중 <b>더 왼쪽(min)</b>입니다. 위·아래도 같습니다.</li>
+    <li>합집합 넓이를 직접 세지 않고 <b>A + B − 교집합</b>으로 구합니다. 겹친 부분을 두 번 셌기 때문입니다(포함-배제).</li>
+    <li><b>함정</b> · 두 상자가 떨어져 있으면 폭과 높이가 음수가 됩니다. 둘 다 음수면 곱이 양수가 되어 &lsquo;겹친 넓이&rsquo;가 생겨 버립니다. 그래서 max(0, …)가 꼭 필요합니다.</li>
+    <li><b>함정</b> · 똑같이 한 칸 어긋나도 작은 상자는 IoU가 크게 떨어지고, 큰 상자는 조금만 떨어집니다. 작은 물체일수록 &lsquo;맞혔다&rsquo; 판정을 받기 어렵습니다.</li>
+   </ol></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= ③ 정답 판정 ================= -->
+<section class="pane" id="p3">
+ <span class="stage">③ 조작하기</span>
+ <h2 class="sh">③ 이 상자는 <em>맞힌 것</em>인가 — IoU 임계값으로 정답 판정</h2>
+ <p class="sdesc">급식판에는 실제 물체 6개(흰 점선, 정답 상자)가 있고 모델은 상자 11개(A~K)를 냈습니다. 예측 상자는 <b>신뢰도가 높은 것부터</b> 차례로,
+ 같은 종류의 아직 짝이 없는 정답 상자와 IoU를 재어 <b>IoU ≥ 임계값</b>이면 <span class="tag2 tp">TP 맞힘</span>, 아니면 <span class="tag2 fp">FP 헛짚음</span>으로 판정합니다.
+ 짝을 찾지 못한 정답 상자는 <span class="tag2 fn">FN 놓침</span>입니다. 표의 줄이나 그림의 상자를 눌러 고르고, 고른 예측 상자를 끌어 옮겨 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>IoU 임계값 <input type="range" id="evThr" min="0.1" max="0.95" step="0.05" value="0.5"> <b id="evThrv">0.50</b></label>
+   <span class="chk"><input type="checkbox" id="evLbl" checked>상자 이름 보기</span>
+   <button class="tbtn ghost" id="evReset">상자 위치 되돌리기</button>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv" id="evC" data-ratio="0.6667"></canvas>
+    <div class="mini2" style="margin-top:6px">흰 점선 = 정답 상자 · 초록 = TP · 빨강 = FP · 노란 굵은 선 = 고른 상자 · 칠해진 부분 = 고른 상자와 짝 후보의 교집합</div>
+    <div class="metric" id="evMet"></div>
+   </div>
+   <div>
+    <div class="explain" id="evEx"></div>
+    <div class="tsc" style="margin-top:10px"><table class="dtab" id="evTab"></table></div>
+   </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+   <button class="tbtn ghost" data-ev="0.5">기본 0.5</button>
+   <button class="tbtn ghost" data-ev="0.7">엄격하게 0.7 — 김치 E는?</button>
+   <button class="tbtn ghost" data-ev="0.3">느슨하게 0.3</button>
+   <button class="tbtn ghost" data-ev="0.9">아주 엄격하게 0.9</button>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box tip"><b>판정 이유 네 가지</b><ul>
+   <li><b>위치 부정확</b> · 종류는 맞지만 IoU가 임계값보다 작음</li>
+   <li><b>중복</b> · 같은 물체를 이미 더 높은 신뢰도의 상자가 맞혔음 (NMS가 지워야 할 상자)</li>
+   <li><b>종류 틀림</b> · 상자 위치는 맞지만 이름이 다름</li>
+   <li><b>없는 물체</b> · 겹치는 정답 상자가 아예 없음</li>
+  </ul></div>
+  <div class="box"><b>생각해 볼 것</b><ul>
+   <li>IoU 임계값 0.5는 널리 쓰이는 약속일 뿐 자연법칙이 아닙니다. 급식 칼로리 계산처럼 위치가 중요하다면 몇이 알맞을까요?</li>
+   <li>밥 B(신뢰도 0.71)는 IoU가 0.667로 충분히 높은데도 FP입니다. 왜일까요?</li>
+  </ul></div>
+ </div>
+</section>
+
+<!-- ================= ④ NMS ================= -->
+<section class="pane" id="p4">
+ <span class="stage">② 손으로 계산하기</span><span class="stage">③ 조작하기</span><span class="stage">⑤ 함정</span>
+ <h2 class="sh">④ 겹친 상자 정리 — <em>NMS</em>를 한 단계씩</h2>
+ <p class="sdesc">모델은 같은 음식에 상자를 여러 개 내는 일이 흔합니다. NMS(Non-Maximum Suppression, 비최대 억제)는
+ <b>① 신뢰도 순으로 정렬 → ② 가장 높은 상자를 남김 → ③ 그 상자와 같은 종류이면서 IoU가 임계값보다 큰 상자를 지움 → ④ 남은 상자로 반복</b>합니다.
+ &lsquo;다음&rsquo;을 누를 때마다 한 단계씩 진행되고, 지금 실행 중인 줄이 코드와 기록에 강조됩니다.</p>
+ <div class="lab">
+  <div class="row">
+   <label>NMS IoU 임계값 <input type="range" id="nmThr" min="0.1" max="0.9" step="0.05" value="0.5"> <b id="nmThrv">0.50</b></label>
+   <button class="tbtn ghost" id="nmFirst">⏮ 처음</button>
+   <button class="tbtn ghost" id="nmPrev">◀ 이전</button>
+   <button class="tbtn" id="nmNext">다음 ▶</button>
+   <button class="tbtn ghost" id="nmPlay">▶ 자동 재생</button>
+   <button class="tbtn ghost" id="nmLast">⏭ 끝까지</button>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv" id="nmC" data-ratio="0.6667"></canvas>
+    <div class="mini2" style="margin-top:6px">노란 굵은 선 = 이번에 남긴 상자 · 하늘색 = 비교 중인 상자 · 초록 = 확정 · 흐린 회색 = 지워진 상자</div>
+    <div class="pycode" id="nmCode"></div>
+   </div>
+   <div>
+    <div class="explain" id="nmEx"></div>
+    <div class="tsc" style="margin-top:10px"><table class="dtab" id="nmTab"></table></div>
+    <div class="log" id="nmLog"></div>
+   </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+   <button class="tbtn ghost" data-nm="0.5">기본 0.5</button>
+   <button class="tbtn ghost" data-nm="0.3">함정 · 0.3으로 낮추면 계란말이는?</button>
+   <button class="tbtn ghost" data-nm="0.7">0.7로 높이면 중복은?</button>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box warn"><b class="t">함정 · 붙어 있는 두 물체</b>계란말이 두 조각은 실제로 겹쳐 놓여 있어 F와 G의 IoU가 0.344입니다.
+  임계값을 0.3으로 낮추면 NMS는 G를 &lsquo;F의 중복&rsquo;으로 보고 지웁니다. 실제로는 다른 물체인데도 말입니다. 반대로 임계값을 높이면 진짜 중복(밥 B, 국 D)이 살아남습니다.
+  <b>하나의 숫자로 두 가지 실수를 동시에 막을 수는 없습니다.</b></div>
+  <div class="box"><b>생각해 볼 것</b><ul>
+   <li>NMS는 같은 종류끼리만 비교했습니다. 계란말이 F 위의 &lsquo;김치 H&rsquo;는 왜 지워지지 않았을까요? 종류를 무시하고 비교하면 무엇이 달라질까요?</li>
+   <li>급식 사진에서 상자들이 많이 겹치는 상황(반찬이 붙어 있는 식판, 겹쳐 쌓인 우유)에서는 임계값을 어떻게 정해야 할까요?</li>
+  </ul></div>
+ </div>
+</section>
+
+<!-- ================= ⑤ 정밀도·재현율 ================= -->
+<section class="pane" id="p5">
+ <span class="stage">③ 조작하기</span><span class="stage">⑤ 함정 찾고 성찰하기</span>
+ <h2 class="sh">⑤ 많이 찾을까, 정확히 찾을까 — <em>정밀도</em>와 <em>재현율</em></h2>
+ <p class="sdesc"><b>정밀도</b> = 맞힌 상자 ÷ 화면에 남긴 예측 상자 (<span class="f">TP ÷ (TP + FP)</span>), <b>재현율</b> = 맞힌 상자 ÷ 실제 물체 (<span class="f">TP ÷ (TP + FN)</span>).
+ 신뢰도 임계값을 올리면 자신 있는 상자만 남아 정밀도는 오르지만, 자신 없던 진짜 물체를 놓쳐 재현율은 내려갑니다. 슬라이더를 움직이며 오른쪽 그래프의 점이 어디로 가는지 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>신뢰도 임계값 <input type="range" id="prConf" min="0" max="1" step="0.01" value="0.5"> <b id="prConfv">0.50</b></label>
+   <label>판정 IoU 임계값 <input type="range" id="prIou" min="0.1" max="0.95" step="0.05" value="0.5"> <b id="prIouv">0.50</b></label>
+   <span class="chk"><input type="checkbox" id="prNms" checked>NMS 먼저 적용 (IoU 0.5)</span>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv" id="prC" data-ratio="0.6667"></canvas>
+    <div class="mini2" style="margin-top:6px">초록 = TP · 빨강 = FP · 빨간 점선 = 놓친 물체(FN) · 흰 점선 = 정답 상자</div>
+   </div>
+   <div>
+    <div class="metric" id="prMet"></div>
+    <canvas class="cv" id="prPlot" data-ratio="0.72"></canvas>
+    <div class="mini2" style="margin-top:6px">점 하나 = 임계값 하나(예측 상자의 신뢰도마다). 가로 = 재현율, 세로 = 정밀도. 노란 점 = 지금 임계값.</div>
+   </div>
+  </div>
+  <div class="explain" id="prEx" style="margin-top:12px"></div>
+  <div class="row" style="margin-top:10px">
+   <button class="tbtn ghost" data-pr="0.3">0.30 · 다 보여 줘</button>
+   <button class="tbtn ghost" data-pr="0.5">0.50 · 기본</button>
+   <button class="tbtn ghost" data-pr="0.65">0.65</button>
+   <button class="tbtn ghost" data-pr="0.9">0.90 · 확실한 것만</button>
+  </div>
+ </div>
+ <div class="grid g2">
+  <div class="box warn"><b class="t">함정 · 확률이 높다고 맞는 것은 아니다</b>숟가락은 모델이 배운 다섯 음식에 없는 물체입니다. 그래도 소프트맥스는 합이 1이 되도록 누군가에게 확률을 나눠 주어야 하므로
+  숟가락에 &lsquo;김치 0.42&rsquo;라는 상자 J가 생겼습니다. 임계값을 0.42 아래로 내리는 순간 J가 화면에 나타납니다. 신뢰도는 &lsquo;정답일 확률&rsquo;이 아니라 <b>&lsquo;보기 중에서 고른 비율&rsquo;</b>입니다.</div>
+  <div class="box"><b>토의 · 우리 급식 앱이라면</b><ul>
+   <li>알레르기 음식(예: 우유)을 알려 주는 앱이라면 정밀도와 재현율 중 무엇을 더 지켜야 할까요?</li>
+   <li>잔반량을 재는 앱이라면 어떨까요? 임계값을 몇으로 정하고, 그 근거를 한 문장으로 써 봅시다.</li>
+  </ul></div>
+ </div>
+</section>
+
+<!-- ================= ⑥ 확인 문제 ================= -->
+<section class="pane" id="p6">
+ <span class="stage">⑤ 성찰하기</span>
+ <h2 class="sh">⑥ 확인 문제 — <em>바로 채점</em></h2>
+ <p class="sdesc">보기를 누르면 곧바로 정답과 풀이가 나옵니다. 계산 문제는 계산기를 써도 좋지만, 식은 먼저 활동지에 손으로 써 보세요.</p>
+ <div class="quiz" id="quiz"><div class="qh">CHECK · 5문항</div></div>
+</section>
+
+</main>
+<footer style="padding:30px 0 50px;border-top:1px solid var(--line)"><div class="wrap mini2">
+ 2026 AIEDAP 충청권역 AI 융합 수업실천 및 모형개발 · 블랙박스 열기 연구팀(대전대신고 수학과) · 6회차 연구 실습실 · 수업 설계 김태환<br>
+ 급식판 그림, 상자 좌표, 점수와 신뢰도는 수업용으로 만든 가상의 값이며 실제 모델의 출력이 아닙니다.
+</div></footer>
+<script src="lab06_detection_iou.js?v=2"></script>
+</body></html>
