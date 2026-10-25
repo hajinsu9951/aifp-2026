@@ -111,7 +111,21 @@ blocks:[
     <tr><td><b>강의 ③</b></td><td>126쪽</td><td><b>피지컬 컴퓨팅</b> — 규칙을 코드로, 그리고 안전장치</td></tr>
     <tr><td><b>과제</b></td><td>127~131쪽</td><td>결과 공유 준비 · <b>보고서 8항목</b> 작성</td></tr>
    </tbody></table></div>
-   <div class="box tip"><b>오늘의 한 문장</b> · <b>숫자를 믿기 전에 무엇을 세었는지 보라.</b></div>`}]},
+   <div class="box tip"><b>오늘의 한 문장</b> · <b>숫자를 믿기 전에 무엇을 세었는지 보라.</b></div>
+   <div class="reslist">
+    <a class="res exp" href="lesson08_lab.html" target="_blank">
+     <div class="rk">웹 실습실 · 강의 ①②③과 함께</div><div class="rt">k-NN 스마트 화분 실습실</div>
+     <div class="rd">① k-NN 다섯 단계 직접 만들기 · ② 반려식물 고르기 · ③ 변수 관계와 3차원 · ④ 모델 설계와 혼동행렬 · ⑤ 최적 조건 분석 · ⑥ 7일 자동화 시뮬레이터와 마이크로비트 코드 생성</div>
+     <div class="ru">lesson08_lab.html</div></a>
+    <a class="res" href="lesson08_knn_guide.html" target="_blank">
+     <div class="rk">자료집 · 인쇄용</div><div class="rt">k-NN 단계별 자료집</div>
+     <div class="rd">화분 8개 예제로 표준화 → 거리 → 정렬 → k개 → 다수결을 손으로 계산합니다. 혼동행렬 풀이, 제어 규칙, 손계산 활동지와 확인 문제(정답 포함).</div>
+     <div class="ru">lesson08_knn_guide.html</div></a>
+    <a class="res" href="https://colab.research.google.com/github/hajinsu9951/aifp-2026/blob/main/colab/lesson08_knn_smartpot.ipynb" target="_blank" rel="noreferrer">
+     <div class="rk">코랩 · 위에서부터 Shift+Enter</div><div class="rt">k-NN 스마트 화분 노트북</div>
+     <div class="rd">반려식물 6종 데이터 · 변수별 시각화 · plotly 3차원 · numpy로 직접 만든 k-NN · 정확도와 혼동행렬 · 최적 조건 지도 · 마이크로비트 k-NN 코드 생성</div>
+     <div class="ru">colab/lesson08_knn_smartpot.ipynb</div></a>
+   </div>`}]},
 
 /* ============ 1. 강의 ① ============ */
 {kind:"lecture",nav:"강의 ①",mins:30,title:"모델 학습과 성능 평가",
@@ -252,7 +266,11 @@ print('정확도:', model.score(X_test_scaled, y_test))
    <div class="box"><b>특성 중요도 (feature importance)</b> · 의사결정트리의 큰 장점은 <b>어떤 변수가 판단에 가장 큰 영향</b>을 주는지 알 수 있다는 점입니다.
    교과서에 따르면 일반적으로 <b>토양 수분이 가장 높은 중요도</b>를 보이며, <b>온도와 조도</b>가 그 다음입니다.
    <br><br>이 분석 결과는 <b>센서 우선순위를 결정하거나 시스템을 간소화</b>할 때 유용합니다 —
-   예산이 부족하면 어느 센서를 먼저 살 것인가에 대한 답이 됩니다.</div>`,
+   예산이 부족하면 어느 센서를 먼저 살 것인가에 대한 답이 됩니다.</div>
+   <div class="doit"><div class="dh">실습실에서 해 보기 <span class="m">15분 · <a href="lesson08_lab.html" target="_blank" style="color:var(--accent)">웹 실습실 ①·④</a></span></div>
+    <ol><li><b>①</b>에서 그래프를 클릭해 새 화분을 놓고 STEP 1~5를 하나씩 눌러 k-NN의 계산을 따라가세요. [함정 체험]으로 표준화를 끄면 무엇이 달라지나요?</li>
+    <li><b>④</b>에서 소음을 넣었다 빼고, 표준화를 껐다 켜며 [학습·평가 기록하기]를 누르세요. 혼동행렬의 <b>빨간 테두리 칸(실제 위험 → 건강)</b>을 눈여겨보세요.</li>
+    <li>손으로 계산해 보고 싶다면 <a href="lesson08_knn_guide.html" target="_blank" style="color:var(--accent)">단계별 자료집</a> 2~7장을 따라가세요.</li></ol></div>`,
   code2:null},
  {n:"05",h:"참고 · 교과서가 정리한 용어",
   html:`<figure class="fig narrow"><img src="assets/m_terms_121.png" alt="교과서 121쪽 여백 용어 정리" loading="lazy">
@@ -333,7 +351,11 @@ plt.show()`}],
    그래서 강의 ③의 급수 규칙도 <b>수분만 보지 않고 온도·조도·소음을 함께</b> 봅니다.</div>
    <div class="doit"><div class="dh">코랩에서 해 보기 <span class="m">여유가 있다면</span></div>
     <p>3D 그래프는 <b>각도를 바꿔 봐야</b> 의미가 보입니다. 코랩에서 <span style="font-family:var(--mono)">ax.view_init(elev=20, azim=45)</span>의
-    숫자를 바꿔 여러 각도에서 확인해 보세요. 보고서에는 <b>패턴이 가장 잘 보이는 각도</b>를 골라 넣으면 됩니다.</p></div>`,
+    숫자를 바꿔 여러 각도에서 확인해 보세요. 보고서에는 <b>패턴이 가장 잘 보이는 각도</b>를 골라 넣으면 됩니다.</p></div>
+   <div class="doit"><div class="dh">한 걸음 더 · 반려식물 6종 <span class="m"><a href="lesson08_lab.html" target="_blank" style="color:var(--accent)">웹 실습실 ②③⑤</a> · <a href="https://colab.research.google.com/github/hajinsu9951/aifp-2026/blob/main/colab/lesson08_knn_smartpot.ipynb" target="_blank" rel="noreferrer" style="color:var(--accent)">코랩 노트북</a></span></div>
+    <ol><li><b>②</b> 교실 환경을 넣어 어울리는 반려식물을 고르세요. 몬스테라·스킨답서스·스파티필룸·산세베리아·바질·에케베리아의 적정 <b>토양 수분·온도·조도·습도·소음</b> 값이 정리되어 있습니다.</li>
+    <li><b>③</b> 산점도 행렬과 3차원 그래프에서 초록 점이 적정 범위 상자 안에 모이는지 보세요. 코랩에서는 plotly로 돌려 볼 수 있습니다.</li>
+    <li><b>⑤</b> 모델에게 &ldquo;이 변수만 바꾸면 건강할 확률은?&rdquo;이라고 물어 <b>모델이 찾은 최적 범위</b>를 문헌 값과 비교하세요. 표 Ⅲ-2를 우리 식물로 다시 만드는 셈입니다.</li></ol></div>`,
   pages:[{p:124,t:"3D 산점도 시각화"},{p:125,t:"3차원 분석 결과"}]}],
  quiz:[
  {q:"교과서가 도출한 식물의 <b>적정 토양 수분</b> 범위는?",
@@ -446,7 +468,12 @@ while True:
      <span style="color:var(--dim)">(전기 회로의 &lsquo;히스테리시스&rsquo;와 같은 원리입니다)</span></li>
     <li>교과서 TIP · &ldquo;식물이 온도 변화에 민감한 종이라면, 온도(t)가 22℃ 미만으로 낮아질 때 <b>&lsquo;추위 알림&rsquo;</b> 아이콘을 표시하는 기능을 추가하여
      생육 환경을 보다 안정적으로 관리할 수 있다.&rdquo; — 여러분 프로젝트에는 어떤 알림을 추가하겠습니까?</li>
-   </ol></div>`}],
+   </ol></div>
+   <div class="doit"><div class="dh">고도화 체험 · 7일 자동화 시뮬레이터 <span class="m">20분 · <a href="lesson08_lab.html" target="_blank" style="color:var(--accent)">웹 실습실 ⑥</a></span></div>
+    <ol><li>[네 가지 방식 한 번에 비교] — 타이머 · 교과서 규칙 · 내 규칙(급수 상태 기계) · k-NN 판단을 같은 7일로 돌려 <b>모두 적정 유지율</b>과 <b>과습 시간</b>을 비교하세요.</li>
+    <li>폭염 · 장마 · 센서 접촉 불량 · 주말 사건을 켜고, 안전장치(히스테리시스 · 하루 급수량 상한 · 센서 이상 감지 · 이동평균)를 하나씩 꺼 보세요.</li>
+    <li>교과서 규칙으로 돌렸을 때 급수가 몇 번 일어나나요? 펌프 3초로 70%에 닿지 못하면 <span style="font-family:var(--mono)">armed</span>가 다시 켜지지 않습니다 — 위 발문 2와 연결해 보세요.</li>
+    <li>가장 좋은 설정을 고르면 아래에 <b>마이크로비트 코드가 자동으로 만들어집니다</b>(펌프·식물등·환기팬·가습기, k-NN 판단 모드는 기록 90개를 기기 안에 넣음). 보정값을 재서 실제 화분에 옮기세요.</li></ol></div>`}],
  quiz:[
  {q:"급수 규칙에서 토양 수분이 <b>45% 미만</b>일 때 어떻게 되는가?",
   opts:["아무 일도 일어나지 않는다","다른 조건과 무관하게 펌프가 작동한다","온도가 26℃를 넘어야 작동한다","소음이 60을 넘어야 작동한다"],

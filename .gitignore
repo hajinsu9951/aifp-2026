@@ -3,3 +3,4 @@ desktop.ini
 *.bak
 *.bak-*
 .DS_Store
+.claude/

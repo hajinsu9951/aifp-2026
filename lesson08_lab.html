@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>8회차 실습실 · k-NN 스마트 화분</title>
+<link rel="stylesheet" href="style.css?v=12">
+<style>
+/* 8회차 실습실 전용 */
+.bar .in{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pane{padding:34px 0 60px}
+.pane h2.sh{margin-top:0}
+.lab{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:18px;margin:16px 0}
+.lab .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.lab label{font-size:12.5px;color:var(--mut)}
+.lab select,.lab input[type=number]{background:#0a0b10;color:var(--tx);border:1px solid var(--line2);border-radius:2px;padding:6px 8px;font-size:12.5px;font-family:var(--sans)}
+.lab input[type=range]{accent-color:#d8b45a;vertical-align:middle}
+.lab .chk{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--mut);margin-right:10px;cursor:pointer}
+.lab .chk input{accent-color:#d8b45a}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media(max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+canvas.cv{width:100%;display:block;background:#0a0b10;border:1px solid var(--line);border-radius:3px;touch-action:none}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.steps button{flex:1 1 110px;font-size:12px;font-weight:700;padding:9px 8px;border-radius:2px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer;font-family:var(--sans);text-align:left}
+.steps button i{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;color:var(--dim)}
+.steps button.on{border-color:var(--accent);color:var(--tx);background:rgba(216,180,90,.1)}
+.steps button.done{color:var(--green)}
+.explain{border-left:2px solid var(--accent);background:rgba(216,180,90,.05);padding:12px 15px;font-size:13px;line-height:1.85;color:var(--mut);border-radius:2px;min-height:96px}
+.explain b{color:var(--tx)}
+.explain .f{font-family:var(--mono);font-size:12px;color:#d8dae4;background:#0a0b10;border:1px solid var(--line);padding:2px 6px;border-radius:2px}
+.dtab{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
+.dtab th,.dtab td{padding:5px 7px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--mono)}
+.dtab th{color:var(--accent);font-family:var(--sans);font-size:11px;text-align:right}
+.dtab td:first-child,.dtab th:first-child{text-align:left}
+.dtab tr.nb td{background:rgba(216,180,90,.09);color:var(--tx)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.pycode{font-family:var(--mono);font-size:12px;line-height:1.8;background:#0a0b10;border:1px solid var(--line);border-radius:3px;padding:10px 0;overflow-x:auto;color:#9a9caa}
+.pycode div{padding:0 14px;white-space:pre}
+.pycode div.hl{background:rgba(216,180,90,.13);color:#f3f1ea;box-shadow:inset 2px 0 0 var(--accent)}
+.votes{display:grid;gap:6px;margin-top:8px}
+.votes .vb{display:grid;grid-template-columns:52px 1fr 34px;gap:8px;align-items:center;font-size:12px}
+.votes .tr{height:12px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
+.votes .fl{height:100%;border-radius:2px;transition:width .3s}
+.pcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.pcard{border:1px solid var(--line);border-radius:4px;background:var(--ink2);padding:15px;cursor:pointer;transition:.15s}
+.pcard:hover{border-color:var(--line2)}
+.pcard.on{border-color:var(--accent);background:rgba(216,180,90,.06)}
+.pcard h4{margin:0;font-family:var(--serif);font-size:17px}
+.pcard .sci{font-size:11px;color:var(--dim);font-style:italic}
+.pcard .fit{float:right;font-family:var(--serif);font-weight:800;font-size:18px;color:var(--accent)}
+.rbar{display:grid;grid-template-columns:62px 1fr 92px;gap:7px;align-items:center;font-size:11.5px;margin-top:6px;color:var(--mut)}
+.rbar .tr{position:relative;height:8px;background:rgba(255,255,255,.05);border-radius:2px}
+.rbar .fl{position:absolute;top:0;bottom:0;background:rgba(139,192,164,.55);border-radius:2px}
+.rbar .mk{position:absolute;top:-3px;width:2px;height:14px;background:var(--accent)}
+.rbar .v{text-align:right;font-family:var(--mono);font-size:11px}
+.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin:12px 0}
+.metric div{border:1px solid var(--line);border-radius:3px;padding:10px 12px;background:rgba(255,255,255,.015)}
+.metric .l{font-size:10.5px;letter-spacing:.08em;color:var(--dim)}
+.metric .v{font-family:var(--serif);font-size:20px;font-weight:800;margin-top:2px}
+.cm3{display:grid;grid-template-columns:76px repeat(3,1fr);gap:5px;margin:10px 0;font-size:12px}
+.cm3 > div{padding:9px 6px;text-align:center;border-radius:3px}
+.cm3 .h{color:var(--accent);font-weight:700;font-size:11px;background:#101119;display:flex;align-items:center;justify-content:center;text-align:center}
+.cm3 .c{border:1px solid var(--line2);cursor:pointer;font-family:var(--serif);font-size:22px;font-weight:800}
+.cm3 .c small{display:block;font-family:var(--sans);font-size:10px;font-weight:400;color:var(--mut)}
+.cm3 .c.diag{border-color:rgba(139,192,164,.55)}
+.cm3 .c.worst{border-color:var(--rose);box-shadow:0 0 0 1px var(--rose)}
+.sim-led{display:grid;grid-template-columns:repeat(5,14px);gap:4px;padding:10px;background:#000;border-radius:6px;width:max-content}
+.sim-led i{width:14px;height:14px;border-radius:2px;background:#2a0a0a}
+.sim-led i.on{background:#ff3b30;box-shadow:0 0 6px #ff3b30}
+.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.acts div{border:1px solid var(--line);border-radius:3px;padding:8px 10px;font-size:12px;color:var(--mut)}
+.acts div b{display:block;font-size:13px;margin-top:2px}
+.acts div.on{border-color:var(--accent);background:rgba(216,180,90,.08);color:var(--tx)}
+.runs td,.runs th{font-size:12px}
+.pill{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:9px;border:1px solid var(--line2);color:var(--mut);margin-left:6px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.tgrid .card{padding:13px}
+.tgrid .card h4{font-size:13.5px}
+.mini2{font-size:11.5px;color:var(--dim)}
+.hero .links{position:relative;display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+</style></head><body>
+
+<header class="hero"><div class="wrap">
+ <div class="eyebrow">8회차 실습실 · 29~32차시 · 2026.10.26</div>
+ <h1>k-NN을 <em>손으로</em> 만들고,<br>스마트 화분을 <em>스스로</em> 움직이게</h1>
+ <p class="lead">이웃 다섯 개에게 물어보는 알고리즘 하나로 식물의 상태를 판정하고, 그 판정을 펌프·식물등·팬·가습기로 옮깁니다.
+ 이 페이지는 수업 페이지 강의 ①~③을 <b>직접 만져 보는 실습판</b>입니다. 모든 계산은 브라우저 안에서 일어납니다.</p>
+ <div class="hstats">
+  <div><b>6</b><span>반려식물</span></div><div><b>1,440</b><span>센서 기록</span></div>
+  <div><b>5</b><span>환경 변수</span></div><div><b>4</b><span>제어 장치</span></div>
+ </div>
+ <div class="links">
+  <a class="tbtn" href="lesson08.html">← 8회차 수업 페이지</a>
+  <a class="tbtn ghost" href="lesson08_knn_guide.html" target="_blank">k-NN 단계별 자료집</a>
+  <a class="tbtn ghost" id="colabLink" href="https://colab.research.google.com/github/hajinsu9951/aifp-2026/blob/main/colab/lesson08_knn_smartpot.ipynb" target="_blank">코랩 실습 노트북</a>
+  <a class="tbtn ghost" href="data/plants_optimal.csv" download>식물 적정값 CSV</a>
+  <a class="tbtn ghost" href="data/smart_plant_sensor.csv" download>센서 기록 CSV</a>
+ </div>
+</div></header>
+
+<nav class="bar"><div class="wrap in">
+ <div class="tabs" id="tabs">
+  <button class="tab active" data-p="p1">① k-NN 직접 만들기</button>
+  <button class="tab" data-p="p2">② 식물 고르기</button>
+  <button class="tab" data-p="p3">③ 관계 시각화</button>
+  <button class="tab" data-p="p4">④ 모델 설계·평가</button>
+  <button class="tab" data-p="p5">⑤ 최적 조건 분석</button>
+  <button class="tab" data-p="p6">⑥ 자동화 시뮬레이터</button>
+ </div>
+ <div class="sp"></div>
+ <label style="font-size:12px;color:var(--mut)">실습 식물 <select id="plantSel" style="background:#0a0b10;color:var(--tx);border:1px solid var(--line2);padding:5px 7px;border-radius:2px"></select></label>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= ① ================= -->
+<section class="pane on" id="p1">
+ <h2 class="sh">① k-NN을 <em>다섯 단계</em>로 직접 만들기</h2>
+ <p class="sdesc">k-NN은 &ldquo;새 기록과 가장 닮은 기록 k개를 찾아, 그들이 많이 가진 답을 따른다&rdquo;가 전부입니다.
+ 그래프를 <b>클릭해 새 측정값을 놓고</b>, 단계 버튼을 하나씩 눌러 계산이 어떻게 진행되는지 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>가로축 <select id="k1x"></select></label>
+   <label>세로축 <select id="k1y"></select></label>
+   <label>k <input type="range" id="k1k" min="1" max="15" step="2" value="5"> <b id="k1kv">5</b></label>
+   <label>거리 <select id="k1m"><option value="e">유클리드 (직선)</option><option value="m">맨해튼 (블록)</option></select></label>
+   <span class="chk"><input type="checkbox" id="k1s" checked>표준화</span>
+   <span class="chk"><input type="checkbox" id="k1all">기록 240개 모두</span>
+  </div>
+  <div class="split">
+   <div>
+    <canvas class="cv" id="k1c" height="430"></canvas>
+    <div class="mini2" style="margin-top:6px">점 색: <span class="dot" style="background:#8bc0a4"></span>건강 <span class="dot" style="background:#e7c37a"></span>주의 <span class="dot" style="background:#d98a7a"></span>위험 · ◆ 새 측정값 · 초록 상자 = 문헌의 적정 범위</div>
+   </div>
+   <div>
+    <div class="steps" id="k1steps">
+     <button data-s="1"><i>STEP 1</i>표준화</button>
+     <button data-s="2"><i>STEP 2</i>거리 계산</button>
+     <button data-s="3"><i>STEP 3</i>정렬</button>
+     <button data-s="4"><i>STEP 4</i>k개 고르기</button>
+     <button data-s="5"><i>STEP 5</i>다수결</button>
+    </div>
+    <div class="explain" id="k1ex">그래프의 아무 곳이나 클릭해 <b>새 측정값</b>을 놓은 뒤 STEP 1부터 눌러 보세요.</div>
+    <div class="votes" id="k1votes"></div>
+    <div style="max-height:250px;overflow:auto;margin-top:10px"><table class="dtab" id="k1tab"></table></div>
+   </div>
+  </div>
+  <div class="row" style="margin-top:12px">
+   <button class="tbtn ghost" onclick="K1.preset('trap')">함정 체험 · 조도(lux)를 표준화 없이</button>
+   <button class="tbtn ghost" onclick="K1.preset('k1')">k = 1이면?</button>
+   <button class="tbtn ghost" onclick="K1.preset('border')">경계에 놓인 화분</button>
+   <button class="tbtn ghost" onclick="K1.auto()">▶ 처음부터 자동 재생</button>
+  </div>
+ </div>
+ <div class="split">
+  <div>
+   <h3 class="bh">지금 실행 중인 코드</h3>
+   <div class="pycode" id="k1code"></div>
+  </div>
+  <div>
+   <h3 class="bh">단계마다 확인할 것</h3>
+   <div class="box"><ol>
+    <li><b>표준화</b>를 끄고 조도(lux)를 축으로 고르면, 거리가 거의 조도만으로 정해집니다. 단위가 큰 변수가 &lsquo;목소리가 큰 이웃&rsquo;이 됩니다.</li>
+    <li><b>k = 1</b>은 가장 가까운 한 개만 믿습니다. 잡음 하나에 판정이 뒤집힙니다.</li>
+    <li><b>k를 짝수</b>로 두면 동점이 생길 수 있어 홀수를 씁니다(세 가지 상태라면 동점은 더 가까운 쪽을 따르게 했습니다).</li>
+    <li>k-NN은 <b>학습 단계가 따로 없습니다</b>. 기록을 외워 두었다가 물어볼 때마다 계산합니다 — 그래서 &lsquo;게으른 학습&rsquo;이라 부릅니다.</li>
+   </ol></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= ② ================= -->
+<section class="pane" id="p2">
+ <h2 class="sh">② 우리 교실에 맞는 <em>반려식물</em> 고르기</h2>
+ <p class="sdesc">센서를 꽂기 전에 먼저 정할 것은 &ldquo;어떤 식물을 키울 것인가&rdquo;입니다. 식물마다 좋아하는 환경이 달라서, <b>같은 센서 값도 식물에 따라 정답이 달라집니다.</b>
+ 먼저 우리 교실 환경을 넣어 어울리는 식물을 찾고, 카드를 눌러 실습 식물로 정하세요.</p>
+ <div class="lab">
+  <div class="row"><b style="font-size:13px">우리 교실 환경</b><span class="mini2">— 스마트폰 조도계·온습도계 앱으로 재 보면 더 정확합니다</span></div>
+  <div class="grid g3" id="roomCtl"></div>
+ </div>
+ <div class="pcards" id="pcards"></div>
+ <h3 class="bh">식물별 적정 환경값 <span class="pill">data/plants_optimal.csv</span></h3>
+ <div class="tw"><table id="optTab"></table></div>
+ <div class="grid g2">
+  <div class="box tip"><b>이 숫자는 어디서 왔나</b> · 코넬대 협동지도소(Cornell CCE)의 실내 관엽식물 생육표, 영국왕립원예협회(RHS) 자료, 원예·판매처 관리 안내를 모아
+  <b>여러 자료가 겹치는 범위</b>로 정리했습니다. 자료마다 숫자가 조금씩 다르므로 <b>&lsquo;정답&rsquo;이 아니라 &lsquo;출발점&rsquo;</b>입니다.
+  조도는 자료마다 &lsquo;밝은 간접광&rsquo;처럼 말로 적혀 있어 lux로 옮긴 값이고, 토양 수분 %는 센서 눈금 기준입니다.</div>
+  <div class="box warn"><b class="t">소음은 식물의 생육 요인이 아닙니다</b>소리가 식물 생장에 영향을 준다는 연구는 있지만 결과가 엇갈리고 근거가 약합니다.
+  교과서가 소리를 넣은 것은 <b>설치 환경이 안정적인지</b>를 보려는 것입니다. 그래서 이 데이터에서는 <b>소음이 식물 상태에 전혀 영향을 주지 않게</b> 만들었습니다.
+  ④에서 소음을 넣었다 빼 보면 k-NN에 무슨 일이 생기는지 직접 확인할 수 있습니다.</div>
+ </div>
+</section>
+
+<!-- ================= ③ ================= -->
+<section class="pane" id="p3">
+ <h2 class="sh">③ 변수 사이의 관계를 <em>눈으로</em> 보기</h2>
+ <p class="sdesc">모델을 만들기 전에 데이터를 봅니다. 두 변수씩 짝지어 그린 <b>산점도 행렬</b>에서 건강한 점(초록)이 어디에 모여 있는지 찾고,
+ <b>3차원</b>으로 돌려 보며 &ldquo;한 변수만으로는 안 되는 이유&rdquo;를 확인합니다.</p>
+ <div class="lab">
+  <div class="row">
+   <span class="chk"><input type="checkbox" id="p3noise">소음 포함</span>
+   <span class="chk"><input type="checkbox" id="p3log" checked>조도 로그 눈금</span>
+   <span class="mini2">칸을 누르면 아래에 크게 그려집니다 · 대각선 칸은 상태별 분포(히스토그램)</span>
+  </div>
+  <div class="split">
+   <canvas class="cv" id="smx" height="560"></canvas>
+   <div>
+    <canvas class="cv" id="sbig" height="330"></canvas>
+    <div class="explain" id="sbigex" style="margin-top:10px">—</div>
+   </div>
+  </div>
+ </div>
+ <h3 class="bh">3차원으로 돌려 보기</h3>
+ <div class="lab">
+  <div class="row">
+   <label>X <select id="d3x"></select></label><label>Y <select id="d3y"></select></label><label>Z <select id="d3z"></select></label>
+   <span class="chk"><input type="checkbox" id="d3box" checked>적정 범위 상자</span>
+   <span class="chk"><input type="checkbox" id="d3rot" checked>자동 회전</span>
+   <label>보기 <select id="d3show"><option value="all">모든 상태</option><option value="0">건강만</option><option value="1">주의만</option><option value="2">위험만</option></select></label>
+  </div>
+  <canvas class="cv" id="d3c" height="520"></canvas>
+  <div class="mini2" style="margin-top:6px">마우스로 끌어 돌리고, 휠로 확대합니다. 초록 상자는 문헌의 적정 범위입니다.</div>
+ </div>
+ <div class="ask"><div class="ah">발문</div><ol>
+  <li>토양 수분 하나만 보고 &lsquo;건강&rsquo;을 맞힐 수 있나요? 수분이 적정인데도 빨간 점이 있는 이유는 무엇인가요?</li>
+  <li>3차원에서 초록 점이 상자 <b>안쪽</b>에만 모여 있나요? 상자 밖의 초록 점, 상자 안의 노란 점은 왜 생겼을까요? <span class="mini2">(힌트: 같은 환경이어도 식물마다 반응이 다릅니다 — 잡음)</span></li>
+  <li>소음을 넣은 산점도에서 초록 점은 어떻게 퍼져 있나요? 이 모양이 &lsquo;관계없음&rsquo;을 뜻하는 이유는?</li>
+ </ol></div>
+</section>
+
+<!-- ================= ④ ================= -->
+<section class="pane" id="p4">
+ <h2 class="sh">④ 모델 설계 · 예측 · <em>정확도와 혼동행렬</em></h2>
+ <p class="sdesc">설계도를 바꿔 가며 모델을 만들고 시험을 봅니다. 숫자 하나(정확도)만 보지 말고, <b>어떤 실수를 했는지</b>(혼동행렬)를 함께 봅니다.</p>
+ <div class="lab">
+  <div class="row"><b style="font-size:13px">설계</b>
+   <span id="p4feat"></span>
+  </div>
+  <div class="row">
+   <span class="chk"><input type="checkbox" id="p4log" checked>조도 로그 변환</span>
+   <span class="chk"><input type="checkbox" id="p4scale" checked>표준화</span>
+   <label>k <input type="range" id="p4k" min="1" max="25" step="2" value="5"> <b id="p4kv">5</b></label>
+   <label>시험용 비율 <input type="range" id="p4t" min="10" max="40" step="5" value="20"> <b id="p4tv">20%</b></label>
+   <label>섞는 씨앗 <input type="number" id="p4seed" value="42" style="width:70px"></label>
+   <button class="tbtn" onclick="P4.run(true)">학습·평가 기록하기</button>
+  </div>
+  <div class="metric" id="p4met"></div>
+  <div class="split">
+   <div>
+    <b style="font-size:13px">혼동행렬</b> <span class="mini2">— 칸을 누르면 뜻을 풀어 줍니다</span>
+    <div class="cm3" id="p4cm"></div>
+    <div class="explain" id="p4cmex">—</div>
+   </div>
+   <div>
+    <b style="font-size:13px">상태별 성적</b>
+    <div class="tw" style="margin-top:8px"><table class="dtab" id="p4rep"></table></div>
+    <b style="font-size:13px">k에 따른 정확도</b> <span class="mini2">— 금색 훈련 · 초록 시험</span>
+    <canvas class="cv" id="p4curve" height="200" style="margin-top:6px"></canvas>
+   </div>
+  </div>
+ </div>
+ <h3 class="bh">예측 결과 확인 — 새 화분을 재 보면</h3>
+ <div class="lab">
+  <div class="split">
+   <div id="p4in"></div>
+   <div>
+    <div class="metric" id="p4pred"></div>
+    <div class="votes" id="p4votes"></div>
+    <div class="tw" style="margin-top:10px"><table class="dtab" id="p4nb"></table></div>
+   </div>
+  </div>
+ </div>
+ <h3 class="bh">실험 기록 <span class="mini2">— 설계를 바꿀 때마다 [학습·평가 기록하기]를 누르세요</span></h3>
+ <div class="tw"><table class="dtab runs" id="p4runs"><tr><th>#</th><th>식물</th><th>변수</th><th>로그</th><th>표준화</th><th>k</th><th>시험</th><th>정확도</th><th>위험 재현율</th><th>위험→건강 놓침</th></tr></table></div>
+ <div class="grid g2">
+  <div class="doit"><div class="dh">해 보기 <span class="m">10분</span></div><ol>
+   <li><b>소음</b>을 넣고 빼서 정확도를 비교하세요. 관계없는 변수가 들어가면 왜 떨어질까요?</li>
+   <li><b>표준화</b>와 <b>로그 변환</b>을 끄면? 어느 쪽이 더 크게 흔들리나요?</li>
+   <li><b>씨앗</b>만 바꿔 다섯 번 기록하세요. 정확도가 얼마나 출렁이나요? 정확도 하나를 &lsquo;실력&rsquo;이라 부를 수 있을까요?</li>
+   <li>k-정확도 그래프에서 k=1의 <b>훈련 정확도가 1.0</b>인 이유는? 이것이 과대적합입니다.</li>
+  </ol></div>
+  <div class="box tip"><b>혼동행렬 읽는 법</b> · 행은 <b>실제</b>, 열은 <b>예측</b>입니다. 대각선은 맞힌 것, 나머지는 틀린 것입니다.
+  틀린 것도 <b>무게가 다릅니다</b>. &lsquo;실제 위험 → 건강으로 예측&rsquo;은 시든 식물을 내버려 두는 실수이고,
+  &lsquo;실제 건강 → 위험으로 예측&rsquo;은 괜히 한 번 더 살펴보는 실수입니다.
+  <br><br><b>재현율</b> = 실제 그 상태 중 맞힌 비율 · <b>정밀도</b> = 그 상태라고 한 것 중 맞은 비율</div>
+ </div>
+</section>
+
+<!-- ================= ⑤ ================= -->
+<section class="pane" id="p5">
+ <h2 class="sh">⑤ 모델에게 <em>최적 조건</em>을 물어보기</h2>
+ <p class="sdesc">학습한 k-NN에게 &ldquo;다른 조건은 적정으로 두고 <b>이 변수 하나만</b> 바꾸면 건강할 확률이 어떻게 변하니?&rdquo;라고 묻습니다.
+ 확률이 높은 구간이 <b>데이터가 알려 준 최적 범위</b>입니다. 문헌 값과 비교해 보세요.</p>
+ <div class="lab">
+  <div class="row">
+   <label>k <input type="range" id="p5k" min="5" max="31" step="2" value="15"> <b id="p5kv">15</b></label>
+   <label>건강 확률 기준 <input type="range" id="p5th" min="40" max="90" step="5" value="70"> <b id="p5thv">70%</b></label>
+   <span class="mini2">모델 설계: 소음 제외 · 조도 로그 · 표준화 · 기록 전체로 학습</span>
+  </div>
+  <div class="grid g2" id="p5curves"></div>
+ </div>
+ <div class="tw"><table id="p5tab"></table></div>
+ <h3 class="bh">두 변수를 함께 바꾸면 — 건강 확률 지도</h3>
+ <div class="lab">
+  <div class="row"><label>가로 <select id="p5hx"></select></label><label>세로 <select id="p5hy"></select></label>
+   <span class="mini2">밝을수록 건강할 확률이 높습니다 · 초록 선 = 문헌 범위 · 금색 선 = 모델 도출 범위</span></div>
+  <canvas class="cv" id="p5heat" height="400"></canvas>
+ </div>
+ <div class="grid g2">
+  <div class="box"><b>제어 기준으로 옮기기</b> · 도출한 범위는 그대로 스위치 기준이 됩니다.
+   토양 수분 하한 → <b>급수 시작</b>, 상한 근처 → <b>급수 멈춤</b>, 온도 상한 → <b>환기팬</b>, 조도 하한 → <b>식물등</b>, 습도 하한 → <b>가습기</b>.
+   <div style="margin-top:10px"><button class="tbtn" onclick="P5.send()">이 기준을 ⑥ 시뮬레이터로 보내기 →</button></div></div>
+  <div class="box tip"><b>왜 문헌 값과 조금 다를까</b> · 모델은 <b>데이터에 있는 것만</b> 압니다. 기록이 드문 구간은 이웃이 멀리 있어 확률이 흔들립니다.
+   또 &lsquo;다른 변수는 적정&rsquo;이라는 가정 아래 계산한 값이라, 두 변수가 동시에 어긋나면 범위가 더 좁아집니다(아래 확률 지도에서 확인).</div>
+ </div>
+</section>
+
+<!-- ================= ⑥ ================= -->
+<section class="pane" id="p6">
+ <h2 class="sh">⑥ 스마트 화분 <em>자동화</em> 시뮬레이터</h2>
+ <p class="sdesc">가상의 화분을 <b>7일 동안</b> 10분 간격으로 돌립니다. 제어 방식과 기준을 바꾸고, 폭염·장마·센서 고장 같은 사건을 넣어 보세요.
+ 결과가 마음에 들면 아래에서 <b>마이크로비트 코드</b>로 바로 옮길 수 있습니다.</p>
+ <div class="lab">
+  <div class="row">
+   <label>제어 방식 <select id="s6mode">
+    <option value="timer">① 타이머 — 매일 오전 9시 급수</option>
+    <option value="book">② 교과서 규칙 — 수분 45% 미만, 70%까지 재급수 금지</option>
+    <option value="rule" selected>③ 내 규칙 — 히스테리시스 + 안전장치</option>
+    <option value="knn">④ k-NN 판단 — 30분마다 상태 예측 후 원인별 제어</option>
+   </select></label>
+   <label>설치 장소 <select id="s6place"><option value="window">남향 창가</option><option value="room" selected>교실 안쪽</option><option value="dark">복도 (어두움)</option></select></label>
+   <label>화분 <select id="s6pot"><option value="s">작은 화분 (빨리 마름)</option><option value="m" selected>중간 화분</option><option value="l">큰 화분</option></select></label>
+  </div>
+  <div class="tgrid" id="s6rule"></div>
+  <div class="row">
+   <b style="font-size:13px">안전장치</b>
+   <span class="chk"><input type="checkbox" id="s6hys" checked>히스테리시스 (켜는 값 ≠ 끄는 값)</span>
+   <span class="chk"><input type="checkbox" id="s6cap" checked>하루 급수량 상한</span>
+   <span class="chk"><input type="checkbox" id="s6san" checked>센서 이상 감지 (0% 또는 급변 무시)</span>
+   <span class="chk"><input type="checkbox" id="s6avg" checked>이동평균 필터 (최근 3회)</span>
+  </div>
+  <div class="row">
+   <b style="font-size:13px">사건</b>
+   <span class="chk"><input type="checkbox" id="e_heat">3~4일차 폭염 (+7℃)</span>
+   <span class="chk"><input type="checkbox" id="e_rain">5~6일차 장마 (빛 −70%, 습도 +25%)</span>
+   <span class="chk"><input type="checkbox" id="e_fail">2일차 밤 수분 센서 접촉 불량 (0% 읽힘)</span>
+   <span class="chk"><input type="checkbox" id="e_weekend">6~7일차 주말 (물통 1L만 남음)</span>
+   <span class="chk"><input type="checkbox" id="e_noise">센서 잡음 큼</span>
+  </div>
+  <div class="row"><button class="tbtn" onclick="S6.run(true)">▶ 7일 돌리고 기록하기</button>
+   <button class="tbtn ghost" onclick="S6.compare()">네 가지 방식 한 번에 비교</button></div>
+  <div class="metric" id="s6met"></div>
+  <canvas class="cv" id="s6c" height="560"></canvas>
+  <div class="row" style="margin-top:10px">
+   <label style="flex:1">시각 <input type="range" id="s6t" min="0" max="1007" value="600" style="width:100%"></label>
+  </div>
+  <div class="split">
+   <div>
+    <div class="row" style="align-items:flex-start;gap:16px">
+     <div class="sim-led" id="s6led"></div>
+     <div style="flex:1"><div id="s6now" style="font-size:13px;color:var(--mut);line-height:1.9"></div></div>
+    </div>
+    <div class="acts" id="s6acts" style="margin-top:10px"></div>
+   </div>
+   <div class="explain" id="s6log" style="max-height:230px;overflow:auto;font-family:var(--mono);font-size:11.5px"></div>
+  </div>
+ </div>
+ <div class="tw"><table class="dtab runs" id="s6runs"><tr><th>#</th><th>식물</th><th>방식</th><th>사건</th><th>모두 적정</th><th>수분 적정</th><th>과습 시간</th><th>건조 시간</th><th>물 사용</th><th>펌프</th><th>식물등</th><th>팬</th></tr></table></div>
+
+ <div class="grid g2">
+  <div class="box"><b>네 가지 방식은 이렇게 다릅니다</b><ol>
+   <li><b>타이머</b> — 흙을 보지 않고 매일 같은 양을 줍니다. 장마에도 폭염에도 같습니다. <b>과습 시간</b>을 보세요.</li>
+   <li><b>교과서 규칙</b> — 45% 아래면 3초 급수, 그리고 70%가 될 때까지 잠급니다. <b>3초 급수로 70%에 못 닿으면</b> 잠금이 풀리지 않아 다시는 물을 주지 않습니다. 로그에서 급수가 몇 번 일어났는지 세어 보세요.</li>
+   <li><b>내 규칙</b> — <b>급수 상태 기계</b>입니다. 시작 기준 아래로 내려가면 &lsquo;급수 중&rsquo;이 되고, 3초 주고 30분 스며들기를 기다렸다 다시 재고, 멈춤 기준에 닿으면 끝냅니다. 팬·식물등·가습기도 각자 켜는 값과 끄는 값이 다릅니다.</li>
+   <li><b>k-NN 판단</b> — 마이크로비트 안에 기록 90개를 넣고 30분마다 상태를 예측합니다. &lsquo;주의·위험&rsquo;이면서 <b>원인이 수분일 때만</b> 급수합니다. 판정은 AI가, 원인 찾기와 행동은 규칙이 맡는 구조입니다.</li>
+  </ol></div>
+  <div class="doit"><div class="dh">체험 미션 <span class="m">20분 · 결과표에 기록</span></div><ol>
+   <li>[네 가지 방식 한 번에 비교]를 누르고 <b>모두 적정 유지율</b>이 가장 높은 방식을 찾으세요.</li>
+   <li><b>안전장치를 하나씩 끄고</b> 같은 사건(폭염 + 센서 불량)에서 다시 돌리세요. 어느 장치가 빠졌을 때 가장 크게 무너지나요?</li>
+   <li><b>히스테리시스</b>를 끄면 펌프·팬이 몇 번 켜지나요? 실제 릴레이는 켜고 끌 때마다 닳습니다.</li>
+   <li>⑤에서 찾은 기준을 보내 돌린 결과와, 문헌 값 그대로 돌린 결과를 비교하세요.</li>
+   <li>최고 기록을 만든 설정으로 아래 코드를 마이크로비트에 옮기고, <b>실제 화분과 시뮬레이터가 어디서 다른지</b> 적어 보세요.</li>
+  </ol></div>
+ </div>
+
+ <h3 class="bh">마이크로비트로 옮기기 <span class="pill">MicroPython · micro:bit V2</span></h3>
+ <div class="grid g2">
+  <div class="tw" style="margin:0"><table>
+   <thead><tr><th>핀</th><th>연결</th><th>비고</th></tr></thead>
+   <tbody>
+    <tr><td><b>P0</b></td><td>토양 수분 센서 (아날로그)</td><td>0~1023 → 0~100%로 환산 후 <b>보정</b></td></tr>
+    <tr><td><b>P1</b></td><td>워터 펌프 (릴레이 또는 모터 드라이버)</td><td>펌프를 핀에 직접 물리지 말 것</td></tr>
+    <tr><td><b>P2</b></td><td>식물등 LED (릴레이)</td><td>낮 시간에만</td></tr>
+    <tr><td><b>P8</b></td><td>환기팬 (모터 드라이버)</td><td></td></tr>
+    <tr><td><b>P12</b></td><td>가습기 모듈 (선택)</td><td>습도 센서가 있을 때만</td></tr>
+    <tr><td><b>내장</b></td><td>온도 · 빛 · 마이크</td><td>빛은 0~255 → lux <b>보정 필요</b></td></tr>
+    <tr><td><b>I2C</b></td><td>온습도 센서 (선택, 예: BME280)</td><td>없으면 습도 제어는 건너뜀</td></tr>
+   </tbody></table></div>
+  <div class="box warn"><b class="t">보정이 먼저입니다</b>마이크로비트의 빛 값(0~255)은 lux가 아닙니다. <b>스마트폰 조도계 앱</b>을 옆에 두고 세 곳(어두운 곳·교실·창가)에서 두 값을 함께 적어
+  <span style="font-family:var(--mono)">LUX_PER_LEVEL</span>을 정하세요. 토양 수분도 <b>마른 흙</b>과 <b>물을 흠뻑 준 흙</b>에서 값을 재어 <span style="font-family:var(--mono)">DRY</span>·<span style="font-family:var(--mono)">WET</span>을 정합니다.
+  보정 없이 쓰면 위에서 찾은 기준이 전부 어긋납니다.</div>
+ </div>
+ <div class="code"><div class="ch"><span id="mbName">smartpot.py — 위 설정으로 자동 생성</span><span><button onclick="S6.copy()">복사</button> <button onclick="window.open('https://python.microbit.org/v/3','_blank')">편집기 열기</button></span></div><pre id="mbCode"></pre></div>
+</section>
+</main>
+
+<footer><div class="wrap-n">
+ 2026-2 온라인 공동교육과정 · 인공지능 융합프로젝트 — 대전대신고등학교 하진수 · 8회차 실습실<br>
+ 센서 기록은 <b>교육용 가상 데이터</b>입니다(data/make_data.py) ·
+ <a href="lesson08.html" style="color:var(--accent)">8회차 수업 페이지</a> ·
+ <a href="index.html" style="color:var(--accent)">운영실 메인</a>
+</div></footer>
+
+<script src="data/plant_data.js"></script>
+<script src="lesson08_lab.js?v=2"></script>
+</body></html>
