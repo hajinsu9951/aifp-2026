@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>블랙박스 열기 연수 슬라이드</title>
+<link rel="stylesheet" href="../style.css?v=12">
+<style>
+html,body{height:100%;margin:0;overflow:hidden}
+.deck{position:relative;height:100%;width:100%}
+.sl{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:clamp(20px,6vw,80px) clamp(16px,8vw,120px) 90px;box-sizing:border-box;overflow-y:auto}
+.sl.on{display:flex}
+.kick{font-size:12px;letter-spacing:.16em;color:var(--gold);margin-bottom:12px}
+.sl h1{font-family:var(--serif);font-size:clamp(30px,6vw,64px);line-height:1.2;margin:0 0 18px}
+.sl h2{font-family:var(--serif);font-size:clamp(24px,4.2vw,44px);line-height:1.3;margin:0 0 22px}
+.sl p,.sl li{font-size:clamp(15px,2vw,21px);line-height:1.7;color:var(--mut);max-width:900px}
+.sl ul{padding-left:1.2em;margin:0}
+.sl b{color:var(--tx)}
+.big{font-family:var(--serif);font-size:clamp(22px,3.4vw,36px);color:var(--accent);line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:10px;max-width:1100px}
+.grid div{border:1px solid var(--line);border-radius:4px;padding:14px;background:rgba(255,255,255,.02)}
+.grid div b{display:block;font-family:var(--serif);font-size:clamp(16px,2vw,20px);color:var(--accent);margin-bottom:6px}
+.grid div span{font-size:clamp(13px,1.5vw,15px);color:var(--mut);line-height:1.55}
+.calc{font-family:var(--mono);font-size:clamp(14px,2vw,20px);background:#0a0b10;border:1px solid var(--line);border-radius:4px;padding:16px 18px;color:#e7c37a;line-height:1.8;max-width:900px;overflow-x:auto}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:linear-gradient(transparent,var(--ink) 40%)}
+.nav button{background:rgba(255,255,255,.04);border:1px solid var(--line2);color:var(--tx);padding:9px 16px;border-radius:3px;font-size:14px;cursor:pointer;font-family:var(--sans)}
+.nav .pg{font-size:13px;color:var(--dim)}
+.bar{position:fixed;left:0;top:0;height:3px;background:var(--gold);transition:width .2s}
+a{color:var(--accent)}
+</style></head><body>
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+
+<section class="sl"><div class="kick">2026 AIEDAP 충청권역 · 마스터교원 강의</div><h1>블랙박스 열기</h1><p class="big">AI 속 수학을 학생이 직접 계산하고 조작하게 하는 AI 융합 수업 설계</p><p>하진수 · 대전대신고등학교 · 블랙박스 열기 연구팀(이청록 · 신형철 · 김태환 · 김세환)</p></section>
+
+<section class="sl"><div class="kick">1부 · 문제 제기</div><h2>버튼을 누르면 답이 나온다</h2><ul><li>교과서 프로젝트는 센서 → 데이터 → 모델 → 웹 서비스까지 산출물을 만든다</li><li>그러나 학생은 도구를 실행해 <b>결과를 받는 데서 멈추기</b> 쉽다</li><li>생성형 AI가 코드를 써 주면 <b>"왜 이 값이 나오지?"</b>를 묻는 과정이 더 쉽게 생략된다</li></ul><p class="big" style="margin-top:22px">짝 토의 — 학생이 AI 결과를 의심한 장면이 있었나요?</p></section>
+
+<section class="sl"><div class="kick">1부 · 문제 제기</div><h2>AI 안에는 고등학교 수학이 있다</h2><div class="grid"><div><b>평균 · 표준편차</b><span>데이터 요약, 표준화</span></div><div><b>최소제곱</b><span>추세선, 손실 함수</span></div><div><b>벡터의 크기</b><span>가속도 센서, 거리</span></div><div><b>지수함수</b><span>소프트맥스 확률</span></div><div><b>넓이의 비</b><span>객체 탐지 IoU</span></div><div><b>상관계수</b><span>변수 선택</span></div></div><p style="margin-top:18px">수학 교사가 가장 잘 열 수 있는 상자입니다.</p></section>
+
+<section class="sl"><div class="kick">2부 · 수업모형</div><h2>「블랙박스 열기」 5단계</h2><div class="grid"><div><b>① 질문하기</b><span>교과서 프로젝트의 실생활 질문</span></div><div><b>② 손으로 계산하기</b><span>작은 예제로 원리 해부</span></div><div><b>③ 실습실에서 조작하기</b><span>값을 바꾸며 변화 관찰</span></div><div><b>④ 코드로 옮기기</b><span>코랩 · 생성형 AI로 구현, 대조</span></div><div><b>⑤ 함정 찾고 성찰하기</b><span>데이터 · 모델의 함정 토의</span></div></div><p style="margin-top:18px">순서가 중요합니다. 손계산 없이 조작부터 하면 슬라이더 놀이가 됩니다.</p></section>
+
+<section class="sl"><div class="kick">2부 · 수업모형</div><h2>단계마다 남는 것 = 평가 근거</h2><div class="grid"><div><b>①</b><span>문제 정의 한 문장</span></div><div><b>②</b><span>손계산 활동지</span></div><div><b>③</b><span>실험 기록표</span></div><div><b>④</b><span>코드와 손계산 대조표</span></div><div><b>⑤</b><span>성찰문 · 개선안</span></div></div></section>
+
+<section class="sl"><div class="kick">2부 · 수업모형</div><h2>설계 원칙 네 가지</h2><ul><li><b>웹페이지 하나로</b> 수업이 끝난다 — 강의 · 활동 · 확인 문제까지</li><li>화면의 숫자는 <b>모두 실제 계산값</b> — 검산 스크립트를 남긴다</li><li>함정은 오류 지적이 아니라 <b>학습 소재</b></li><li>손계산 · 실습실 · 코드 <b>세 경로가 같은 답</b>을 내는지 대조한다</li></ul></section>
+
+<section class="sl"><div class="kick">2부 · 수업모형</div><h2>회차 배정</h2><div class="grid"><div><b>4회차 · 이청록</b><span>산불 데이터 — 대푯값, 표준편차, 최소제곱 추세선</span></div><div><b>5회차 · 신형철</b><span>낙상 감지 — 벡터의 크기, 이동평균, 임계값</span></div><div><b>6회차 · 김태환</b><span>객체 탐지 — 소프트맥스, IoU, NMS</span></div><div><b>7회차 · 김세환</b><span>상관계수 — 공분산, 표준화, 교란 변수</span></div><div><b>8회차 · 하진수</b><span>k-NN — 거리, 표준화, 혼동행렬</span></div></div></section>
+
+<section class="sl"><div class="kick">3부 · 시연 — 8회차 k-NN</div><h2>① 질문</h2><p class="big">"정확도 100%인데 식물이 죽었다."</p><p>물이 필요한데 불필요로 예측한 경우와 그 반대 — 어느 쪽이 더 나쁜가?<br>답을 정하지 않고 질문으로 남겨 둡니다.</p></section>
+
+<section class="sl"><div class="kick">3부 · 시연 — 8회차 k-NN</div><h2>② 손으로 계산하기 — 활동 1</h2><p>화분 8개를 표준화 → 거리 → 정렬 → 다수결. 새 화분 Q와 기록 D 사이 거리:</p><div class="calc">Δz수분 = −1.31 − (−1.01) = −0.30<br>Δz조도 = 0.96 − 0.73 = 0.23<br>d = √(0.090 + 0.053) = √0.143 ≈ 0.38</div><p style="margin-top:14px">선생님들도 활동지 1번을 직접 풀어 보세요.</p></section>
+
+<section class="sl"><div class="kick">3부 · 시연 — 8회차 k-NN</div><h2>③ 조작 · ④ 코드</h2><ul><li>실습실에서 <b>표준화를 끄면</b> 정확도가 떨어지는 것을 확인</li><li>소음 변수를 넣고 빼며 혼동행렬 변화 기록</li><li>코랩에서 같은 계산을 코드로 → 손계산 값과 대조</li></ul><p style="margin-top:16px"><a href="../lesson08_lab.html" target="_blank">8회차 실습실 열기 →</a></p></section>
+
+<section class="sl"><div class="kick">3부 · 시연 — 8회차 k-NN</div><h2>⑤ 함정 찾고 성찰하기</h2><div class="grid"><div><b>표준화 누락</b><span>단위가 큰 변수가 거리를 독점</span></div><div><b>데이터 누수</b><span>답을 품은 변수로 학습</span></div><div><b>정확도의 함정</b><span>혼동행렬의 위험→건강 칸</span></div></div><p style="margin-top:18px">함정은 오늘 배운 것을 묻는 질문입니다.</p></section>
+
+<section class="sl"><div class="kick">4부 · 실습</div><h2>회차별 실습실 돌아보기</h2><p>4개 중 2개를 골라 조작하고, 함정을 하나씩 찾아 활동지 2번에 기록합니다.</p><p class="big"><a href="index.html" target="_blank">hajinsu9951.github.io/aifp-2026/research</a></p></section>
+
+<section class="sl"><div class="kick">4부 · 실습</div><h2>회차별 대표 함정</h2><div class="grid"><div><b>4회차</b><span>「합계」 행을 지우지 않으면 모든 통계가 부풀려짐</span></div><div><b>5회차</b><span>임계값 하나로는 거짓 경보와 놓침이 맞바뀜</span></div><div><b>6회차</b><span>NMS 임계값을 낮추면 붙어 있는 진짜 물체까지 지워짐</span></div><div><b>7회차</b><span>종을 합치면 없던 상관이 생김 (교란 변수)</span></div></div></section>
+
+<section class="sl"><div class="kick">4부 · 실습</div><h2>세 경로 대조</h2><p>같은 질문에 대해 세 값을 나란히 적습니다.</p><div class="grid"><div><b>손계산</b><span>활동지의 값</span></div><div><b>실습실</b><span>화면에 나온 값</span></div><div><b>코드</b><span>코랩 · 생성형 AI가 낸 값</span></div></div><p style="margin-top:18px">값이 다르면? — 그 차이가 오늘의 수업 소재입니다 (n과 n−1, 반올림, 합계 행, 분할 방식…).</p></section>
+
+<section class="sl"><div class="kick">5부 · 설계와 나눔</div><h2>내 회차 설계 — 활동 3</h2><p>5단계 × 3차시 설계표에 교사 활동 · 학생 활동 · 학생 산출물을 채웁니다.</p><ul><li>① 질문은 교과서 프로젝트에서 가져오기</li><li>② 손계산은 데이터 6~8개로 충분</li><li>⑤ 함정은 실습실에서 재현 가능한 것 하나</li></ul></section>
+
+<section class="sl"><div class="kick">5부 · 설계와 나눔</div><h2>실천과 나눔 일정</h2><div class="grid"><div><b>수업 실천</b><span>담당 회차 3차시</span></div><div><b>동료 참관</b><span>대면 또는 녹화본</span></div><div><b>나눔 협의</b><span>단계별 공통 결과 정리</span></div><div><b>결과보고서</b><span>교사별 · 통합</span></div><div><b>성과공유회</b><span>12월 중순 발표</span></div></div><p style="margin-top:18px">감사합니다 — 질문과 나눔</p></section>
+
+</div>
+<div class="nav"><button id="prev">← 이전</button><span class="pg" id="pg"></span><button id="next">다음 →</button></div>
+<script>
+const S=[...document.querySelectorAll('.sl')];let i=0;
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));
+document.getElementById('pg').textContent=(i+1)+' / '+S.length;document.getElementById('bar').style.width=((i+1)/S.length*100)+'%';
+try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(i+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}if(e.key==='Home')go(0);if(e.key==='End')go(S.length-1)});
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)go(i+(d<0?1:-1));tx=null});
+go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body></html>
